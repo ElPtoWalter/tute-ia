@@ -555,14 +555,14 @@
     const element = document.createElement(options.button ? "button" : "div");
     element.className = `playing-card suit-${card.suit}`;
     if (options.button) element.type = "button";
-    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.svg" alt="${cardName(card)}" draggable="false">`;
+    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.webp" alt="${cardName(card)}" draggable="false">`;
     return element;
   }
 
   function createBackCard() {
     const card = document.createElement("div");
     card.className = "playing-card";
-    card.innerHTML = '<img class="card-image" src="assets/cards/back.svg" alt="Carta boca abajo" draggable="false">';
+    card.innerHTML = '<img class="card-image" src="assets/cards/back.webp" alt="Carta boca abajo" draggable="false">';
     return card;
   }
 

@@ -1,96 +1,59 @@
-# Tute IA — Mesa Cero · v4 Manual · Baraja clásica v3
+# Tute IA — Mesa Cero · v5
 
-Primera versión jugable de una web de Tute Habanero contra una IA.
+Juego de tute habanero para dos jugadores contra una inteligencia artificial.
 
+## Cambios principales de esta versión
 
-## Flujo manual v4
+- Baraja fotográfica tradicional completa de 40 cartas.
+- Cartas enderezadas, limpiadas y optimizadas en WebP.
+- Reverso propio de Tute IA.
+- Reparto inicial manual y animado.
+- Robo manual después de cada baza.
+- La partida espera a que el jugador toque la baceta para robar.
+- La IA también roba con una animación visible.
+- Tres niveles de dificultad.
+- Cantes de 20, 40 y tute.
+- Cambio del pinte mediante el siete o el dos.
+- Interfaz adaptable a ordenador y móvil.
+- Caché PWA renovada a la versión 5.
 
-- La mano comienza con la mesa vacía.
-- Al iniciar, las 16 cartas se reparten una por una con una animación desde la baceta.
-- El triunfo se descubre solamente cuando termina el reparto.
-- Después de cada baza, el ganador roba primero.
-- Cuando llega el turno del jugador, la partida se detiene hasta que pulse la baceta o el botón «Robar de la baceta».
-- La carta recorre la mesa hasta la mano y queda resaltada al llegar.
-- La IA también roba con una animación visible, sin revelar las cartas ocultas.
+## Cómo probarla
 
-## Qué incluye
-
-- Baraja española completa de 40 cartas, dibujada con HTML y SVG.
-- Partidas de dos jugadores con 8 cartas por mano y baceta.
-- Pinte, robo por orden de baza y diez de últimas.
-- Juego libre mientras queda baceta.
-- Asistir, montar y fallar automáticamente al agotarse la baceta.
-- Cantes de 20 y 40.
-- Tute de reyes y de caballos configurable.
-- Cambio del pinte por el 7 o el 2.
-- Tres dificultades.
-- Diseño adaptable a ordenador y móvil.
-- Sonidos sin archivos externos.
-- Funciona sin conexión después de la primera carga.
-- Estadísticas básicas guardadas en el navegador.
-
-## Cómo probarlo en tu ordenador
-
-La forma más fiable es abrir una terminal dentro de esta carpeta y ejecutar:
+Abre una terminal dentro de la carpeta y ejecuta:
 
 ```bash
 python -m http.server 8000
 ```
 
-Después abre:
+Después visita:
 
 ```text
 http://localhost:8000
 ```
 
-También puedes abrir `index.html` directamente, aunque el modo sin conexión no se activará con `file://`.
+## Cómo actualizar GitHub Pages
 
-## Cómo subirlo a GitHub Pages
+1. Sube todos los archivos de esta carpeta a la raíz del repositorio.
+2. Confirma que la carpeta `assets/cards` contiene 41 archivos WebP.
+3. Reemplaza los archivos antiguos cuando GitHub lo solicite.
+4. Haz el commit.
+5. Espera unos minutos y recarga con `Ctrl + Shift + R`.
 
-1. Crea un repositorio nuevo o usa uno vacío.
-2. Sube **el contenido de esta carpeta** a la raíz del repositorio:
-   - `index.html`
-   - `styles.css`
-   - `app.js`
-   - `manifest.webmanifest`
-   - `sw.js`
-   - carpeta `assets`
-3. En GitHub entra en **Settings → Pages**.
-4. En **Build and deployment**, selecciona:
-   - Source: `Deploy from a branch`
-   - Branch: `main`
-   - Folder: `/ (root)`
-5. Guarda.
+No hace falta usar una carpeta `.github`.
 
-No hace falta subir ninguna carpeta `.github`.
+## Reglamento fijado
 
-## Reglamento fijado para esta versión
+Esta versión utiliza tute habanero para dos jugadores:
 
-Esta versión usa Tute Habanero:
-
-- 8 cartas para cada jugador.
-- La carta visible determina el triunfo y se roba la última.
-- Mientras haya baceta no existe obligación de asistir.
+- Ocho cartas iniciales para cada jugador.
+- Una carta visible determina el triunfo.
+- Mientras existe baceta se juega libremente.
 - Al agotarse la baceta se obliga a asistir, montar y fallar.
-- Los cantes se realizan tras ganar una baza y antes de robar.
-- La última baza vale 10 puntos adicionales.
-- La mano la gana quien suma más puntos.
-- En empate, gana quien consiguió las diez de últimas.
+- Tras cada baza roba primero quien la ha ganado.
+- Los cantes se realizan después de ganar una baza y antes del robo.
+- La última baza añade diez tantos.
+- En empate gana quien consiguió las diez de últimas.
 
-El Tute tiene muchas reglas locales. El motor está organizado para poder añadir posteriormente un selector de variantes.
+## Créditos
 
-## Próxima ampliación recomendada
-
-La siguiente versión debería incluir:
-
-- Tutorial interactivo.
-- IA con simulación Monte Carlo real.
-- Partidas privadas online mediante código.
-- Servidor autoritativo para impedir trampas.
-- Reconexión de jugadores.
-- Modo de cuatro jugadores por parejas.
-
-
-## Versión 3
-
-Incluye 40 cartas SVG completamente nuevas, figuras clásicas originales y un reverso propio. También renueva la caché para evitar que GitHub Pages muestre la versión anterior.
+Consulta `CREDITOS.md` para conocer la procedencia y la licencia de la baraja.

@@ -1353,7 +1353,7 @@ button.playing-card.illegal {
 }
 
 
-/* Baraja española clásica SVG v3 */
+/* Baraja española fotográfica WebP v5 */
 .playing-card {
   background: transparent;
   box-shadow: 0 16px 28px rgba(0,0,0,.38);
@@ -1491,4 +1491,20 @@ button.playing-card.illegal {
   .deck-stack.draw-ready::after {
     bottom: -31px;
   }
+}
+
+/* Créditos de la baraja fotográfica */
+.art-credit {
+  margin: 2px 0 18px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 13px;
+  background: rgba(0,0,0,.12);
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+.art-credit a {
+  color: var(--gold-bright);
+  text-underline-offset: 3px;
 }
