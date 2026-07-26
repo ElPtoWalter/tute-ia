@@ -1,5 +1,7 @@
-# Créditos de la baraja v7
+# Créditos de la baraja v8
 
-La baraja incluida en esta versión es un diseño vectorial original creado para Tute IA.
+Las 40 caras de las cartas proceden de las cuatro láminas aportadas por el usuario
+para este proyecto. Se han recortado, normalizado, redimensionado y optimizado
+individualmente en formato WebP.
 
-Se inspira de forma general en la tradición de la baraja española: palos clásicos, pintas del marco, figuras cortesanas, papel marfil y color saturado. No reutiliza fotografías, marcas de agua, escaneos ni ilustraciones copiadas de una baraja comercial concreta.
+El reverso continúa siendo un diseño propio de Tute IA.

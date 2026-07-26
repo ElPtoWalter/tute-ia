@@ -812,7 +812,7 @@
     const element = document.createElement(options.button ? "button" : "div");
     element.className = `playing-card suit-${card.suit}`;
     if (options.button) element.type = "button";
-    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.svg" alt="${cardName(card)}" draggable="false" decoding="async">`;
+    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.webp" alt="${cardName(card)}" draggable="false" decoding="async">`;
     return element;
   }
 

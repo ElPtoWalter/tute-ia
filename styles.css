@@ -14,7 +14,7 @@
   --blue: #76a8ba;
   --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
   --card-w: clamp(68px, 7.1vw, 104px);
-  --card-h: calc(var(--card-w) * 1.48);
+  --card-h: calc(var(--card-w) * 1.716);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background: var(--green-950);
@@ -1366,7 +1366,7 @@ button.playing-card.illegal {
 }
 
 
-/* Baraja española artesanal SVG v6 */
+/* Baraja personalizada integrada desde las cuatro láminas del usuario · v8 */
 .playing-card {
   background: transparent;
   box-shadow: 0 18px 28px rgba(0,0,0,.36);
@@ -1459,7 +1459,7 @@ button.playing-card.illegal {
   position: fixed !important;
   z-index: 1000 !important;
   width: clamp(66px, 7vw, 100px) !important;
-  height: calc(clamp(66px, 7vw, 100px) * 1.48) !important;
+  height: calc(clamp(66px, 7vw, 100px) * 1.716) !important;
   margin: 0 !important;
   pointer-events: none !important;
   will-change: transform, opacity;
@@ -1546,7 +1546,7 @@ button.playing-card.illegal {
    ========================================================= */
 :root {
   --card-w: clamp(76px, 7.4vw, 112px);
-  --card-h: calc(var(--card-w) * 1.542);
+  --card-h: calc(var(--card-w) * 1.716);
 }
 
 .table-panel {
@@ -1837,7 +1837,7 @@ button.playing-card.illegal {
   position: fixed !important;
   z-index: 1400 !important;
   width: clamp(70px, 7.3vw, 108px) !important;
-  height: calc(clamp(70px, 7.3vw, 108px) * 1.542) !important;
+  height: calc(clamp(70px, 7.3vw, 108px) * 1.716) !important;
   margin: 0 !important;
   pointer-events: none !important;
   perspective: 950px;
@@ -2083,4 +2083,13 @@ button.playing-card.illegal {
 @media (min-width: 721px) {
   .table-panel { grid-template-rows: 190px minmax(300px, 1fr) 310px; }
   .player-zone { padding-bottom: 22px; }
+}
+
+/* V8 — cartas finales proporcionadas por el usuario */
+.card-image {
+  object-fit: fill;
+  image-rendering: auto;
+}
+.playing-card {
+  background: #fbf8ef;
 }
