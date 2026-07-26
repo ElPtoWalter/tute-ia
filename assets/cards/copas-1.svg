@@ -1,1 +1,63 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="620" height="956" viewBox="0 0 620 956"><defs><filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="5" stdDeviation="4" flood-opacity=".08"/></filter><linearGradient id="oroFill" x1="0" x2="1"><stop offset="0" stop-color="#f7db89"/><stop offset="1" stop-color="#d19309"/></linearGradient></defs><g filter="url(#shadow)"><rect width="620" height="956" rx="30" fill="#fbf8f0"/><rect x="9" y="9" width="602" height="938" rx="24" fill="none" stroke="#ebe3d4" stroke-width="2"/><rect x="38" y="38" width="544" height="880" rx="18" fill="none" stroke="#23251f" stroke-width="2.6"/><path d="M60 78H120M60 78V138" stroke="#23251f" stroke-width="3"/><path d="M500 78H560M560 78V138" stroke="#23251f" stroke-width="3"/><path d="M60 818H120M60 818V878" stroke="#23251f" stroke-width="3"/><path d="M500 878H560M560 818V878" stroke="#23251f" stroke-width="3"/><g transform="translate(60 90)"><text x="0" y="0" text-anchor="middle" font-family="Georgia,serif" font-size="42" font-weight="700" fill="#1d211b">1</text><g transform="translate(0 38) scale(.58)"><path d="M-20 -22H20C18 -5 14 7 6 15V22H18V28H-18V22H-6V15C-14 7 -18 -5 -20 -22Z" fill="#d84a3f" stroke="#6c1415" stroke-width="3"/><path d="M-12 -14H12C10 -5 7 0 0 5C-7 0 -10 -5 -12 -14Z" fill="#f5d6b5" opacity=".62"/><path d="M-10 22H10" stroke="#f8edc7" stroke-width="3" opacity=".6"/></g></g><g transform="translate(560 860) rotate(180 0 0)"><text x="0" y="0" text-anchor="middle" font-family="Georgia,serif" font-size="42" font-weight="700" fill="#1d211b">1</text><g transform="translate(0 38) scale(.58)"><path d="M-20 -22H20C18 -5 14 7 6 15V22H18V28H-18V22H-6V15C-14 7 -18 -5 -20 -22Z" fill="#d84a3f" stroke="#6c1415" stroke-width="3"/><path d="M-12 -14H12C10 -5 7 0 0 5C-7 0 -10 -5 -12 -14Z" fill="#f5d6b5" opacity=".62"/><path d="M-10 22H10" stroke="#f8edc7" stroke-width="3" opacity=".6"/></g></g><g transform="translate(310 450)"><g transform="scale(2.5)"><path d="M-20 -22H20C18 -5 14 7 6 15V22H18V28H-18V22H-6V15C-14 7 -18 -5 -20 -22Z" fill="#d84a3f" stroke="#6c1415" stroke-width="3"/><path d="M-12 -14H12C10 -5 7 0 0 5C-7 0 -10 -5 -12 -14Z" fill="#f5d6b5" opacity=".62"/><path d="M-10 22H10" stroke="#f8edc7" stroke-width="3" opacity=".6"/></g><path d="M-110 170C-50 130 50 130 110 170" fill="none" stroke="#d9b878" stroke-width="8" opacity=".35"/></g><g transform="translate(310 682)"><rect x="-120" y="-26" width="240" height="52" rx="14" fill="#f0ead9" stroke="#d3c1a3" stroke-width="2"/><text x="0" y="10" text-anchor="middle" font-family="Georgia,serif" font-size="32" letter-spacing="4" fill="#8c3a2f">COPAS</text></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="956" viewBox="0 0 620 956" role="img" aria-label="Carta española de copas">
+      
+    <defs>
+      <filter id="paper" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency=".58" numOctaves="2" seed="9" result="noise"/>
+        <feColorMatrix in="noise" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 .055 0" result="grain"/>
+        <feBlend in="SourceGraphic" in2="grain" mode="multiply"/>
+      </filter>
+      <filter id="inkShadow" x="-25%" y="-25%" width="150%" height="150%">
+        <feDropShadow dx="0" dy="3" stdDeviation="2.4" flood-color="#2A1E12" flood-opacity=".16"/>
+      </filter>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#FFE88B"/><stop offset=".5" stop-color="#D94A43"/><stop offset="1" stop-color="#98231F"/>
+      </linearGradient>
+      <linearGradient id="robe" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#4D9F64"/><stop offset="1" stop-color="#98231F"/>
+      </linearGradient>
+      <pattern id="brocade" width="30" height="30" patternUnits="userSpaceOnUse">
+        <rect width="30" height="30" fill="#4D9F64"/>
+        <path d="M15 3L23 15L15 27L7 15Z" fill="none" stroke="#F0C73D" stroke-width="2.3" opacity=".7"/>
+        <circle cx="15" cy="15" r="2.4" fill="#F7D9C2" opacity=".82"/>
+      </pattern>
+      <pattern id="capePattern" width="34" height="34" patternUnits="userSpaceOnUse">
+        <rect width="34" height="34" fill="#D64B42"/>
+        <path d="M0 17H34M17 0V34" stroke="#F7E6BA" stroke-width="1.6" opacity=".32"/>
+      </pattern>
+    </defs><g filter="url(#paper)">
+      <rect width="620" height="956" rx="31" fill="#FBF7EC"/>
+      <rect x="8" y="8" width="604" height="940" rx="25" fill="none" stroke="#E7DDC9" stroke-width="3"/>
+      <g fill="none" stroke="#17211C" stroke-width="3.2" stroke-linecap="square">
+        <path d="M42 42H300.0 M320.0 42H578"/><path d="M42 914H300.0 M320.0 914H578"/><path d="M42 42V914M578 42V914"/>
+      </g>
+      <rect x="54" y="54" width="512" height="848" rx="11" fill="none" stroke="#98231F" stroke-width="1.4" opacity=".25"/>
+      <circle cx="310" cy="875" r="13" fill="#FBF7EC" stroke="#98231F" stroke-width="1.6" opacity=".7"/>
+      <text x="310" y="880" text-anchor="middle" font-family="Georgia,serif" font-size="12" font-weight="700" fill="#98231F" opacity=".8">T</text>
+    <g transform="translate(68 98)">
+      <text x="0" y="0" text-anchor="middle" font-family="Georgia,serif" font-size="43" font-weight="700" fill="#17211C">1</text>
+      <g transform="translate(0 42) scale(.56)"><g transform="scale(1.0)" stroke-linejoin="round">
+          <path d="M-28 -27H28C26 -6 20 10 9 20V29H23V37H-23V29H-9V20C-20 10 -26 -6 -28 -27Z" fill="#D94A43" stroke="#5E1412" stroke-width="4"/>
+          <path d="M-18 -17H18C16 -6 10 3 0 9C-10 3 -16 -6 -18 -17Z" fill="#F9E0C6" opacity=".72"/>
+          <path d="M-12 29H12" stroke="#FFF0C0" stroke-width="4" opacity=".7"/>
+          <circle cx="0" cy="-7" r="4" fill="#F0C73D"/>
+        </g></g>
+    </g><g transform="translate(552 858) rotate(180)">
+      <text x="0" y="0" text-anchor="middle" font-family="Georgia,serif" font-size="43" font-weight="700" fill="#17211C">1</text>
+      <g transform="translate(0 42) scale(.56)"><g transform="scale(1.0)" stroke-linejoin="round">
+          <path d="M-28 -27H28C26 -6 20 10 9 20V29H23V37H-23V29H-9V20C-20 10 -26 -6 -28 -27Z" fill="#D94A43" stroke="#5E1412" stroke-width="4"/>
+          <path d="M-18 -17H18C16 -6 10 3 0 9C-10 3 -16 -6 -18 -17Z" fill="#F9E0C6" opacity=".72"/>
+          <path d="M-12 29H12" stroke="#FFF0C0" stroke-width="4" opacity=".7"/>
+          <circle cx="0" cy="-7" r="4" fill="#F0C73D"/>
+        </g></g>
+    </g><g transform="translate(310 452)" filter="url(#inkShadow)">
+          <g transform="scale(2.75)"><g transform="scale(1.0)" stroke-linejoin="round">
+          <path d="M-28 -27H28C26 -6 20 10 9 20V29H23V37H-23V29H-9V20C-20 10 -26 -6 -28 -27Z" fill="#D94A43" stroke="#5E1412" stroke-width="4"/>
+          <path d="M-18 -17H18C16 -6 10 3 0 9C-10 3 -16 -6 -18 -17Z" fill="#F9E0C6" opacity=".72"/>
+          <path d="M-12 29H12" stroke="#FFF0C0" stroke-width="4" opacity=".7"/>
+          <circle cx="0" cy="-7" r="4" fill="#F0C73D"/>
+        </g></g>
+          <path d="M-118 142C-55 105 54 105 118 142" fill="none" stroke="#F0C73D" stroke-width="9" opacity=".45"/>
+          <path d="M-92 150C-38 124 38 124 92 150" fill="none" stroke="#D94A43" stroke-width="5" opacity=".45"/>
+        </g>
+        <text x="310" y="724" text-anchor="middle" font-family="Georgia,serif" font-size="32" font-weight="700" letter-spacing="8" fill="#98231F">COPAS</text></g>
+    </svg>

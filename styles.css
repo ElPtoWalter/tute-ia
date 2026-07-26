@@ -1540,3 +1540,547 @@ button.playing-card.illegal {
   font-weight: 700;
   pointer-events: none;
 }
+
+/* =========================================================
+   V7 — Mesa física, baraja artesanal y movimiento natural
+   ========================================================= */
+:root {
+  --card-w: clamp(76px, 7.4vw, 112px);
+  --card-h: calc(var(--card-w) * 1.542);
+}
+
+.table-panel {
+  background:
+    radial-gradient(ellipse at 50% 46%, rgba(57, 141, 99, .22), transparent 50%),
+    radial-gradient(circle at 18% 14%, rgba(255,255,255,.035), transparent 22rem),
+    repeating-linear-gradient(0deg, rgba(255,255,255,.008) 0 1px, transparent 1px 4px),
+    linear-gradient(145deg, #0a392b, #06261e 72%, #041b16);
+  box-shadow:
+    0 28px 80px rgba(0,0,0,.44),
+    inset 0 0 0 8px rgba(5,18,15,.45),
+    inset 0 0 110px rgba(0,0,0,.32);
+}
+
+.table-panel::before {
+  inset: 16px;
+  border: 2px solid rgba(217,182,111,.2);
+  box-shadow: inset 0 0 0 5px rgba(0,0,0,.16), 0 0 0 1px rgba(255,255,255,.025);
+}
+
+.table-panel::after {
+  opacity: .58;
+  background-image:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,.018) 0 1px, transparent 1.4px),
+    linear-gradient(90deg, rgba(255,255,255,.009) 1px, transparent 1px);
+  background-size: 7px 7px, 31px 31px;
+}
+
+.player-zone,
+.opponent-zone {
+  overflow: visible;
+}
+
+.hand {
+  position: relative;
+  overflow: visible;
+  isolation: isolate;
+}
+
+.player-hand {
+  width: min(96%, 980px);
+  min-height: calc(var(--card-h) + 52px);
+  align-items: flex-end;
+  justify-content: center;
+  padding: 22px 40px 2px;
+  touch-action: none;
+}
+
+.player-hand .playing-card {
+  margin-left: calc(var(--card-w) * -.23);
+  transform:
+    translateX(var(--rest-x, 0px))
+    translateY(var(--rest-y, 0px))
+    rotate(var(--rest-rotate, 0deg));
+  transform-origin: 50% 118%;
+  cursor: grab;
+  touch-action: none;
+  transition:
+    transform .28s cubic-bezier(.18,.82,.18,1),
+    filter .22s ease,
+    opacity .2s ease,
+    box-shadow .22s ease;
+}
+
+.player-hand .playing-card:first-child { margin-left: 0; }
+.player-hand .playing-card:active,
+.player-hand .playing-card.card-pressed { cursor: grabbing; }
+
+.player-hand .playing-card:hover:not(.gesture-source) {
+  transform:
+    translateX(var(--rest-x, 0px))
+    translateY(calc(var(--rest-y, 0px) - 24px))
+    rotate(calc(var(--rest-rotate, 0deg) * .58))
+    scale(1.035);
+  box-shadow: 0 28px 40px rgba(0,0,0,.48), 0 0 0 2px rgba(240,207,131,.72);
+  z-index: 80 !important;
+}
+
+.player-hand .playing-card.illegal {
+  opacity: .72;
+  filter: saturate(.68) brightness(.78);
+}
+
+.player-hand .playing-card.illegal:hover {
+  opacity: .9;
+  filter: saturate(.88) brightness(.92);
+}
+
+.gesture-source {
+  opacity: .2 !important;
+  filter: grayscale(.2) !important;
+}
+
+.source-in-flight {
+  opacity: 0 !important;
+  transition: opacity .08s linear !important;
+}
+
+.hand-drag-ghost {
+  position: fixed !important;
+  z-index: 1600 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  transform: translate(-50%, -58%) rotate(-3deg) scale(1.08) !important;
+  transform-origin: center !important;
+  opacity: .98 !important;
+  filter: drop-shadow(0 28px 30px rgba(0,0,0,.55)) !important;
+  box-shadow: 0 0 0 3px rgba(240,207,131,.68) !important;
+}
+
+.hand-drop-marker {
+  position: absolute;
+  z-index: 1500;
+  bottom: 25px;
+  width: 4px;
+  height: calc(var(--card-h) * .72);
+  border-radius: 99px;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, transparent, var(--gold-bright) 18% 82%, transparent);
+  box-shadow: 0 0 18px rgba(240,207,131,.8);
+  pointer-events: none;
+  animation: markerPulse .65s ease-in-out infinite alternate;
+}
+
+@keyframes markerPulse {
+  from { opacity: .55; scale: .9 1; }
+  to { opacity: 1; scale: 1.2 1; }
+}
+
+.reordering-hand,
+.reordering-hand * { cursor: grabbing !important; }
+
+.manual-order-hint {
+  min-height: 22px;
+  margin-top: 2px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 999px;
+  color: rgba(236,244,238,.42);
+  background: rgba(1,13,10,.2);
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .045em;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity .25s ease, transform .25s ease;
+  pointer-events: none;
+}
+
+.manual-order-hint.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.manual-order-hint span {
+  margin-right: 5px;
+  color: var(--gold);
+  font-size: 13px;
+}
+
+.opponent-hand {
+  transform: scale(.76);
+  transform-origin: top center;
+}
+
+.opponent-hand .playing-card {
+  transform: translateY(var(--rest-y, 0px)) rotate(var(--rest-rotate, 0deg));
+  transform-origin: 50% -20%;
+  transition: transform .28s cubic-bezier(.18,.82,.18,1), opacity .2s ease;
+}
+
+.playing-card {
+  height: var(--card-h);
+  border-radius: calc(var(--card-w) * .075);
+  background: transparent;
+  box-shadow: 0 17px 30px rgba(0,0,0,.38);
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+/* Baraja con profundidad física */
+.deck-area {
+  gap: 18px;
+  perspective: 900px;
+}
+
+.deck-stack {
+  width: calc(var(--card-w) * .63);
+  height: calc(var(--card-h) * .63);
+  transform-style: preserve-3d;
+  filter: drop-shadow(0 12px 15px rgba(0,0,0,.3));
+}
+
+.deck-layer,
+.deck-stack .mini-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  background: #f3ead8;
+  border: 1px solid rgba(38,26,12,.36);
+  transition: opacity .25s ease, transform .3s cubic-bezier(.2,.8,.2,1);
+}
+
+.deck-layer.layer-four { transform: translate(9px, -8px) rotate(.8deg); }
+.deck-layer.layer-three { transform: translate(7px, -6px) rotate(.55deg); }
+.deck-layer.layer-two { transform: translate(5px, -4px) rotate(.3deg); }
+.deck-layer.layer-one { transform: translate(3px, -2px) rotate(.12deg); }
+
+.deck-stack::before,
+.deck-stack::after { display: none; }
+
+.deck-stack .mini-card {
+  z-index: 6;
+  overflow: hidden;
+  border: 3px solid #f2eadb;
+  background: transparent;
+  box-shadow: 0 8px 20px rgba(0,0,0,.34);
+}
+
+.deck-stack .mini-card img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.deck-stack.deck-drawing .mini-card {
+  animation: deckRelease .34s cubic-bezier(.2,.8,.2,1);
+}
+
+@keyframes deckRelease {
+  0% { transform: translate(0,0) rotate(0); }
+  45% { transform: translate(-7px,-9px) rotate(-3deg); }
+  100% { transform: translate(0,0) rotate(0); }
+}
+
+.deck-stack.draw-ready {
+  animation: deckReady 1.2s ease-in-out infinite;
+}
+
+@keyframes deckReady {
+  0%,100% { transform: translateY(0) rotate(0); filter: drop-shadow(0 12px 15px rgba(0,0,0,.3)); }
+  50% { transform: translateY(-7px) rotate(-1.2deg); filter: drop-shadow(0 15px 24px rgba(240,207,131,.42)); }
+}
+
+.deck-count {
+  z-index: 12;
+  bottom: -12px;
+  right: -12px;
+  min-width: 29px;
+  height: 29px;
+  font-size: 11px;
+  border: 2px solid rgba(8,29,23,.8);
+}
+
+/* Cartas en mesa: pequeñas imperfecciones, no rejilla rígida */
+.trick-area {
+  gap: 16px;
+}
+
+.trick-slot {
+  width: calc(var(--card-w) * 1.24);
+  height: calc(var(--card-h) * 1.08);
+  border-radius: 20px;
+  border-color: rgba(255,255,255,.095);
+  background: radial-gradient(circle, rgba(255,255,255,.028), transparent 70%);
+}
+
+.trick-slot .playing-card {
+  --card-w: clamp(82px, 8vw, 118px);
+  transform: translate(var(--play-x, 0px), var(--play-y, 0px)) rotate(var(--play-rotation, 0deg));
+  animation: tableSettle .44s cubic-bezier(.15,.85,.2,1) both;
+}
+
+@keyframes tableSettle {
+  0% { opacity: .15; scale: .82; translate: 0 -18px; }
+  70% { opacity: 1; scale: 1.035; translate: 0 2px; }
+  100% { opacity: 1; scale: 1; translate: 0 0; }
+}
+
+/* Vuelos con giro real de la carta */
+.flight-card.flight-shell {
+  position: fixed !important;
+  z-index: 1400 !important;
+  width: clamp(70px, 7.3vw, 108px) !important;
+  height: calc(clamp(70px, 7.3vw, 108px) * 1.542) !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  perspective: 950px;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: drop-shadow(0 26px 26px rgba(0,0,0,.48));
+  will-change: transform;
+}
+
+.flight-flipper {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.flight-flipper.show-back { transform: rotateY(180deg); }
+
+.flight-face {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  backface-visibility: hidden;
+  box-shadow: none !important;
+}
+
+.flight-back { transform: rotateY(180deg); }
+.table-flight { z-index: 1450 !important; }
+
+.capture-flight-card {
+  position: fixed !important;
+  z-index: 1350 !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 20px 20px rgba(0,0,0,.4));
+  will-change: transform, opacity;
+}
+
+/* Montones de bazas */
+.capture-pile {
+  position: absolute;
+  z-index: 8;
+  width: 50px;
+  height: 68px;
+  opacity: .5;
+  transition: opacity .25s ease, transform .25s ease;
+  pointer-events: none;
+}
+
+.capture-pile.ai-capture { top: 104px; right: 44px; }
+.capture-pile.player-capture { bottom: 112px; left: 44px; }
+
+.capture-card {
+  position: absolute;
+  width: 34px;
+  height: 50px;
+  left: 7px;
+  top: 6px;
+  border-radius: 4px;
+  border: 2px solid #eee3cd;
+  background:
+    radial-gradient(circle at center, transparent 0 15%, rgba(218,184,109,.75) 16% 19%, transparent 20%),
+    repeating-conic-gradient(from 45deg, #12372c 0 12.5%, #09291f 0 25%);
+  box-shadow: 0 7px 12px rgba(0,0,0,.28);
+}
+
+.capture-card.one { transform: rotate(-12deg); }
+.capture-card.two { transform: translate(7px,3px) rotate(8deg); }
+.capture-pile strong {
+  position: absolute;
+  right: -3px;
+  bottom: -1px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #1b1b12;
+  background: var(--gold-bright);
+  border: 2px solid #0a2b22;
+  font-size: 10px;
+  font-weight: 1000;
+  box-shadow: 0 5px 12px rgba(0,0,0,.35);
+}
+
+.capture-pile.has-cards { opacity: .95; }
+.capture-pile.capture-bump { animation: captureBump .42s cubic-bezier(.2,.85,.2,1); }
+@keyframes captureBump {
+  0% { transform: scale(.88) rotate(-3deg); }
+  58% { transform: scale(1.13) rotate(3deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+/* Pequeños acabados de interfaz */
+.status-strip {
+  box-shadow: 0 8px 22px rgba(0,0,0,.18), inset 0 1px rgba(255,255,255,.035);
+}
+
+.player-badge {
+  box-shadow: 0 12px 30px rgba(0,0,0,.24), inset 0 1px rgba(255,255,255,.035);
+}
+
+.score-card,
+.intel-card,
+.log-card {
+  background:
+    radial-gradient(circle at 90% 0%, rgba(217,182,111,.055), transparent 12rem),
+    linear-gradient(145deg, rgba(17,48,40,.96), rgba(6,24,20,.96));
+}
+
+@media (max-width: 1100px) {
+  .capture-pile.ai-capture { right: 30px; }
+  .capture-pile.player-capture { left: 30px; }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --card-w: clamp(62px, 18.5vw, 86px);
+  }
+  .player-hand {
+    width: 100%;
+    padding-inline: 12px;
+    min-height: calc(var(--card-h) + 42px);
+  }
+  .player-hand .playing-card { margin-left: calc(var(--card-w) * -.34); }
+  .manual-order-hint { margin-top: -4px; font-size: 8px; }
+  .capture-pile { transform: scale(.8); }
+  .capture-pile.ai-capture { top: 92px; right: 10px; }
+  .capture-pile.player-capture { bottom: 92px; left: 10px; }
+  .flight-card.flight-shell {
+    width: 72px !important;
+    height: 111px !important;
+  }
+  .trick-slot .playing-card { --card-w: 72px; }
+}
+
+@media (max-width: 430px) {
+  .player-hand {
+    overflow: visible;
+    justify-content: center;
+    padding-inline: 4px;
+  }
+  .player-hand .playing-card { margin-left: -23px; }
+  .capture-pile { display: none; }
+}
+
+/* Ajustes finales de respiración y responsive */
+.player-hand::after { content: none !important; }
+.player-zone { padding-bottom: 34px; }
+.player-hand { transform: translateY(-8px); }
+.manual-order-hint { transform: translateY(-7px); }
+.manual-order-hint.visible { transform: translateY(-7px); }
+
+@media (max-width: 720px) {
+  .table-panel {
+    min-height: 780px;
+    grid-template-rows: 185px 330px 265px;
+  }
+  .opponent-zone { padding-top: 14px; }
+  .table-center { min-height: 330px; }
+  .play-area {
+    min-height: 235px;
+    flex: 0 0 235px;
+    align-items: center;
+  }
+  .action-dock {
+    min-height: 78px;
+    justify-content: flex-start;
+    padding-top: 7px;
+  }
+  .action-dock p {
+    max-width: 290px;
+    line-height: 1.35;
+  }
+  .player-zone {
+    justify-content: flex-start;
+    padding: 2px 0 26px;
+  }
+  .player-zone .player-badge {
+    margin-top: 0;
+    margin-bottom: 2px;
+  }
+  .player-hand {
+    width: 100%;
+    min-height: 150px;
+    padding: 12px 6px 0;
+    transform: none;
+  }
+  .manual-order-hint,
+  .manual-order-hint.visible {
+    transform: translateY(-2px);
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 430px) {
+  :root { --card-w: 61px; }
+  .table-panel {
+    min-height: 765px;
+    grid-template-rows: 180px 325px 260px;
+  }
+  .player-hand {
+    min-height: 142px;
+    padding-top: 10px;
+  }
+  .player-hand .playing-card { margin-left: -25px; }
+  .player-hand .playing-card:first-child { margin-left: 0; }
+  .player-hand .playing-card:hover:not(.gesture-source) {
+    transform:
+      translateX(var(--rest-x, 0px))
+      translateY(calc(var(--rest-y, 0px) - 14px))
+      rotate(calc(var(--rest-rotate, 0deg) * .62))
+      scale(1.02);
+  }
+  .manual-order-hint { font-size: 7.5px; padding: 3px 8px; }
+  .action-dock p { font-size: 10px; }
+}
+
+@media (min-width: 721px) {
+  .table-panel {
+    min-height: 840px;
+    grid-template-rows: 190px minmax(320px, 1fr) 270px;
+  }
+  .player-zone {
+    padding-bottom: 24px;
+    justify-content: flex-start;
+  }
+  .player-zone .player-badge { margin-top: 4px; }
+  .player-hand {
+    transform: none;
+    padding-top: 16px;
+  }
+  .manual-order-hint,
+  .manual-order-hint.visible { transform: translateY(-2px); }
+}
+
+@media (min-width: 721px) {
+  :root { --card-w: clamp(72px, 6.7vw, 102px); }
+  .player-zone { padding-bottom: 38px; }
+}
+
+@media (min-width: 721px) {
+  .table-panel { grid-template-rows: 190px minmax(300px, 1fr) 310px; }
+  .player-zone { padding-bottom: 22px; }
+}

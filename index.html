@@ -8,7 +8,7 @@
   <title>Tute IA — Mesa Cero</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=6.0.0">
+  <link rel="stylesheet" href="styles.css?v=7.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -34,6 +34,14 @@
   <main class="app-shell">
     <section class="table-panel" aria-label="Mesa de juego">
       <div class="table-glow" aria-hidden="true"></div>
+      <div class="capture-pile ai-capture" id="aiCapturePile" aria-label="Bazas capturadas por la IA">
+        <span class="capture-card one"></span><span class="capture-card two"></span>
+        <strong id="aiCaptureCount">0</strong>
+      </div>
+      <div class="capture-pile player-capture" id="playerCapturePile" aria-label="Tus bazas capturadas">
+        <span class="capture-card one"></span><span class="capture-card two"></span>
+        <strong id="playerCaptureCount">0</strong>
+      </div>
 
       <div class="opponent-zone">
         <div class="player-badge opponent">
@@ -56,7 +64,11 @@
         <div class="play-area">
           <div class="deck-area">
             <div class="deck-stack" id="deckStack" role="button" tabindex="0" aria-label="Baceta" aria-disabled="true">
-              <div class="mini-card back"></div>
+              <span class="deck-layer layer-four"></span>
+              <span class="deck-layer layer-three"></span>
+              <span class="deck-layer layer-two"></span>
+              <span class="deck-layer layer-one"></span>
+              <div class="mini-card back"><img src="assets/cards/back.svg" alt="" draggable="false"></div>
               <span class="deck-count" id="deckCount">24</span>
             </div>
             <div class="trump-wrap">
@@ -97,6 +109,7 @@
           <div class="turn-pill" id="playerTurnPill">TU TURNO</div>
         </div>
         <div class="hand player-hand" id="playerHand" aria-label="Tus cartas"></div>
+        <div class="manual-order-hint" id="manualOrderHint"><span>↔</span> Arrastra cualquier carta para ordenar tu mano</div>
       </div>
     </section>
 
@@ -265,10 +278,7 @@
 
 
       <p class="art-credit">
-        Baraja tradicional basada en la fotografía
-        <a href="https://commons.wikimedia.org/wiki/File:Spanish_deck_Fournier.jpg"
-           target="_blank" rel="noopener noreferrer">Spanish deck Fournier</a>,
-        publicada en Wikimedia Commons bajo dedicación CC0.
+        Baraja original de Tute IA: 40 cartas vectoriales creadas individualmente, con pintas tradicionales, figuras propias y reverso exclusivo.
       </p>
 
       <button class="primary-button" id="rulesUnderstoodButton">Entendido</button>
@@ -298,6 +308,6 @@
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <script src="app.js?v=6.0.0"></script>
+  <script src="app.js?v=7.0.0"></script>
 </body>
 </html>

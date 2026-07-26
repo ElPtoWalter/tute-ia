@@ -27,6 +27,7 @@
   let audioContext = null;
   let soundEnabled = true;
   let timers = [];
+  let handGesture = null;
 
   const state = {
     settings: {
@@ -65,7 +66,8 @@
       "newMatchButton", "rulesButton", "closeRulesButton", "rulesUnderstoodButton",
       "resultKicker", "resultEmblem", "resultTitle", "resultSummary",
       "resultPlayerScore", "resultAiScore", "resultActionButton",
-      "resultExitButton", "toastRegion", "brandButton"
+      "resultExitButton", "toastRegion", "brandButton",
+      "aiCapturePile", "playerCapturePile", "aiCaptureCount", "playerCaptureCount", "manualOrderHint"
     ].forEach(id => UI[id] = document.getElementById(id));
   }
 
@@ -181,8 +183,9 @@
       drawActor: null,
       drawing: false,
       lastDrawnId: null,
-      dragCardId: null,
-      busyFlight: false
+      busyFlight: false,
+      collecting: false,
+      pendingHandFlip: null
     };
 
     addLog(`<strong>Mano ${state.match.round}.</strong> Barajando las cartas.`);
@@ -197,9 +200,9 @@
 
     for (let i = 0; i < 8; i += 1) {
       await dealOneCard("player");
-      await sleep(70);
+      await sleep(45);
       await dealOneCard("ai");
-      await sleep(70);
+      await sleep(45);
     }
 
     if (!state.round || state.round.phase !== "dealing") return;
@@ -224,79 +227,146 @@
     const sourceRect = UI.deckStack.getBoundingClientRect();
     const card = round.stock.pop();
     renderDeck();
-    await animateCardFlight(actor, card, sourceRect, false, 245);
+    await animateCardFlight(actor, card, sourceRect, false, 310);
 
     if (!state.round || state.round.phase !== "dealing") return;
+    const previousRects = actor === "player" ? capturePlayerHandRects() : null;
     round.hands[actor].push(card);
+    if (actor === "player") {
+      round.pendingHandFlip = previousRects;
+      round.lastDrawnId = card.id;
+    }
     playSound("card");
     render();
+    if (actor === "player") later(() => {
+      if (state.round?.lastDrawnId === card.id) {
+        state.round.lastDrawnId = null;
+        render();
+      }
+    }, 430);
   }
 
   function sleep(ms) {
     return new Promise(resolve => later(resolve, ms));
   }
 
-  async function animateCardFlight(actor, card, sourceRect, faceUp, duration = 480) {
+  function createFlightShell(card, { backFirst = false, reveal = false } = {}) {
+    const shell = document.createElement("div");
+    shell.className = "flight-card flight-shell";
+    shell.setAttribute("aria-hidden", "true");
+    const flipper = document.createElement("div");
+    flipper.className = "flight-flipper";
+    if (backFirst) flipper.classList.add("show-back");
+
+    const front = createCardElement(card);
+    front.classList.add("flight-face", "flight-front");
+    const back = createBackCard();
+    back.classList.add("flight-face", "flight-back");
+    flipper.append(front, back);
+    shell.appendChild(flipper);
+    document.body.appendChild(shell);
+
+    if (backFirst && reveal) {
+      flipper.animate([
+        { transform: "rotateY(180deg)", offset: 0 },
+        { transform: "rotateY(180deg)", offset: .56 },
+        { transform: "rotateY(0deg)", offset: .84 },
+        { transform: "rotateY(0deg)", offset: 1 }
+      ], { duration: 520, easing: "cubic-bezier(.3,.7,.2,1)", fill: "forwards" });
+    }
+    return shell;
+  }
+
+  function calculateHandLanding(actor, targetRect, cardWidth, cardHeight) {
+    const round = state.round;
+    const existing = round?.hands?.[actor]?.length || 0;
+    const countAfter = existing + 1;
+    const spread = Math.min(cardWidth * .58, Math.max(18, targetRect.width / Math.max(3.8, countAfter + .8)));
+    const index = existing;
+    const centerOffset = (index - (countAfter - 1) / 2) * spread;
+    return {
+      x: targetRect.left + targetRect.width / 2 + centerOffset - cardWidth / 2,
+      y: actor === "player"
+        ? targetRect.bottom - cardHeight * .78
+        : targetRect.top + cardHeight * .04
+    };
+  }
+
+  async function animateCardFlight(actor, card, sourceRect, faceUp, duration = 520) {
     const target = actor === "player" ? UI.playerHand : UI.aiHand;
     const targetRect = target.getBoundingClientRect();
-    const flying = faceUp ? createCardElement(card) : createBackCard();
-    flying.classList.add("flight-card");
-    flying.setAttribute("aria-hidden", "true");
-    document.body.appendChild(flying);
-
+    const backFirst = !faceUp;
+    const reveal = actor === "player" && backFirst;
+    const flying = createFlightShell(card, { backFirst, reveal });
     const flightRect = flying.getBoundingClientRect();
+    const landing = calculateHandLanding(actor, targetRect, flightRect.width, flightRect.height);
     const startX = sourceRect.left + sourceRect.width / 2 - flightRect.width / 2;
     const startY = sourceRect.top + sourceRect.height / 2 - flightRect.height / 2;
-    const endX = targetRect.left + targetRect.width / 2 - flightRect.width / 2;
-    const endY = actor === "player"
-      ? targetRect.bottom - flightRect.height * .82
-      : targetRect.top + Math.max(2, targetRect.height * .08);
+    const dx = landing.x - startX;
+    const dy = landing.y - startY;
+    const side = actor === "player" ? -1 : 1;
 
     flying.style.left = `${startX}px`;
     flying.style.top = `${startY}px`;
-
     const animation = flying.animate([
-      { transform: "translate3d(0,0,0) rotate(0deg) scale(.72)", opacity: .92 },
-      { transform: `translate3d(${(endX-startX)*.52}px, ${(endY-startY)*.46 - 34}px, 0) rotate(${actor === "player" ? -7 : 7}deg) scale(.9)`, opacity: 1, offset: .56 },
-      { transform: `translate3d(${endX-startX}px, ${endY-startY}px, 0) rotate(${actor === "player" ? -1 : 2}deg) scale(1)`, opacity: 1 }
-    ], {
-      duration,
-      easing: "cubic-bezier(.2,.75,.18,1)",
-      fill: "forwards"
-    });
-
+      { transform: `translate3d(0,0,0) rotate(${side * 3}deg) scale(.76)`, opacity: .92 },
+      { transform: `translate3d(${dx * .24}px, ${dy * .18 - 22}px, 0) rotate(${side * 13}deg) scale(.9)`, opacity: 1, offset: .32 },
+      { transform: `translate3d(${dx * .68}px, ${dy * .57 - 46}px, 0) rotate(${side * -7}deg) scale(1.04)`, opacity: 1, offset: .7 },
+      { transform: `translate3d(${dx}px, ${dy}px, 0) rotate(${side * .8}deg) scale(1)`, opacity: 1 }
+    ], { duration, easing: "cubic-bezier(.18,.82,.18,1)", fill: "forwards" });
     try { await animation.finished; } catch (_) {}
     flying.remove();
   }
 
   async function animatePlayToTable(actor, card, sourceRect, targetRect) {
-    const flying = createCardElement(card);
-    flying.classList.add("flight-card", "table-flight");
-    flying.setAttribute("aria-hidden", "true");
-    document.body.appendChild(flying);
-
+    const flying = createFlightShell(card, { backFirst: actor === "ai", reveal: actor === "ai" });
+    flying.classList.add("table-flight");
     const flightRect = flying.getBoundingClientRect();
     const startX = sourceRect.left + sourceRect.width / 2 - flightRect.width / 2;
     const startY = sourceRect.top + sourceRect.height / 2 - flightRect.height / 2;
     const endX = targetRect.left + targetRect.width / 2 - flightRect.width / 2;
     const endY = targetRect.top + targetRect.height / 2 - flightRect.height / 2;
-    const finalRotation = actor === "player" ? -5 : 4;
+    const dx = endX - startX;
+    const dy = endY - startY;
+    const side = actor === "player" ? -1 : 1;
+    const finalRotation = actor === "player" ? -4.5 : 4;
 
     flying.style.left = `${startX}px`;
     flying.style.top = `${startY}px`;
-
     const animation = flying.animate([
-      { transform: `translate3d(0,0,0) rotate(${actor === "player" ? -8 : 8}deg) scale(1)`, opacity: 1 },
-      { transform: `translate3d(${(endX-startX)*.48}px, ${(endY-startY)*.24 - 55}px, 0) rotate(${actor === "player" ? -18 : 16}deg) scale(1.04)`, opacity: 1, offset: .58 },
-      { transform: `translate3d(${endX-startX}px, ${endY-startY}px, 0) rotate(${finalRotation}deg) scale(1)`, opacity: 1 }
-    ], {
-      duration: 420,
-      easing: "cubic-bezier(.18,.82,.16,1)",
-      fill: "forwards"
-    });
-
+      { transform: `translate3d(0,0,0) rotate(${side * 5}deg) scale(1)`, opacity: 1 },
+      { transform: `translate3d(${dx * .32}px, ${dy * .18 - 38}px, 0) rotate(${side * 15}deg) scale(1.07)`, opacity: 1, offset: .35 },
+      { transform: `translate3d(${dx * .74}px, ${dy * .62 - 58}px, 0) rotate(${side * -9}deg) scale(1.035)`, opacity: 1, offset: .74 },
+      { transform: `translate3d(${dx}px, ${dy}px, 0) rotate(${finalRotation}deg) scale(1)`, opacity: 1 }
+    ], { duration: 480, easing: "cubic-bezier(.16,.84,.16,1)", fill: "forwards" });
     try { await animation.finished; } catch (_) {}
     flying.remove();
+  }
+
+  function capturePlayerHandRects() {
+    const rects = new Map();
+    UI.playerHand?.querySelectorAll("[data-card-id]").forEach(element => {
+      rects.set(element.dataset.cardId, element.getBoundingClientRect());
+    });
+    return rects;
+  }
+
+  function animateHandFlip(previousRects) {
+    if (!previousRects?.size) return;
+    requestAnimationFrame(() => {
+      UI.playerHand.querySelectorAll("[data-card-id]").forEach(element => {
+        const previous = previousRects.get(element.dataset.cardId);
+        if (!previous) return;
+        const current = element.getBoundingClientRect();
+        const dx = previous.left - current.left;
+        const dy = previous.top - current.top;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+        element.animate([
+          { translate: `${dx}px ${dy}px` },
+          { translate: "0px 0px" }
+        ], { duration: 360, easing: "cubic-bezier(.2,.8,.2,1)" });
+      });
+    });
   }
 
   function buildDeck() {
@@ -359,41 +429,42 @@
     renderDeck();
     renderStatus();
     renderScores();
+    renderCaptures();
     renderLog();
     renderActions();
   }
 
   function renderHands() {
     const round = state.round;
-    const legalIds = round.currentTurn === "player" && !round.pendingCante && round.phase === "playing"
+    const canPlayNow = round.currentTurn === "player" && !round.pendingCante && round.phase === "playing";
+    const legalIds = canPlayNow
       ? new Set(getLegalCards("player").map(card => card.id))
       : new Set();
+    const flipRects = round.pendingHandFlip;
+    round.pendingHandFlip = null;
 
     UI.playerHand.innerHTML = "";
     const playerCount = round.hands.player.length || 1;
     round.hands.player.forEach((card, index) => {
       const cardButton = createCardElement(card, { button: true });
       cardButton.dataset.cardId = card.id;
-      cardButton.draggable = true;
       cardButton.style.zIndex = index + 1;
-      cardButton.style.setProperty("--rest-rotate", `${(index - (playerCount - 1) / 2) * 4.4}deg`);
-      cardButton.style.setProperty("--rest-y", `${Math.abs(index - (playerCount - 1) / 2) * 4.6}px`);
-      cardButton.style.setProperty("--rest-x", `${(index - (playerCount - 1) / 2) * .5}px`);
+      const normalized = playerCount > 1 ? (index - (playerCount - 1) / 2) / ((playerCount - 1) / 2) : 0;
+      cardButton.style.setProperty("--rest-rotate", `${normalized * 10.5}deg`);
+      cardButton.style.setProperty("--rest-y", `${Math.abs(normalized) * 16}px`);
+      cardButton.style.setProperty("--rest-x", `${normalized * 3}px`);
       if (round.lastDrawnId === card.id) cardButton.classList.add("newly-drawn");
       const isPlayable = legalIds.has(card.id);
-      cardButton.disabled = false;
       cardButton.setAttribute("aria-disabled", isPlayable ? "false" : "true");
-      if (!isPlayable) cardButton.classList.add("illegal");
-      if (round.dragCardId === card.id) cardButton.classList.add("dragging-card");
-      cardButton.setAttribute("aria-label", `${cardName(card)}${isPlayable ? ", jugar" : ", no disponible"}`);
-      cardButton.addEventListener("click", () => {
-        if (round.dragCardId || !isPlayable) return;
-        playCard("player", card.id);
+      if (canPlayNow && !isPlayable) cardButton.classList.add("illegal");
+      cardButton.setAttribute("aria-label", `${cardName(card)}${isPlayable ? ", jugar" : ", no disponible para jugar"}`);
+      cardButton.addEventListener("pointerdown", event => beginHandGesture(event, card.id, isPlayable));
+      cardButton.addEventListener("keydown", event => {
+        if ((event.key === "Enter" || event.key === " ") && isPlayable) {
+          event.preventDefault();
+          playCard("player", card.id);
+        }
       });
-      cardButton.addEventListener("dragstart", event => onPlayerDragStart(event, card.id));
-      cardButton.addEventListener("dragover", event => onPlayerDragOver(event, card.id));
-      cardButton.addEventListener("drop", event => onPlayerDrop(event, card.id));
-      cardButton.addEventListener("dragend", onPlayerDragEnd);
       UI.playerHand.appendChild(cardButton);
     });
 
@@ -401,63 +472,145 @@
     const aiCount = round.hands.ai.length || 1;
     round.hands.ai.forEach((_, index) => {
       const back = createBackCard();
+      const normalized = aiCount > 1 ? (index - (aiCount - 1) / 2) / ((aiCount - 1) / 2) : 0;
       back.style.zIndex = index + 1;
-      back.style.setProperty("--rest-rotate", `${(index - (aiCount - 1) / 2) * -3.1}deg`);
-      back.style.setProperty("--rest-y", `${Math.abs(index - (aiCount - 1) / 2) * 3.2}px`);
+      back.style.setProperty("--rest-rotate", `${normalized * -7.5}deg`);
+      back.style.setProperty("--rest-y", `${Math.abs(normalized) * 8}px`);
       UI.aiHand.appendChild(back);
     });
+
+    UI.manualOrderHint?.classList.toggle("visible", round.hands.player.length > 1 && !["dealing", "roundOver"].includes(round.phase));
+    animateHandFlip(flipRects);
   }
 
-  function onPlayerDragStart(event, cardId) {
+  function beginHandGesture(event, cardId, isPlayable) {
     const round = state.round;
-    if (!round || round.phase !== "playing") return;
-    round.dragCardId = cardId;
-    event.dataTransfer.effectAllowed = "move";
-    event.dataTransfer.setData("text/plain", cardId);
-    later(() => render(), 0);
-  }
+    if (!round || round.busyFlight || round.collecting || event.button > 0 || event.isPrimary === false) return;
+    const canOrganize = !["dealing", "roundOver"].includes(round.phase) && !round.drawing;
+    if (!canOrganize && !isPlayable) return;
 
-  function onPlayerDragOver(event, targetCardId) {
-    const round = state.round;
-    if (!round?.dragCardId || round.dragCardId === targetCardId) return;
+    const element = event.currentTarget;
     event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
+    element.setPointerCapture?.(event.pointerId);
+    handGesture = {
+      pointerId: event.pointerId,
+      cardId,
+      playable: isPlayable,
+      element,
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
+      insertIndex: round.hands.player.findIndex(card => card.id === cardId),
+      ghost: null,
+      marker: null
+    };
+    element.classList.add("card-pressed");
+    element.addEventListener("pointermove", moveHandGesture);
+    element.addEventListener("pointerup", endHandGesture, { once: true });
+    element.addEventListener("pointercancel", cancelHandGesture, { once: true });
   }
 
-  function onPlayerDrop(event, targetCardId) {
-    const round = state.round;
-    if (!round?.dragCardId || round.dragCardId === targetCardId) return;
+  function moveHandGesture(event) {
+    if (!handGesture || event.pointerId !== handGesture.pointerId) return;
+    const dx = event.clientX - handGesture.startX;
+    const dy = event.clientY - handGesture.startY;
+    if (!handGesture.moved && Math.hypot(dx, dy) < 8) return;
+    if (!handGesture.moved) startHandReorder(event);
     event.preventDefault();
-    const dragId = round.dragCardId;
-    const hand = round.hands.player;
-    const fromIndex = hand.findIndex(c => c.id === dragId);
-    let toIndex = hand.findIndex(c => c.id === targetCardId);
-    if (fromIndex < 0 || toIndex < 0) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const before = event.clientX < rect.left + rect.width / 2;
-    const [moved] = hand.splice(fromIndex, 1);
-    if (fromIndex < toIndex) toIndex -= 1;
-    hand.splice(toIndex + (before ? 0 : 1), 0, moved);
-    round.dragCardId = null;
-    playSound("card");
-    render();
+    handGesture.ghost.style.left = `${event.clientX}px`;
+    handGesture.ghost.style.top = `${event.clientY}px`;
+    updateHandDropIndex(event.clientX);
   }
 
-  function onPlayerDragEnd() {
-    if (state.round) {
-      state.round.dragCardId = null;
+  function startHandReorder(event) {
+    handGesture.moved = true;
+    handGesture.element.classList.add("gesture-source");
+    document.body.classList.add("reordering-hand");
+    const rect = handGesture.element.getBoundingClientRect();
+    const ghost = handGesture.element.cloneNode(true);
+    ghost.classList.remove("illegal", "newly-drawn", "card-pressed");
+    ghost.classList.add("hand-drag-ghost");
+    ghost.style.width = `${rect.width}px`;
+    ghost.style.height = `${rect.height}px`;
+    ghost.style.left = `${event.clientX}px`;
+    ghost.style.top = `${event.clientY}px`;
+    document.body.appendChild(ghost);
+    handGesture.ghost = ghost;
+
+    const marker = document.createElement("span");
+    marker.className = "hand-drop-marker";
+    UI.playerHand.appendChild(marker);
+    handGesture.marker = marker;
+  }
+
+  function updateHandDropIndex(clientX) {
+    if (!handGesture) return;
+    const cards = [...UI.playerHand.querySelectorAll("[data-card-id]")]
+      .filter(element => element.dataset.cardId !== handGesture.cardId);
+    const sorted = cards.map(element => ({ element, rect: element.getBoundingClientRect() }))
+      .sort((a, b) => a.rect.left - b.rect.left);
+    let insertIndex = sorted.filter(item => clientX > item.rect.left + item.rect.width / 2).length;
+    handGesture.insertIndex = insertIndex;
+
+    const handRect = UI.playerHand.getBoundingClientRect();
+    let markerX;
+    if (!sorted.length) markerX = handRect.width / 2;
+    else if (insertIndex === 0) markerX = sorted[0].rect.left - handRect.left;
+    else if (insertIndex >= sorted.length) markerX = sorted.at(-1).rect.right - handRect.left;
+    else markerX = (sorted[insertIndex - 1].rect.right + sorted[insertIndex].rect.left) / 2 - handRect.left;
+    handGesture.marker.style.left = `${markerX}px`;
+  }
+
+  function endHandGesture(event) {
+    if (!handGesture || event.pointerId !== handGesture.pointerId) return;
+    const gesture = handGesture;
+    if (gesture.moved) {
+      const round = state.round;
+      const previousRects = capturePlayerHandRects();
+      const fromIndex = round.hands.player.findIndex(card => card.id === gesture.cardId);
+      const [movedCard] = round.hands.player.splice(fromIndex, 1);
+      let insertIndex = gesture.insertIndex;
+      if (fromIndex < insertIndex) insertIndex -= 1;
+      insertIndex = Math.max(0, Math.min(round.hands.player.length, insertIndex));
+      round.hands.player.splice(insertIndex, 0, movedCard);
+      round.pendingHandFlip = previousRects;
+      cleanupHandGesture();
+      playSound("card");
       render();
+    } else {
+      cleanupHandGesture();
+      if (gesture.playable && state.round?.currentTurn === "player" && state.round.phase === "playing") {
+        playCard("player", gesture.cardId);
+      }
     }
+  }
+
+  function cancelHandGesture() {
+    cleanupHandGesture();
+  }
+
+  function cleanupHandGesture() {
+    if (!handGesture) return;
+    handGesture.element?.classList.remove("card-pressed", "gesture-source");
+    handGesture.element?.removeEventListener("pointermove", moveHandGesture);
+    handGesture.ghost?.remove();
+    handGesture.marker?.remove();
+    document.body.classList.remove("reordering-hand");
+    handGesture = null;
   }
 
   function renderTrick() {
     UI.aiTrickSlot.innerHTML = '<span class="slot-label">IA</span>';
     UI.playerTrickSlot.innerHTML = '<span class="slot-label">TÚ</span>';
 
-    state.round.trick.forEach(play => {
+    state.round.trick.forEach((play, index) => {
       const slot = play.actor === "player" ? UI.playerTrickSlot : UI.aiTrickSlot;
       slot.innerHTML = "";
-      slot.appendChild(createCardElement(play.card));
+      const cardElement = createCardElement(play.card);
+      cardElement.style.setProperty("--play-rotation", `${play.rotation ?? (play.actor === "player" ? -4 : 4)}deg`);
+      cardElement.style.setProperty("--play-x", `${play.offsetX ?? (index ? 4 : -3)}px`);
+      cardElement.style.setProperty("--play-y", `${play.offsetY ?? 0}px`);
+      slot.appendChild(cardElement);
     });
   }
 
@@ -466,6 +619,11 @@
     const count = drawPileCount();
     UI.deckCount.textContent = count;
     UI.deckStack.classList.toggle("hidden", count === 0);
+    UI.deckStack.style.setProperty("--deck-progress", String(Math.max(0, Math.min(1, count / 24))));
+    UI.deckStack.style.setProperty("--deck-height", `${Math.max(1, Math.ceil(count / 4))}px`);
+    UI.deckStack.querySelectorAll(".deck-layer").forEach((layer, index) => {
+      layer.style.opacity = count > index * 5 ? "1" : "0";
+    });
 
     const playerMustDraw = round.phase === "awaitingDraw" &&
       round.drawQueue[round.drawIndex] === "player" && !round.drawing;
@@ -569,6 +727,14 @@
     }
   }
 
+  function renderCaptures() {
+    const round = state.round;
+    UI.playerCaptureCount.textContent = round.tricksWon.player;
+    UI.aiCaptureCount.textContent = round.tricksWon.ai;
+    UI.playerCapturePile.classList.toggle("has-cards", round.tricksWon.player > 0);
+    UI.aiCapturePile.classList.toggle("has-cards", round.tricksWon.ai > 0);
+  }
+
   function renderLog() {
     UI.gameLog.innerHTML = state.round.log
       .slice(-9)
@@ -631,7 +797,7 @@
     }
     if (round.phase !== "playing") return "La mano ha terminado.";
     if (round.currentTurn === "ai") return "La IA solo conoce sus cartas y las jugadas visibles.";
-    if (!isStrictPhase()) return "Baceta abierta: puedes jugar cualquiera de tus cartas.";
+    if (!isStrictPhase()) return "Baceta abierta. Toca para jugar o arrastra para ordenar tu mano.";
     const legal = getLegalCards("player");
     if (legal.length === round.hands.player.length) return "Puedes jugar cualquier carta.";
     if (round.trick.length === 1) {
@@ -646,7 +812,7 @@
     const element = document.createElement(options.button ? "button" : "div");
     element.className = `playing-card suit-${card.suit}`;
     if (options.button) element.type = "button";
-    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.svg" alt="${cardName(card)}" draggable="false">`;
+    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.svg" alt="${cardName(card)}" draggable="false" decoding="async">`;
     return element;
   }
 
@@ -660,8 +826,8 @@
   async function playCard(actor, cardId) {
     const round = state.round;
     if (!round || round.phase !== "playing" || round.currentTurn !== actor || round.pendingCante) return;
+    if (round.busyFlight || round.collecting) return;
 
-    if (round.busyFlight) return;
     const legalCards = getLegalCards(actor);
     const card = round.hands[actor].find(c => c.id === cardId);
     if (!card || !legalCards.some(c => c.id === cardId)) {
@@ -670,21 +836,33 @@
       return;
     }
 
+    cleanupHandGesture();
+    const cardIndex = round.hands[actor].findIndex(c => c.id === cardId);
     const sourceElement = actor === "player"
       ? UI.playerHand.querySelector(`[data-card-id="${card.id}"]`)
-      : UI.aiHand.querySelector('.playing-card');
+      : UI.aiHand.children[cardIndex] || UI.aiHand.querySelector('.playing-card');
     const targetSlot = actor === "player" ? UI.playerTrickSlot : UI.aiTrickSlot;
+    const previousRects = actor === "player" ? capturePlayerHandRects() : null;
+
     if (sourceElement) {
       round.busyFlight = true;
+      sourceElement.classList.add("source-in-flight");
       const sourceRect = sourceElement.getBoundingClientRect();
       const targetRect = targetSlot.getBoundingClientRect();
       await animatePlayToTable(actor, card, sourceRect, targetRect);
       round.busyFlight = false;
     }
 
-    const index = round.hands[actor].findIndex(c => c.id === cardId);
-    round.hands[actor].splice(index, 1);
-    round.trick.push({ actor, card });
+    round.hands[actor].splice(cardIndex, 1);
+    if (actor === "player") round.pendingHandFlip = previousRects;
+    const seed = round.playedCards.length + (actor === "player" ? 1 : 7);
+    round.trick.push({
+      actor,
+      card,
+      rotation: (actor === "player" ? -4.5 : 4) + ((seed % 3) - 1) * 1.35,
+      offsetX: ((seed * 7) % 9) - 4,
+      offsetY: ((seed * 5) % 7) - 3
+    });
     round.playedCards.push(card);
     addLog(`${actor === "player" ? "Tú juegas" : "La IA juega"} <strong>${cardName(card)}</strong>.`);
     playSound("card");
@@ -699,7 +877,7 @@
 
     round.currentTurn = null;
     render();
-    later(resolveTrick, 680);
+    later(resolveTrick, 560);
   }
 
   function getLegalCards(actor) {
@@ -722,16 +900,50 @@
     return [...hand];
   }
 
-  function resolveTrick() {
+  async function animateCollectTrick(winner) {
+    const target = winner === "player" ? UI.playerCapturePile : UI.aiCapturePile;
+    let targetRect = target.getBoundingClientRect();
+    if (!targetRect.width) {
+      targetRect = document.querySelector(winner === "player" ? ".player-badge:not(.opponent)" : ".player-badge.opponent").getBoundingClientRect();
+    }
+    const entries = state.round.trick.map(play => ({
+      element: (play.actor === "player" ? UI.playerTrickSlot : UI.aiTrickSlot).querySelector(".playing-card"),
+      play
+    })).filter(entry => entry.element);
+    const animations = entries.map((entry, index) => {
+      const rect = entry.element.getBoundingClientRect();
+      const clone = entry.element.cloneNode(true);
+      clone.classList.add("capture-flight-card");
+      clone.style.left = `${rect.left}px`;
+      clone.style.top = `${rect.top}px`;
+      clone.style.width = `${rect.width}px`;
+      clone.style.height = `${rect.height}px`;
+      document.body.appendChild(clone);
+      entry.element.style.opacity = "0";
+      const dx = targetRect.left + targetRect.width / 2 - (rect.left + rect.width / 2) + index * 5;
+      const dy = targetRect.top + targetRect.height / 2 - (rect.top + rect.height / 2) + index * 4;
+      const animation = clone.animate([
+        { transform: `translate3d(0,0,0) rotate(${entry.play.rotation || 0}deg) scale(1)`, opacity: 1 },
+        { transform: `translate3d(${dx * .42}px, ${dy * .32 - 34}px,0) rotate(${winner === "player" ? -18 : 18}deg) scale(.84)`, opacity: 1, offset: .52 },
+        { transform: `translate3d(${dx}px, ${dy}px,0) rotate(${winner === "player" ? -28 : 28}deg) scale(.34)`, opacity: .2 }
+      ], { duration: 460 + index * 55, easing: "cubic-bezier(.22,.78,.18,1)", fill: "forwards" });
+      return animation.finished.catch(() => {}).then(() => clone.remove());
+    });
+    target.classList.add("capture-bump");
+    await Promise.all(animations);
+    later(() => target.classList.remove("capture-bump"), 260);
+  }
+
+  async function resolveTrick() {
     const round = state.round;
-    if (!round || round.trick.length !== 2) return;
+    if (!round || round.trick.length !== 2 || round.collecting) return;
+    round.collecting = true;
 
     const first = round.trick[0];
     const second = round.trick[1];
     const winner = beats(second.card, first.card, first.card.suit, round.trumpSuit)
       ? second.actor
       : first.actor;
-
     const points = first.card.points + second.card.points;
     round.captured[winner].push(first.card, second.card);
     round.cardPoints[winner] += points;
@@ -742,17 +954,19 @@
 
     addLog(`<strong>${winner === "player" ? "Ganas" : "La IA gana"} la baza</strong>${points ? ` y suma ${points}` : ""}.`);
     playSound(winner === "player" ? "winTrick" : "loseTrick");
+    await animateCollectTrick(winner);
+    if (!state.round) return;
+    round.trick = [];
+    round.collecting = false;
+    render();
 
     const options = getCanteOptions(winner);
     if (options.length > 0 && drawPileCount() > 0) {
       round.pendingCante = { actor: winner, options };
       render();
-      if (winner === "ai") {
-        later(() => resolveAiCante(options), 650);
-      }
+      if (winner === "ai") later(() => resolveAiCante(options), 540);
       return;
     }
-
     continueAfterTrick();
   }
 
@@ -864,17 +1078,10 @@
       round.drawing = false;
       addLog(`${round.leader === "player" ? "Robas tú primero" : "La IA roba primero"}.`);
       render();
-
-      later(() => {
-        if (!state.round || state.round.phase !== "awaitingDraw") return;
-        state.round.trick = [];
-        render();
-        advanceDrawQueue();
-      }, 430);
+      later(advanceDrawQueue, 300);
       return;
     }
 
-    round.trick = [];
     beginNextTrick();
   }
 
@@ -914,12 +1121,16 @@
     const card = fromStock ? round.stock.pop() : round.trumpCard;
     if (!fromStock) round.trumpCard = null;
 
+    UI.deckStack.classList.add("deck-drawing");
     render();
-    await animateCardFlight(actor, card, sourceRect, !fromStock, 540);
+    await animateCardFlight(actor, card, sourceRect, !fromStock, 600);
+    UI.deckStack.classList.remove("deck-drawing");
     if (!state.round || state.round.phase !== "awaitingDraw") return;
 
+    const previousRects = actor === "player" ? capturePlayerHandRects() : null;
     round.hands[actor].push(card);
     if (actor === "ai") round.hands[actor] = sortHand(round.hands[actor]);
+    if (actor === "player") round.pendingHandFlip = previousRects;
     round.lastDrawnId = actor === "player" ? card.id : null;
     round.drawIndex += 1;
     round.drawing = false;
@@ -939,7 +1150,7 @@
         render();
       }, 850);
     }
-    later(advanceDrawQueue, 360);
+    later(advanceDrawQueue, 300);
   }
 
   function finishDrawPhase() {

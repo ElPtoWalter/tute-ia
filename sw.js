@@ -1,9 +1,9 @@
-const CACHE = "tute-ia-v6.0.0";
+const CACHE = "tute-ia-v7.0.0";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=6.0.0",
-  "./app.js?v=6.0.0",
+  "./styles.css?v=7.0.0",
+  "./app.js?v=7.0.0",
   "./manifest.webmanifest",
   "./assets/icon-192.png",
   "./assets/icon-512.png",

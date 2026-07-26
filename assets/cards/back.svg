@@ -1,1 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="620" height="956" viewBox="0 0 620 956"><defs><pattern id="tile" width="36" height="36" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="36" height="36" fill="#103328"/><circle cx="18" cy="18" r="10" fill="none" stroke="#d9b66f" stroke-width="2" opacity=".85"/><path d="M18 8V28M8 18H28" stroke="#e8d4a1" stroke-width="1.5" opacity=".75"/></pattern></defs><rect width="620" height="956" rx="30" fill="#f5ebd8"/><rect x="16" y="16" width="588" height="924" rx="24" fill="#0d2e24" stroke="#e3cb93" stroke-width="5"/><rect x="34" y="34" width="552" height="888" rx="16" fill="url(#tile)" stroke="#e3cb93" stroke-width="2.2"/><rect x="70" y="70" width="480" height="816" rx="18" fill="none" stroke="#e3cb93" stroke-width="2.2" opacity=".9"/><g transform="translate(310 478)"><circle r="112" fill="#0b271f" stroke="#e3cb93" stroke-width="8"/><circle r="78" fill="none" stroke="#e3cb93" stroke-width="4" opacity=".9"/><text y="18" text-anchor="middle" font-family="Georgia,serif" font-size="96" font-weight="700" fill="#f0dcaa">T</text></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="956" viewBox="0 0 620 956">
+      <defs>
+        <pattern id="tile" width="46" height="46" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <rect width="46" height="46" fill="#0B3025"/>
+          <circle cx="23" cy="23" r="12" fill="none" stroke="#D9B66F" stroke-width="2.2" opacity=".8"/>
+          <path d="M23 10V36M10 23H36" stroke="#F1DBA6" stroke-width="1.8" opacity=".68"/>
+          <circle cx="23" cy="23" r="3" fill="#D9B66F"/>
+        </pattern>
+        <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity=".18"/></filter>
+      </defs>
+      <rect width="620" height="956" rx="31" fill="#FBF2E1"/>
+      <rect x="13" y="13" width="594" height="930" rx="24" fill="#0A2C22" stroke="#E7D098" stroke-width="5"/>
+      <rect x="34" y="34" width="552" height="888" rx="16" fill="url(#tile)" stroke="#E7D098" stroke-width="3"/>
+      <rect x="69" y="69" width="482" height="818" rx="18" fill="none" stroke="#E7D098" stroke-width="3" opacity=".9"/>
+      <g transform="translate(310 478)" filter="url(#shadow)">
+        <circle r="127" fill="#09251D" stroke="#E7D098" stroke-width="9"/>
+        <circle r="91" fill="none" stroke="#E7D098" stroke-width="4"/>
+        <path d="M0 -69L15 -24L63 -22L25 7L38 54L0 27L-38 54L-25 7L-63 -22L-15 -24Z" fill="none" stroke="#D9B66F" stroke-width="3" opacity=".42"/>
+        <text y="27" text-anchor="middle" font-family="Georgia,serif" font-size="112" font-weight="700" fill="#F3DEAA">T</text>
+      </g>
+    </svg>
