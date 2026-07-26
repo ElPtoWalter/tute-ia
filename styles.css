@@ -324,11 +324,14 @@ input:focus-visible {
 .player-hand {
   width: 100%;
   align-items: flex-end;
+  justify-content: center;
+  gap: 0;
   padding-top: 16px;
+  min-height: calc(var(--card-h) + 34px);
 }
 
 .player-hand .playing-card {
-  margin-left: calc(var(--card-w) * -.24);
+  margin-left: calc(var(--card-w) * -.22);
 }
 
 .player-hand .playing-card:first-child { margin-left: 0; }
@@ -354,8 +357,13 @@ input:focus-visible {
 
 button.playing-card { cursor: pointer; }
 
+.player-hand .playing-card,
+.opponent-hand .playing-card {
+  transform: translateX(var(--rest-x, 0px)) translateY(var(--rest-y, 0px)) rotate(var(--rest-rotate, 0deg));
+}
+
 button.playing-card:hover:not(:disabled) {
-  transform: translateY(-16px) rotate(-1deg);
+  transform: translateX(var(--rest-x, 0px)) translateY(calc(var(--rest-y, 0px) - 20px)) rotate(var(--rest-rotate, 0deg)) scale(1.02);
   box-shadow: 0 24px 35px rgba(0,0,0,.4), 0 0 0 2px var(--gold-bright);
   z-index: 20;
 }
@@ -367,6 +375,11 @@ button.playing-card:disabled {
 button.playing-card.illegal {
   filter: saturate(.65) brightness(.67);
   opacity: .78;
+}
+
+.dragging-card {
+  opacity: .38 !important;
+  transform: translateX(var(--rest-x, 0px)) translateY(calc(var(--rest-y, 0px) - 26px)) rotate(var(--rest-rotate, 0deg)) scale(1.05) !important;
 }
 
 .playing-card.selected-play {
@@ -1353,16 +1366,17 @@ button.playing-card.illegal {
 }
 
 
-/* Baraja española fotográfica WebP v5 */
+/* Baraja española artesanal SVG v6 */
 .playing-card {
   background: transparent;
-  box-shadow: 0 16px 28px rgba(0,0,0,.38);
+  box-shadow: 0 18px 28px rgba(0,0,0,.36);
+  transition: transform .25s cubic-bezier(.2,.8,.2,1), filter .22s ease, opacity .22s ease, box-shadow .22s ease;
 }
 .card-image {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: fill;
+  object-fit: contain;
   border-radius: inherit;
   user-select: none;
   pointer-events: none;
@@ -1449,7 +1463,11 @@ button.playing-card.illegal {
   margin: 0 !important;
   pointer-events: none !important;
   will-change: transform, opacity;
-  filter: drop-shadow(0 20px 20px rgba(0,0,0,.42));
+  filter: drop-shadow(0 24px 24px rgba(0,0,0,.46));
+}
+
+.table-flight {
+  z-index: 1100 !important;
 }
 
 .newly-drawn {
@@ -1462,9 +1480,9 @@ button.playing-card.illegal {
 }
 
 @keyframes newlyDrawnCard {
-  0% { transform: translateY(-34px) rotate(-6deg) scale(.82); opacity: .25; }
-  55% { transform: translateY(-20px) rotate(2deg) scale(1.08); opacity: 1; }
-  100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+  0% { transform: translateX(var(--rest-x, 0px)) translateY(calc(var(--rest-y, 0px) - 34px)) rotate(calc(var(--rest-rotate, 0deg) - 6deg)) scale(.82); opacity: .25; }
+  55% { transform: translateX(var(--rest-x, 0px)) translateY(calc(var(--rest-y, 0px) - 18px)) rotate(calc(var(--rest-rotate, 0deg) + 3deg)) scale(1.08); opacity: 1; }
+  100% { transform: translateX(var(--rest-x, 0px)) translateY(var(--rest-y, 0px)) rotate(var(--rest-rotate, 0deg)) scale(1); opacity: 1; }
 }
 
 .trump-wrap .playing-card {
@@ -1507,4 +1525,18 @@ button.playing-card.illegal {
 .art-credit a {
   color: var(--gold-bright);
   text-underline-offset: 3px;
+}
+
+.player-zone { position: relative; }
+.player-hand::after {
+  content: "Arrastra para ordenar tu mano";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255,255,255,.38);
+  font-size: 9px;
+  letter-spacing: .08em;
+  font-weight: 700;
+  pointer-events: none;
 }

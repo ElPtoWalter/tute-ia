@@ -180,7 +180,9 @@
       drawIndex: 0,
       drawActor: null,
       drawing: false,
-      lastDrawnId: null
+      lastDrawnId: null,
+      dragCardId: null,
+      busyFlight: false
     };
 
     addLog(`<strong>Mano ${state.match.round}.</strong> Barajando las cartas.`);
@@ -203,7 +205,6 @@
     if (!state.round || state.round.phase !== "dealing") return;
     round.trumpCard = round.stock.pop();
     round.trumpSuit = round.trumpCard.suit;
-    round.hands.player = sortHand(round.hands.player);
     round.hands.ai = sortHand(round.hands.ai);
     round.phase = "playing";
     round.currentTurn = round.leader;
@@ -261,6 +262,36 @@
     ], {
       duration,
       easing: "cubic-bezier(.2,.75,.18,1)",
+      fill: "forwards"
+    });
+
+    try { await animation.finished; } catch (_) {}
+    flying.remove();
+  }
+
+  async function animatePlayToTable(actor, card, sourceRect, targetRect) {
+    const flying = createCardElement(card);
+    flying.classList.add("flight-card", "table-flight");
+    flying.setAttribute("aria-hidden", "true");
+    document.body.appendChild(flying);
+
+    const flightRect = flying.getBoundingClientRect();
+    const startX = sourceRect.left + sourceRect.width / 2 - flightRect.width / 2;
+    const startY = sourceRect.top + sourceRect.height / 2 - flightRect.height / 2;
+    const endX = targetRect.left + targetRect.width / 2 - flightRect.width / 2;
+    const endY = targetRect.top + targetRect.height / 2 - flightRect.height / 2;
+    const finalRotation = actor === "player" ? -5 : 4;
+
+    flying.style.left = `${startX}px`;
+    flying.style.top = `${startY}px`;
+
+    const animation = flying.animate([
+      { transform: `translate3d(0,0,0) rotate(${actor === "player" ? -8 : 8}deg) scale(1)`, opacity: 1 },
+      { transform: `translate3d(${(endX-startX)*.48}px, ${(endY-startY)*.24 - 55}px, 0) rotate(${actor === "player" ? -18 : 16}deg) scale(1.04)`, opacity: 1, offset: .58 },
+      { transform: `translate3d(${endX-startX}px, ${endY-startY}px, 0) rotate(${finalRotation}deg) scale(1)`, opacity: 1 }
+    ], {
+      duration: 420,
+      easing: "cubic-bezier(.18,.82,.16,1)",
       fill: "forwards"
     });
 
@@ -339,24 +370,84 @@
       : new Set();
 
     UI.playerHand.innerHTML = "";
+    const playerCount = round.hands.player.length || 1;
     round.hands.player.forEach((card, index) => {
       const cardButton = createCardElement(card, { button: true });
+      cardButton.dataset.cardId = card.id;
+      cardButton.draggable = true;
       cardButton.style.zIndex = index + 1;
+      cardButton.style.setProperty("--rest-rotate", `${(index - (playerCount - 1) / 2) * 4.4}deg`);
+      cardButton.style.setProperty("--rest-y", `${Math.abs(index - (playerCount - 1) / 2) * 4.6}px`);
+      cardButton.style.setProperty("--rest-x", `${(index - (playerCount - 1) / 2) * .5}px`);
       if (round.lastDrawnId === card.id) cardButton.classList.add("newly-drawn");
       const isPlayable = legalIds.has(card.id);
-      cardButton.disabled = !isPlayable;
+      cardButton.disabled = false;
+      cardButton.setAttribute("aria-disabled", isPlayable ? "false" : "true");
       if (!isPlayable) cardButton.classList.add("illegal");
+      if (round.dragCardId === card.id) cardButton.classList.add("dragging-card");
       cardButton.setAttribute("aria-label", `${cardName(card)}${isPlayable ? ", jugar" : ", no disponible"}`);
-      cardButton.addEventListener("click", () => playCard("player", card.id));
+      cardButton.addEventListener("click", () => {
+        if (round.dragCardId || !isPlayable) return;
+        playCard("player", card.id);
+      });
+      cardButton.addEventListener("dragstart", event => onPlayerDragStart(event, card.id));
+      cardButton.addEventListener("dragover", event => onPlayerDragOver(event, card.id));
+      cardButton.addEventListener("drop", event => onPlayerDrop(event, card.id));
+      cardButton.addEventListener("dragend", onPlayerDragEnd);
       UI.playerHand.appendChild(cardButton);
     });
 
     UI.aiHand.innerHTML = "";
+    const aiCount = round.hands.ai.length || 1;
     round.hands.ai.forEach((_, index) => {
       const back = createBackCard();
       back.style.zIndex = index + 1;
+      back.style.setProperty("--rest-rotate", `${(index - (aiCount - 1) / 2) * -3.1}deg`);
+      back.style.setProperty("--rest-y", `${Math.abs(index - (aiCount - 1) / 2) * 3.2}px`);
       UI.aiHand.appendChild(back);
     });
+  }
+
+  function onPlayerDragStart(event, cardId) {
+    const round = state.round;
+    if (!round || round.phase !== "playing") return;
+    round.dragCardId = cardId;
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", cardId);
+    later(() => render(), 0);
+  }
+
+  function onPlayerDragOver(event, targetCardId) {
+    const round = state.round;
+    if (!round?.dragCardId || round.dragCardId === targetCardId) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+  }
+
+  function onPlayerDrop(event, targetCardId) {
+    const round = state.round;
+    if (!round?.dragCardId || round.dragCardId === targetCardId) return;
+    event.preventDefault();
+    const dragId = round.dragCardId;
+    const hand = round.hands.player;
+    const fromIndex = hand.findIndex(c => c.id === dragId);
+    let toIndex = hand.findIndex(c => c.id === targetCardId);
+    if (fromIndex < 0 || toIndex < 0) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const before = event.clientX < rect.left + rect.width / 2;
+    const [moved] = hand.splice(fromIndex, 1);
+    if (fromIndex < toIndex) toIndex -= 1;
+    hand.splice(toIndex + (before ? 0 : 1), 0, moved);
+    round.dragCardId = null;
+    playSound("card");
+    render();
+  }
+
+  function onPlayerDragEnd() {
+    if (state.round) {
+      state.round.dragCardId = null;
+      render();
+    }
   }
 
   function renderTrick() {
@@ -555,27 +646,40 @@
     const element = document.createElement(options.button ? "button" : "div");
     element.className = `playing-card suit-${card.suit}`;
     if (options.button) element.type = "button";
-    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.webp" alt="${cardName(card)}" draggable="false">`;
+    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.svg" alt="${cardName(card)}" draggable="false">`;
     return element;
   }
 
   function createBackCard() {
     const card = document.createElement("div");
     card.className = "playing-card";
-    card.innerHTML = '<img class="card-image" src="assets/cards/back.webp" alt="Carta boca abajo" draggable="false">';
+    card.innerHTML = '<img class="card-image" src="assets/cards/back.svg" alt="Carta boca abajo" draggable="false">';
     return card;
   }
 
-  function playCard(actor, cardId) {
+  async function playCard(actor, cardId) {
     const round = state.round;
     if (!round || round.phase !== "playing" || round.currentTurn !== actor || round.pendingCante) return;
 
+    if (round.busyFlight) return;
     const legalCards = getLegalCards(actor);
     const card = round.hands[actor].find(c => c.id === cardId);
     if (!card || !legalCards.some(c => c.id === cardId)) {
       showToast("<strong>Renuncio bloqueado.</strong> Esa carta no es legal ahora.");
       playSound("error");
       return;
+    }
+
+    const sourceElement = actor === "player"
+      ? UI.playerHand.querySelector(`[data-card-id="${card.id}"]`)
+      : UI.aiHand.querySelector('.playing-card');
+    const targetSlot = actor === "player" ? UI.playerTrickSlot : UI.aiTrickSlot;
+    if (sourceElement) {
+      round.busyFlight = true;
+      const sourceRect = sourceElement.getBoundingClientRect();
+      const targetRect = targetSlot.getBoundingClientRect();
+      await animatePlayToTable(actor, card, sourceRect, targetRect);
+      round.busyFlight = false;
     }
 
     const index = round.hands[actor].findIndex(c => c.id === cardId);
@@ -815,7 +919,7 @@
     if (!state.round || state.round.phase !== "awaitingDraw") return;
 
     round.hands[actor].push(card);
-    round.hands[actor] = sortHand(round.hands[actor]);
+    if (actor === "ai") round.hands[actor] = sortHand(round.hands[actor]);
     round.lastDrawnId = actor === "player" ? card.id : null;
     round.drawIndex += 1;
     round.drawing = false;
@@ -891,7 +995,7 @@
     const oldPinte = round.trumpCard;
     hand[index] = oldPinte;
     round.trumpCard = option.card;
-    sortHand(hand);
+    if (actor === "ai") sortHand(hand);
 
     addLog(`<strong>${actor === "player" ? "Cambias" : "La IA cambia"} el pinte:</strong> ${cardName(option.card)} por ${cardName(oldPinte)}.`);
     showToast(`${actor === "player" ? "Has cambiado" : "La IA cambia"} el pinte`);
