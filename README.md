@@ -1,6 +1,17 @@
-# Tute IA — Mesa Cero
+# Tute IA — Mesa Cero · v4 Manual · Baraja clásica v3
 
 Primera versión jugable de una web de Tute Habanero contra una IA.
+
+
+## Flujo manual v4
+
+- La mano comienza con la mesa vacía.
+- Al iniciar, las 16 cartas se reparten una por una con una animación desde la baceta.
+- El triunfo se descubre solamente cuando termina el reparto.
+- Después de cada baza, el ganador roba primero.
+- Cuando llega el turno del jugador, la partida se detiene hasta que pulse la baceta o el botón «Robar de la baceta».
+- La carta recorre la mesa hasta la mano y queda resaltada al llegar.
+- La IA también roba con una animación visible, sin revelar las cartas ocultas.
 
 ## Qué incluye
 
@@ -78,3 +89,8 @@ La siguiente versión debería incluir:
 - Servidor autoritativo para impedir trampas.
 - Reconexión de jugadores.
 - Modo de cuatro jugadores por parejas.
+
+
+## Versión 3
+
+Incluye 40 cartas SVG completamente nuevas, figuras clásicas originales y un reverso propio. También renueva la caché para evitar que GitHub Pages muestre la versión anterior.

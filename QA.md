@@ -1,11 +1,11 @@
-# Comprobaciones realizadas
+# Comprobaciones v4 — flujo manual
 
-- Sintaxis de JavaScript validada con Node.
-- Carga inicial comprobada en Chromium.
-- Reparto inicial: 8 cartas para cada jugador y 24 cartas de robo contando el pinte.
-- Prueba automática de 20 manos completas con el Tute directo desactivado.
-- Las 20 manos terminaron sin bloqueos.
-- En las 20 pruebas, las cartas y las diez de últimas sumaron exactamente 130 puntos.
-- Las manos terminaron con 0 cartas para ambos jugadores.
-- No aparecieron errores de JavaScript durante las pruebas.
-- También se comprobó el final anticipado por Tute.
+- Sintaxis de `app.js` y `sw.js` validada con Node.
+- Reparto visual comprobado en Chromium: 8 cartas para el jugador y 8 para la IA.
+- El triunfo permanece oculto durante el reparto y se descubre al finalizar.
+- Se ha completado una baza en navegador real.
+- La partida entra correctamente en «Fase de robo».
+- La baceta y el botón de robo solo se activan cuando corresponde al jugador.
+- El jugador roba manualmente y la carta llega a su mano mediante animación.
+- La IA roba automáticamente respetando el orden de la baza.
+- No aparecieron errores de JavaScript en la prueba del flujo de reparto, baza y robo.

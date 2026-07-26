@@ -114,13 +114,13 @@ input:focus-visible {
   gap: 10px;
 }
 
-.icon-button, .soft-button, .primary-button, .text-button, .exchange-button {
+.icon-button, .soft-button, .primary-button, .text-button, .exchange-button, .draw-button {
   border: 0;
   cursor: pointer;
   transition: transform .18s ease, background .18s ease, border-color .18s ease, opacity .18s ease;
 }
 
-.icon-button:hover, .soft-button:hover, .primary-button:hover, .exchange-button:hover {
+.icon-button:hover, .soft-button:hover, .primary-button:hover, .exchange-button:hover, .draw-button:hover {
   transform: translateY(-2px);
 }
 
@@ -1350,4 +1350,145 @@ button.playing-card.illegal {
   .play-area { grid-template-columns: 78px minmax(190px, 1fr); }
   .deck-area { transform: scale(.88); transform-origin: left center; }
   .status-strip strong { max-width: 190px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+}
+
+
+/* Baraja española clásica SVG v3 */
+.playing-card {
+  background: transparent;
+  box-shadow: 0 16px 28px rgba(0,0,0,.38);
+}
+.card-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  border-radius: inherit;
+  user-select: none;
+  pointer-events: none;
+}
+.trump-wrap .card-image { border-radius: 6px; }
+
+
+/* ─────────────────────────────────────────────
+   Flujo manual: reparto y robo físico
+   ───────────────────────────────────────────── */
+.deck-stack {
+  cursor: default;
+  transition: transform .2s ease, filter .2s ease, opacity .2s ease;
+}
+
+.deck-stack.draw-ready {
+  cursor: pointer;
+  animation: drawDeckPulse 1.05s ease-in-out infinite;
+  filter: drop-shadow(0 0 14px rgba(240, 207, 131, .52));
+}
+
+.deck-stack.draw-ready .mini-card {
+  box-shadow:
+    0 8px 18px rgba(0,0,0,.28),
+    0 0 0 3px rgba(240, 207, 131, .55),
+    0 0 26px rgba(240, 207, 131, .32);
+}
+
+.deck-stack.draw-ready::after {
+  content: "ROBAR";
+  position: absolute;
+  left: 50%;
+  bottom: -34px;
+  transform: translateX(-50%);
+  padding: 5px 8px;
+  border-radius: 99px;
+  color: #211b10;
+  background: var(--gold-bright);
+  box-shadow: 0 5px 16px rgba(0,0,0,.34);
+  font-size: 8px;
+  font-weight: 1000;
+  letter-spacing: .11em;
+  z-index: 8;
+}
+
+@keyframes drawDeckPulse {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  50% { transform: translateY(-6px) rotate(-1deg) scale(1.045); }
+}
+
+.draw-button {
+  min-height: 42px;
+  padding: 0 17px 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 13px;
+  border: 1px solid rgba(240,207,131,.48);
+  color: #261d0f;
+  background: linear-gradient(145deg, #f1d18a, #c99442);
+  box-shadow: 0 10px 26px rgba(204,151,65,.22), inset 0 1px rgba(255,255,255,.55);
+  font-size: 11px;
+  font-weight: 950;
+  letter-spacing: .025em;
+}
+
+.draw-button-card {
+  width: 20px;
+  height: 29px;
+  border-radius: 3px;
+  background:
+    radial-gradient(circle at center, transparent 0 16%, rgba(236,202,126,.82) 17% 20%, transparent 21%),
+    repeating-conic-gradient(from 45deg, #153d31 0 12.5%, #0b2b23 0 25%);
+  border: 2px solid #f4ead6;
+  box-shadow: 2px 2px 0 rgba(10,37,29,.42);
+  transform: rotate(-7deg);
+}
+
+.flight-card {
+  position: fixed !important;
+  z-index: 1000 !important;
+  width: clamp(66px, 7vw, 100px) !important;
+  height: calc(clamp(66px, 7vw, 100px) * 1.48) !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 20px 20px rgba(0,0,0,.42));
+}
+
+.newly-drawn {
+  animation: newlyDrawnCard .86s cubic-bezier(.2,.78,.18,1) both;
+  box-shadow:
+    0 18px 30px rgba(0,0,0,.34),
+    0 0 0 3px rgba(240,207,131,.7),
+    0 0 30px rgba(240,207,131,.34) !important;
+  z-index: 40 !important;
+}
+
+@keyframes newlyDrawnCard {
+  0% { transform: translateY(-34px) rotate(-6deg) scale(.82); opacity: .25; }
+  55% { transform: translateY(-20px) rotate(2deg) scale(1.08); opacity: 1; }
+  100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+}
+
+.trump-wrap .playing-card {
+  animation: revealTrump .52s cubic-bezier(.2,.75,.18,1) both;
+  transform-origin: center;
+}
+
+@keyframes revealTrump {
+  from { transform: rotateY(88deg) scale(.75); opacity: .2; }
+  to { transform: rotateY(0deg) scale(1); opacity: 1; }
+}
+
+@media (max-width: 720px) {
+  .flight-card {
+    width: 68px !important;
+    height: 101px !important;
+  }
+
+  .draw-button {
+    min-height: 46px;
+    font-size: 12px;
+  }
+
+  .deck-stack.draw-ready::after {
+    bottom: -31px;
+  }
 }

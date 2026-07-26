@@ -8,7 +8,7 @@
   <title>Tute IA — Mesa Cero</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=4.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -55,7 +55,7 @@
 
         <div class="play-area">
           <div class="deck-area">
-            <div class="deck-stack" id="deckStack" aria-label="Baceta">
+            <div class="deck-stack" id="deckStack" role="button" tabindex="0" aria-label="Baceta" aria-disabled="true">
               <div class="mini-card back"></div>
               <span class="deck-count" id="deckCount">24</span>
             </div>
@@ -78,8 +78,12 @@
 
         <div class="action-dock" id="actionDock">
           <div id="canteActions" class="cante-actions"></div>
+          <button class="draw-button hidden" id="drawButton" type="button">
+            <span class="draw-button-card" aria-hidden="true"></span>
+            Robar de la baceta
+          </button>
           <button class="exchange-button hidden" id="exchangeButton"></button>
-          <p id="hintText">Selecciona una carta para comenzar.</p>
+          <p id="hintText">Pulsa «Repartir cartas» para comenzar.</p>
         </div>
       </div>
 
@@ -214,7 +218,7 @@
       </div>
 
       <button class="primary-button start-button" id="startButton" value="default">
-        Repartir cartas
+        Sentarse y repartir
         <span>→</span>
       </button>
     </form>
@@ -235,7 +239,7 @@
         <article>
           <span class="rule-number">02</span>
           <h3>Durante la baceta</h3>
-          <p>No hay obligación de asistir. Gana el triunfo más alto o, si no aparece, la carta mayor del palo de salida.</p>
+          <p>No hay obligación de asistir. Gana el triunfo más alto o, si no aparece, la carta mayor del palo de salida. Tras cada baza debes robar tú mismo tocando la baceta.</p>
         </article>
         <article>
           <span class="rule-number">03</span>
@@ -286,6 +290,6 @@
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <script src="app.js"></script>
+  <script src="app.js?v=4.0.0"></script>
 </body>
 </html>

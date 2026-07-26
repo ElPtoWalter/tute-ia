@@ -61,7 +61,7 @@
       "playerTotal", "aiTotal", "targetRounds", "roundPips",
       "ruleStateTitle", "ruleStateText", "playerTricks", "aiTricks",
       "unknownCards", "gameLog", "setupModal", "rulesModal", "resultModal",
-      "setupForm", "targetSelect", "tuteToggle", "soundButton", "soundIcon",
+      "setupForm", "targetSelect", "tuteToggle", "soundButton", "soundIcon", "drawButton",
       "newMatchButton", "rulesButton", "closeRulesButton", "rulesUnderstoodButton",
       "resultKicker", "resultEmblem", "resultTitle", "resultSummary",
       "resultPlayerScore", "resultAiScore", "resultActionButton",
@@ -93,6 +93,14 @@
     UI.closeRulesButton.addEventListener("click", () => UI.rulesModal.close());
     UI.rulesUnderstoodButton.addEventListener("click", () => UI.rulesModal.close());
     UI.soundButton.addEventListener("click", toggleSound);
+    UI.drawButton.addEventListener("click", manualPlayerDraw);
+    UI.deckStack.addEventListener("click", manualPlayerDraw);
+    UI.deckStack.addEventListener("keydown", event => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        manualPlayerDraw();
+      }
+    });
     UI.exchangeButton.addEventListener("click", () => exchangeTrump("player"));
     UI.resultActionButton.addEventListener("click", handleResultAction);
     UI.resultExitButton.addEventListener("click", () => {
@@ -125,24 +133,15 @@
     state.match.round += 1;
 
     const deck = shuffle(buildDeck());
-    const playerHand = [];
-    const aiHand = [];
-
-    for (let i = 0; i < 8; i += 1) {
-      playerHand.push(deck.pop());
-      aiHand.push(deck.pop());
-    }
-
-    const trumpCard = deck.pop();
     const starter = state.match.round % 2 === 1 ? "player" : "ai";
 
     state.round = {
       stock: deck,
-      trumpCard,
-      trumpSuit: trumpCard.suit,
+      trumpCard: null,
+      trumpSuit: null,
       hands: {
-        player: sortHand(playerHand),
-        ai: sortHand(aiHand)
+        player: [],
+        ai: []
       },
       captured: {
         player: [],
@@ -171,22 +170,102 @@
       playedCards: [],
       trick: [],
       leader: starter,
-      currentTurn: starter,
+      currentTurn: null,
       pendingCante: null,
       lastTrickWinner: null,
-      phase: "playing",
+      phase: "dealing",
       log: [],
-      specialWin: null
+      specialWin: null,
+      drawQueue: [],
+      drawIndex: 0,
+      drawActor: null,
+      drawing: false,
+      lastDrawnId: null
     };
 
-    addLog(`<strong>Mano ${state.match.round}.</strong> ${starter === "player" ? "Sales tú." : "Sale la IA."}`);
-    addLog(`Pinta <strong>${cardName(trumpCard)}</strong>.`);
+    addLog(`<strong>Mano ${state.match.round}.</strong> Barajando las cartas.`);
+    render();
     playSound("deal");
+    later(beginInitialDeal, 420);
+  }
+
+  async function beginInitialDeal() {
+    const round = state.round;
+    if (!round || round.phase !== "dealing") return;
+
+    for (let i = 0; i < 8; i += 1) {
+      await dealOneCard("player");
+      await sleep(70);
+      await dealOneCard("ai");
+      await sleep(70);
+    }
+
+    if (!state.round || state.round.phase !== "dealing") return;
+    round.trumpCard = round.stock.pop();
+    round.trumpSuit = round.trumpCard.suit;
+    round.hands.player = sortHand(round.hands.player);
+    round.hands.ai = sortHand(round.hands.ai);
+    round.phase = "playing";
+    round.currentTurn = round.leader;
+
+    addLog(`Pinta <strong>${cardName(round.trumpCard)}</strong>.`);
+    addLog(`${round.leader === "player" ? "Sales tú" : "Sale la IA"}.`);
+    playSound("exchange");
     render();
 
-    if (starter === "ai") {
-      scheduleAiTurn();
-    }
+    if (round.currentTurn === "ai") scheduleAiTurn();
+  }
+
+  async function dealOneCard(actor) {
+    const round = state.round;
+    if (!round || round.phase !== "dealing" || round.stock.length === 0) return;
+
+    const sourceRect = UI.deckStack.getBoundingClientRect();
+    const card = round.stock.pop();
+    renderDeck();
+    await animateCardFlight(actor, card, sourceRect, false, 245);
+
+    if (!state.round || state.round.phase !== "dealing") return;
+    round.hands[actor].push(card);
+    playSound("card");
+    render();
+  }
+
+  function sleep(ms) {
+    return new Promise(resolve => later(resolve, ms));
+  }
+
+  async function animateCardFlight(actor, card, sourceRect, faceUp, duration = 480) {
+    const target = actor === "player" ? UI.playerHand : UI.aiHand;
+    const targetRect = target.getBoundingClientRect();
+    const flying = faceUp ? createCardElement(card) : createBackCard();
+    flying.classList.add("flight-card");
+    flying.setAttribute("aria-hidden", "true");
+    document.body.appendChild(flying);
+
+    const flightRect = flying.getBoundingClientRect();
+    const startX = sourceRect.left + sourceRect.width / 2 - flightRect.width / 2;
+    const startY = sourceRect.top + sourceRect.height / 2 - flightRect.height / 2;
+    const endX = targetRect.left + targetRect.width / 2 - flightRect.width / 2;
+    const endY = actor === "player"
+      ? targetRect.bottom - flightRect.height * .82
+      : targetRect.top + Math.max(2, targetRect.height * .08);
+
+    flying.style.left = `${startX}px`;
+    flying.style.top = `${startY}px`;
+
+    const animation = flying.animate([
+      { transform: "translate3d(0,0,0) rotate(0deg) scale(.72)", opacity: .92 },
+      { transform: `translate3d(${(endX-startX)*.52}px, ${(endY-startY)*.46 - 34}px, 0) rotate(${actor === "player" ? -7 : 7}deg) scale(.9)`, opacity: 1, offset: .56 },
+      { transform: `translate3d(${endX-startX}px, ${endY-startY}px, 0) rotate(${actor === "player" ? -1 : 2}deg) scale(1)`, opacity: 1 }
+    ], {
+      duration,
+      easing: "cubic-bezier(.2,.75,.18,1)",
+      fill: "forwards"
+    });
+
+    try { await animation.finished; } catch (_) {}
+    flying.remove();
   }
 
   function buildDeck() {
@@ -263,6 +342,7 @@
     round.hands.player.forEach((card, index) => {
       const cardButton = createCardElement(card, { button: true });
       cardButton.style.zIndex = index + 1;
+      if (round.lastDrawnId === card.id) cardButton.classList.add("newly-drawn");
       const isPlayable = legalIds.has(card.id);
       cardButton.disabled = !isPlayable;
       if (!isPlayable) cardButton.classList.add("illegal");
@@ -291,12 +371,21 @@
   }
 
   function renderDeck() {
+    const round = state.round;
     const count = drawPileCount();
     UI.deckCount.textContent = count;
     UI.deckStack.classList.toggle("hidden", count === 0);
+
+    const playerMustDraw = round.phase === "awaitingDraw" &&
+      round.drawQueue[round.drawIndex] === "player" && !round.drawing;
+    UI.deckStack.classList.toggle("draw-ready", playerMustDraw);
+    UI.deckStack.setAttribute("aria-disabled", playerMustDraw ? "false" : "true");
+
     UI.trumpCard.innerHTML = "";
-    if (state.round.trumpCard) {
-      UI.trumpCard.appendChild(createCardElement(state.round.trumpCard));
+    if (round.trumpCard) {
+      UI.trumpCard.appendChild(createCardElement(round.trumpCard));
+    } else if (round.phase === "dealing") {
+      UI.trumpCard.innerHTML = '<span class="slot-label">POR DESCUBRIR</span>';
     } else {
       UI.trumpCard.innerHTML = '<span class="slot-label">AGOTADO</span>';
     }
@@ -304,31 +393,56 @@
 
   function renderStatus() {
     const round = state.round;
-    const strict = isStrictPhase();
-    UI.phaseBadge.textContent = strict ? "JUEGO OBLIGADO" : "BACETA ABIERTA";
-    UI.phaseBadge.classList.toggle("strict", strict);
+    const strict = round.phase !== "dealing" && isStrictPhase();
 
-    UI.ruleStateTitle.textContent = strict ? "Asistir y montar" : "Juego libre";
-    UI.ruleStateText.textContent = strict
-      ? "Sin baceta: debes asistir, montar si puedes y fallar con triunfo cuando no tengas el palo."
-      : "Mientras quede baceta puedes jugar cualquier carta.";
-
-    const isPlayerTurn = round.currentTurn === "player" && round.phase === "playing";
-    const isAiTurn = round.currentTurn === "ai" && round.phase === "playing";
-    UI.playerTurnPill.classList.toggle("visible", isPlayerTurn);
-    UI.aiTurnPill.classList.toggle("visible", isAiTurn);
-
-    if (round.pendingCante?.actor === "player") {
-      UI.statusText.textContent = "Has ganado la baza. Puedes cantar.";
-    } else if (round.pendingCante?.actor === "ai") {
-      UI.statusText.textContent = "La IA está valorando un cante.";
-    } else if (round.trick.length === 1) {
-      const opener = round.trick[0].actor;
-      UI.statusText.textContent = opener === "player" ? "La IA debe responder." : "Te toca responder.";
-    } else if (isPlayerTurn) {
-      UI.statusText.textContent = round.leader === "player" ? "Abres la baza." : "Juega tu carta.";
+    if (round.phase === "dealing") {
+      UI.phaseBadge.textContent = "REPARTIENDO";
+      UI.phaseBadge.classList.remove("strict");
+      UI.ruleStateTitle.textContent = "Reparto manual";
+      UI.ruleStateText.textContent = "Las cartas salen de la baceta una a una y llegan físicamente a cada mano.";
+      UI.statusText.textContent = `Repartiendo… ${round.hands.player.length}/8 cartas para ti.`;
+      UI.playerTurnPill.classList.remove("visible");
+      UI.aiTurnPill.classList.remove("visible");
+    } else if (round.phase === "awaitingDraw") {
+      const actor = round.drawQueue[round.drawIndex];
+      UI.phaseBadge.textContent = "FASE DE ROBO";
+      UI.phaseBadge.classList.remove("strict");
+      UI.ruleStateTitle.textContent = "Robo por orden de baza";
+      UI.ruleStateText.textContent = "Quien gana la baza roba primero. Para tu carta debes tocar personalmente la baceta.";
+      UI.statusText.textContent = round.drawing
+        ? `${actor === "player" ? "Estás robando" : "La IA está robando"}…`
+        : actor === "player"
+          ? "Te toca robar. Pulsa la baceta."
+          : "La IA roba primero.";
+      UI.playerTurnPill.classList.toggle("visible", actor === "player" && !round.drawing);
+      UI.aiTurnPill.classList.toggle("visible", actor === "ai");
     } else {
-      UI.statusText.textContent = "Doña Virtud está calculando.";
+      UI.phaseBadge.textContent = strict ? "JUEGO OBLIGADO" : "BACETA ABIERTA";
+      UI.phaseBadge.classList.toggle("strict", strict);
+      UI.ruleStateTitle.textContent = strict ? "Asistir y montar" : "Juego libre";
+      UI.ruleStateText.textContent = strict
+        ? "Sin baceta: debes asistir, montar si puedes y fallar con triunfo cuando no tengas el palo."
+        : "Mientras quede baceta puedes jugar cualquier carta.";
+
+      const isPlayerTurn = round.currentTurn === "player" && round.phase === "playing";
+      const isAiTurn = round.currentTurn === "ai" && round.phase === "playing";
+      UI.playerTurnPill.classList.toggle("visible", isPlayerTurn);
+      UI.aiTurnPill.classList.toggle("visible", isAiTurn);
+
+      if (round.pendingCante?.actor === "player") {
+        UI.statusText.textContent = "Has ganado la baza. Puedes cantar.";
+      } else if (round.pendingCante?.actor === "ai") {
+        UI.statusText.textContent = "La IA está valorando un cante.";
+      } else if (round.trick.length === 1) {
+        const opener = round.trick[0].actor;
+        UI.statusText.textContent = opener === "player" ? "La IA debe responder." : "Te toca responder.";
+      } else if (isPlayerTurn) {
+        UI.statusText.textContent = round.leader === "player" ? "Abres la baza." : "Juega tu carta.";
+      } else if (round.phase === "roundOver") {
+        UI.statusText.textContent = "La mano ha terminado.";
+      } else {
+        UI.statusText.textContent = "Doña Virtud está calculando.";
+      }
     }
 
     const unseen = round.hands.ai.length + drawPileCount();
@@ -376,6 +490,10 @@
     const round = state.round;
     UI.canteActions.innerHTML = "";
 
+    const playerMustDraw = round.phase === "awaitingDraw" &&
+      round.drawQueue[round.drawIndex] === "player" && !round.drawing;
+    UI.drawButton.classList.toggle("hidden", !playerMustDraw);
+
     if (round.pendingCante?.actor === "player") {
       round.pendingCante.options.forEach(option => {
         const button = document.createElement("button");
@@ -412,6 +530,14 @@
 
   function getHintText() {
     const round = state.round;
+    if (round.phase === "dealing") return "Mira cómo se reparten las cartas una a una.";
+    if (round.phase === "awaitingDraw") {
+      const actor = round.drawQueue[round.drawIndex];
+      if (round.drawing) return "La carta está viajando desde la baceta hasta la mano.";
+      return actor === "player"
+        ? "Toca la baceta o pulsa «Robar de la baceta»."
+        : "La IA debe robar antes que tú.";
+    }
     if (round.phase !== "playing") return "La mano ha terminado.";
     if (round.currentTurn === "ai") return "La IA solo conoce sus cartas y las jugadas visibles.";
     if (!isStrictPhase()) return "Baceta abierta: puedes jugar cualquiera de tus cartas.";
@@ -429,52 +555,15 @@
     const element = document.createElement(options.button ? "button" : "div");
     element.className = `playing-card suit-${card.suit}`;
     if (options.button) element.type = "button";
-
-    const rankData = RANK_MAP[card.rank];
-    const court = [10, 11, 12].includes(card.rank);
-    const pipCount = [1, 2, 3, 4, 5, 6, 7].includes(card.rank) ? Math.min(card.rank, 5) : 1;
-    const pips = Array.from({ length: pipCount }, () => suitIcon(card.suit)).join("");
-
-    element.innerHTML = `
-      <div class="card-face">
-        <div class="card-corner">
-          <span>${rankData.short}</span>
-          ${suitIcon(card.suit)}
-        </div>
-        <div class="card-art">
-          ${court
-            ? `<div class="court-badge">${rankData.short}</div><span class="rank-word">${rankData.label.toUpperCase()}</span>`
-            : `<div class="pip-row">${pips}</div><span class="rank-word">${rankData.label.toUpperCase()}</span>`
-          }
-        </div>
-        <div class="card-corner bottom">
-          <span>${rankData.short}</span>
-          ${suitIcon(card.suit)}
-        </div>
-      </div>
-    `;
+    element.innerHTML = `<img class="card-image" src="assets/cards/${card.suit}-${card.rank}.svg" alt="${cardName(card)}" draggable="false">`;
     return element;
   }
 
   function createBackCard() {
     const card = document.createElement("div");
     card.className = "playing-card";
-    card.innerHTML = '<div class="card-back"></div>';
+    card.innerHTML = '<img class="card-image" src="assets/cards/back.svg" alt="Carta boca abajo" draggable="false">';
     return card;
-  }
-
-  function suitIcon(suit) {
-    const common = 'viewBox="0 0 64 64" aria-hidden="true" focusable="false"';
-    if (suit === "oros") {
-      return `<svg ${common}><circle cx="32" cy="32" r="23" fill="currentColor"/><circle cx="32" cy="32" r="15" fill="none" stroke="#f8e4aa" stroke-width="4"/><path d="M17 32h30M32 17v30" stroke="#f8e4aa" stroke-width="3" opacity=".65"/></svg>`;
-    }
-    if (suit === "copas") {
-      return `<svg ${common}><path d="M14 10h36c-1 19-6 29-15 32v8h10v6H19v-6h10v-8C20 39 15 29 14 10Z" fill="currentColor"/><path d="M20 16h24c-2 12-5 18-12 21-7-3-10-9-12-21Z" fill="#f3d4b1" opacity=".55"/></svg>`;
-    }
-    if (suit === "espadas") {
-      return `<svg ${common}><path d="M32 4 42 15 35 43l8 8-5 5-6-8-6 8-5-5 8-8-7-28L32 4Z" fill="currentColor"/><path d="m32 11 4 7-4 21-4-21 4-7Z" fill="#d7e5e8" opacity=".68"/></svg>`;
-    }
-    return `<svg ${common}><g transform="rotate(-38 32 32)"><rect x="25" y="4" width="14" height="56" rx="7" fill="currentColor"/><path d="M24 17h16M24 28h16M24 39h16M24 50h16" stroke="#dce6cf" stroke-width="3" opacity=".55"/></g></svg>`;
   }
 
   function playCard(actor, cardId) {
@@ -663,17 +752,105 @@
     }
 
     if (drawPileCount() > 0) {
-      const winner = round.leader;
-      const loser = other(winner);
-      drawToHand(winner);
-      drawToHand(loser);
-      round.hands.player = sortHand(round.hands.player);
-      round.hands.ai = sortHand(round.hands.ai);
-      addLog(`${winner === "player" ? "Robas primero" : "La IA roba primero"}.`);
-      playSound("draw");
+      round.phase = "awaitingDraw";
+      round.currentTurn = null;
+      round.drawQueue = [round.leader, other(round.leader)];
+      round.drawIndex = 0;
+      round.drawActor = round.drawQueue[0];
+      round.drawing = false;
+      addLog(`${round.leader === "player" ? "Robas tú primero" : "La IA roba primero"}.`);
+      render();
+
+      later(() => {
+        if (!state.round || state.round.phase !== "awaitingDraw") return;
+        state.round.trick = [];
+        render();
+        advanceDrawQueue();
+      }, 430);
+      return;
     }
 
     round.trick = [];
+    beginNextTrick();
+  }
+
+  function advanceDrawQueue() {
+    const round = state.round;
+    if (!round || round.phase !== "awaitingDraw" || round.drawing) return;
+
+    if (round.drawIndex >= round.drawQueue.length) {
+      finishDrawPhase();
+      return;
+    }
+
+    round.drawActor = round.drawQueue[round.drawIndex];
+    render();
+
+    if (round.drawActor === "ai") {
+      later(() => performDraw("ai"), 620);
+    }
+  }
+
+  function manualPlayerDraw() {
+    const round = state.round;
+    if (!round || round.phase !== "awaitingDraw" || round.drawing) return;
+    if (round.drawQueue[round.drawIndex] !== "player") return;
+    performDraw("player");
+  }
+
+  async function performDraw(actor) {
+    const round = state.round;
+    if (!round || round.phase !== "awaitingDraw" || round.drawing) return;
+    if (round.drawQueue[round.drawIndex] !== actor) return;
+
+    round.drawing = true;
+    const fromStock = round.stock.length > 0;
+    const sourceElement = fromStock ? UI.deckStack : UI.trumpCard;
+    const sourceRect = sourceElement.getBoundingClientRect();
+    const card = fromStock ? round.stock.pop() : round.trumpCard;
+    if (!fromStock) round.trumpCard = null;
+
+    render();
+    await animateCardFlight(actor, card, sourceRect, !fromStock, 540);
+    if (!state.round || state.round.phase !== "awaitingDraw") return;
+
+    round.hands[actor].push(card);
+    round.hands[actor] = sortHand(round.hands[actor]);
+    round.lastDrawnId = actor === "player" ? card.id : null;
+    round.drawIndex += 1;
+    round.drawing = false;
+    playSound("draw");
+
+    if (actor === "player") {
+      addLog(`Robas <strong>${cardName(card)}</strong>.`);
+    } else {
+      addLog(fromStock ? "La IA roba una carta." : `La IA recoge <strong>${cardName(card)}</strong>.`);
+    }
+
+    render();
+    if (round.lastDrawnId) {
+      later(() => {
+        if (!state.round) return;
+        state.round.lastDrawnId = null;
+        render();
+      }, 850);
+    }
+    later(advanceDrawQueue, 360);
+  }
+
+  function finishDrawPhase() {
+    const round = state.round;
+    if (!round || round.phase !== "awaitingDraw") return;
+    round.phase = "playing";
+    round.drawQueue = [];
+    round.drawIndex = 0;
+    round.drawActor = null;
+    round.drawing = false;
+    beginNextTrick();
+  }
+
+  function beginNextTrick() {
+    const round = state.round;
     round.currentTurn = round.leader;
     render();
 
@@ -688,18 +865,6 @@
         scheduleAiTurn();
       }
     }
-  }
-
-  function drawToHand(actor) {
-    const round = state.round;
-    let card = null;
-    if (round.stock.length > 0) {
-      card = round.stock.pop();
-    } else if (round.trumpCard) {
-      card = round.trumpCard;
-      round.trumpCard = null;
-    }
-    if (card) round.hands[actor].push(card);
   }
 
   function getExchangeOption(actor) {
