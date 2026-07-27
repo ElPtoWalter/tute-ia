@@ -1,4 +1,3 @@
-# Créditos del mazo v9
+# Créditos del mazo v10
 
-Cartas integradas a partir del ZIP `cartas corregidas.zip` aportado por el usuario.
-Las cartas suministradas en PNG se han recortado y normalizado para completar el mazo final.
+Cartas integradas a partir del ZIP `cartas corregidas.zip` aportado por el usuario. La versión v10 no modifica el diseño del mazo; mejora la interacción, las animaciones y la estabilidad visual de la mesa.

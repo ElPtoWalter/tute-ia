@@ -8,7 +8,7 @@
   <title>Tute IA — Mesa Cero</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=9.0.0">
+  <link rel="stylesheet" href="styles.css?v=10.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -77,7 +77,8 @@
             </div>
           </div>
 
-          <div class="trick-area">
+          <div class="trick-area" id="trickArea">
+            <div class="play-drop-indicator" id="playDropIndicator" aria-hidden="true"><span>SUELTA PARA JUGAR</span></div>
             <div class="trick-slot opponent-slot" id="aiTrickSlot">
               <span class="slot-label">IA</span>
             </div>
@@ -308,6 +309,6 @@
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <script src="app.js?v=9.0.0"></script>
+  <script src="app.js?v=10.0.0"></script>
 </body>
 </html>

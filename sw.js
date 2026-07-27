@@ -1,12 +1,13 @@
-const CACHE = "tute-ia-v9.0.0";
+const CACHE = "tute-ia-v10.0.0";
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=9.0.0",
-  "./app.js?v=9.0.0",
+  "./styles.css?v=10.0.0",
+  "./app.js?v=10.0.0",
   "./manifest.webmanifest",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
+  "./assets/cards/back.svg",
   "./assets/cards/bastos-1.webp",
   "./assets/cards/bastos-10.webp",
   "./assets/cards/bastos-11.webp",
@@ -46,8 +47,7 @@ const ASSETS = [
   "./assets/cards/oros-4.webp",
   "./assets/cards/oros-5.webp",
   "./assets/cards/oros-6.webp",
-  "./assets/cards/oros-7.webp",
-  "./assets/cards/back.svg"
+  "./assets/cards/oros-7.webp"
 ];
 
 self.addEventListener("install", event => {

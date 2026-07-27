@@ -54,7 +54,7 @@
 
   function cacheUI() {
     [
-      "aiName", "aiHand", "playerHand", "aiTrickSlot", "playerTrickSlot",
+      "aiName", "aiHand", "playerHand", "aiTrickSlot", "playerTrickSlot", "trickArea", "playDropIndicator",
       "deckStack", "deckCount", "trumpCard", "phaseBadge", "statusText",
       "canteActions", "exchangeButton", "hintText", "aiTurnPill",
       "playerTurnPill", "roundNumber", "playerRounds", "aiRounds",
@@ -443,44 +443,80 @@
     const flipRects = round.pendingHandFlip;
     round.pendingHandFlip = null;
 
-    UI.playerHand.innerHTML = "";
+    syncPlayerHand(round, canPlayNow, legalIds);
+    syncAiHand(round);
+
+    UI.manualOrderHint?.classList.toggle("visible", round.hands.player.length > 1 && !["dealing", "roundOver"].includes(round.phase));
+    animateHandFlip(flipRects);
+  }
+
+  function syncPlayerHand(round, canPlayNow, legalIds) {
+    const existing = new Map(
+      [...UI.playerHand.querySelectorAll("[data-card-id]")]
+        .map(element => [element.dataset.cardId, element])
+    );
+    const desired = [];
     const playerCount = round.hands.player.length || 1;
+
     round.hands.player.forEach((card, index) => {
-      const cardButton = createCardElement(card, { button: true });
-      cardButton.dataset.cardId = card.id;
-      cardButton.style.zIndex = index + 1;
-      const normalized = playerCount > 1 ? (index - (playerCount - 1) / 2) / ((playerCount - 1) / 2) : 0;
-      cardButton.style.setProperty("--rest-rotate", `${normalized * 10.5}deg`);
-      cardButton.style.setProperty("--rest-y", `${Math.abs(normalized) * 16}px`);
-      cardButton.style.setProperty("--rest-x", `${normalized * 3}px`);
-      if (round.lastDrawnId === card.id) cardButton.classList.add("newly-drawn");
-      const isPlayable = legalIds.has(card.id);
-      cardButton.setAttribute("aria-disabled", isPlayable ? "false" : "true");
-      if (canPlayNow && !isPlayable) cardButton.classList.add("illegal");
-      cardButton.setAttribute("aria-label", `${cardName(card)}${isPlayable ? ", jugar" : ", no disponible para jugar"}`);
-      cardButton.addEventListener("pointerdown", event => beginHandGesture(event, card.id, isPlayable));
-      cardButton.addEventListener("keydown", event => {
-        if ((event.key === "Enter" || event.key === " ") && isPlayable) {
-          event.preventDefault();
-          playCard("player", card.id);
-        }
-      });
-      UI.playerHand.appendChild(cardButton);
+      let cardButton = existing.get(card.id);
+      if (!cardButton) cardButton = createInteractivePlayerCard(card);
+      desired.push(cardButton);
+      updatePlayerCardElement(cardButton, card, index, playerCount, canPlayNow, legalIds.has(card.id), round);
     });
 
-    UI.aiHand.innerHTML = "";
+    existing.forEach((element, id) => {
+      if (!round.hands.player.some(card => card.id === id)) element.remove();
+    });
+
+    desired.forEach((element, index) => {
+      const current = [...UI.playerHand.children].filter(child => child.matches?.("[data-card-id]"))[index];
+      if (current !== element) UI.playerHand.insertBefore(element, current || null);
+    });
+  }
+
+  function createInteractivePlayerCard(card) {
+    const element = createCardElement(card, { button: true });
+    element.dataset.cardId = card.id;
+    element.addEventListener("pointerdown", event => {
+      const playable = event.currentTarget.dataset.playable === "true";
+      beginHandGesture(event, event.currentTarget.dataset.cardId, playable);
+    });
+    element.addEventListener("keydown", event => {
+      const playable = event.currentTarget.dataset.playable === "true";
+      if ((event.key === "Enter" || event.key === " ") && playable) {
+        event.preventDefault();
+        playCard("player", event.currentTarget.dataset.cardId);
+      }
+    });
+    return element;
+  }
+
+  function updatePlayerCardElement(element, card, index, playerCount, canPlayNow, isPlayable, round) {
+    const normalized = playerCount > 1 ? (index - (playerCount - 1) / 2) / ((playerCount - 1) / 2) : 0;
+    element.dataset.cardId = card.id;
+    element.dataset.playable = isPlayable ? "true" : "false";
+    element.style.zIndex = index + 1;
+    element.style.setProperty("--rest-rotate", `${normalized * 10.5}deg`);
+    element.style.setProperty("--rest-y", `${Math.abs(normalized) * 16}px`);
+    element.style.setProperty("--rest-x", `${normalized * 3}px`);
+    element.classList.toggle("newly-drawn", round.lastDrawnId === card.id);
+    element.classList.toggle("illegal", canPlayNow && !isPlayable);
+    element.setAttribute("aria-disabled", isPlayable ? "false" : "true");
+    element.setAttribute("aria-label", `${cardName(card)}${isPlayable ? ", jugar" : ", no disponible para jugar"}`);
+  }
+
+  function syncAiHand(round) {
+    while (UI.aiHand.children.length < round.hands.ai.length) UI.aiHand.appendChild(createBackCard());
+    while (UI.aiHand.children.length > round.hands.ai.length) UI.aiHand.lastElementChild?.remove();
+
     const aiCount = round.hands.ai.length || 1;
-    round.hands.ai.forEach((_, index) => {
-      const back = createBackCard();
+    [...UI.aiHand.children].forEach((back, index) => {
       const normalized = aiCount > 1 ? (index - (aiCount - 1) / 2) / ((aiCount - 1) / 2) : 0;
       back.style.zIndex = index + 1;
       back.style.setProperty("--rest-rotate", `${normalized * -7.5}deg`);
       back.style.setProperty("--rest-y", `${Math.abs(normalized) * 8}px`);
-      UI.aiHand.appendChild(back);
     });
-
-    UI.manualOrderHint?.classList.toggle("visible", round.hands.player.length > 1 && !["dealing", "roundOver"].includes(round.phase));
-    animateHandFlip(flipRects);
   }
 
   function beginHandGesture(event, cardId, isPlayable) {
@@ -499,36 +535,52 @@
       element,
       startX: event.clientX,
       startY: event.clientY,
+      lastX: event.clientX,
+      lastY: event.clientY,
       moved: false,
+      mode: "tap",
       insertIndex: round.hands.player.findIndex(card => card.id === cardId),
       ghost: null,
-      marker: null
+      slot: null
     };
     element.classList.add("card-pressed");
-    element.addEventListener("pointermove", moveHandGesture);
-    element.addEventListener("pointerup", endHandGesture, { once: true });
-    element.addEventListener("pointercancel", cancelHandGesture, { once: true });
+    document.addEventListener("pointermove", moveHandGesture, { passive: false });
+    document.addEventListener("pointerup", endHandGesture, { once: true });
+    document.addEventListener("pointercancel", cancelHandGesture, { once: true });
   }
 
   function moveHandGesture(event) {
     if (!handGesture || event.pointerId !== handGesture.pointerId) return;
+    handGesture.lastX = event.clientX;
+    handGesture.lastY = event.clientY;
     const dx = event.clientX - handGesture.startX;
     const dy = event.clientY - handGesture.startY;
-    if (!handGesture.moved && Math.hypot(dx, dy) < 8) return;
-    if (!handGesture.moved) startHandReorder(event);
+    if (!handGesture.moved && Math.hypot(dx, dy) < 9) return;
+    if (!handGesture.moved) startHandDrag(event);
     event.preventDefault();
+
     handGesture.ghost.style.left = `${event.clientX}px`;
     handGesture.ghost.style.top = `${event.clientY}px`;
-    updateHandDropIndex(event.clientX);
+
+    if (isPointInPlayZone(event.clientX, event.clientY)) {
+      setGestureMode(handGesture.playable ? "play" : "invalid-play");
+      return;
+    }
+    if (isPointNearHand(event.clientX, event.clientY)) {
+      setGestureMode("reorder");
+      updateHandDropIndex(event.clientX);
+      return;
+    }
+    setGestureMode("cancel");
   }
 
-  function startHandReorder(event) {
+  function startHandDrag(event) {
     handGesture.moved = true;
-    handGesture.element.classList.add("gesture-source");
-    document.body.classList.add("reordering-hand");
     const rect = handGesture.element.getBoundingClientRect();
+    handGesture.sourceRect = rect;
+    handGesture.element.classList.add("gesture-source");
     const ghost = handGesture.element.cloneNode(true);
-    ghost.classList.remove("illegal", "newly-drawn", "card-pressed");
+    ghost.classList.remove("illegal", "newly-drawn", "card-pressed", "gesture-source");
     ghost.classList.add("hand-drag-ghost");
     ghost.style.width = `${rect.width}px`;
     ghost.style.height = `${rect.height}px`;
@@ -537,81 +589,210 @@
     document.body.appendChild(ghost);
     handGesture.ghost = ghost;
 
-    const marker = document.createElement("span");
-    marker.className = "hand-drop-marker";
-    UI.playerHand.appendChild(marker);
-    handGesture.marker = marker;
+    const slot = document.createElement("span");
+    slot.className = "hand-drop-slot";
+    slot.innerHTML = "<b>AQUÍ</b>";
+    slot.setAttribute("aria-hidden", "true");
+    handGesture.slot = slot;
+    setGestureMode("reorder");
+    updateHandDropIndex(event.clientX, true);
   }
 
-  function updateHandDropIndex(clientX) {
-    if (!handGesture) return;
+  function isPointInPlayZone(x, y) {
+    const rect = UI.trickArea.getBoundingClientRect();
+    const paddingX = Math.min(120, rect.width * .22);
+    const paddingY = 90;
+    return x >= rect.left - paddingX && x <= rect.right + paddingX &&
+      y >= rect.top - paddingY && y <= rect.bottom + paddingY;
+  }
+
+  function isPointNearHand(x, y) {
+    const rect = UI.playerHand.getBoundingClientRect();
+    return x >= rect.left - 90 && x <= rect.right + 90 &&
+      y >= rect.top - 85 && y <= rect.bottom + 105;
+  }
+
+  function setGestureMode(mode) {
+    if (!handGesture || handGesture.mode === mode) return;
+    handGesture.mode = mode;
+    document.body.classList.toggle("reordering-hand", mode === "reorder");
+    document.body.classList.toggle("dragging-to-table", mode === "play" || mode === "invalid-play");
+    UI.playerHand.classList.toggle("showing-drop-slot", mode === "reorder");
+    UI.trickArea.classList.toggle("play-drop-active", mode === "play" || mode === "invalid-play");
+    UI.trickArea.classList.toggle("play-drop-valid", mode === "play");
+    UI.trickArea.classList.toggle("play-drop-invalid", mode === "invalid-play");
+    UI.playDropIndicator.querySelector("span").textContent = mode === "invalid-play" ? "JUGADA NO VÁLIDA" : "SUELTA PARA JUGAR";
+
+    if (mode === "reorder") {
+      if (handGesture.slot && !handGesture.slot.isConnected) UI.playerHand.appendChild(handGesture.slot);
+    } else {
+      handGesture.slot?.remove();
+    }
+  }
+
+  function updateHandDropIndex(clientX, force = false) {
+    if (!handGesture || handGesture.mode !== "reorder") return;
     const cards = [...UI.playerHand.querySelectorAll("[data-card-id]")]
       .filter(element => element.dataset.cardId !== handGesture.cardId);
     const sorted = cards.map(element => ({ element, rect: element.getBoundingClientRect() }))
       .sort((a, b) => a.rect.left - b.rect.left);
-    let insertIndex = sorted.filter(item => clientX > item.rect.left + item.rect.width / 2).length;
-    handGesture.insertIndex = insertIndex;
+    const insertIndex = sorted.filter(item => clientX > item.rect.left + item.rect.width / 2).length;
+    if (!force && insertIndex === handGesture.insertIndex && handGesture.slot?.isConnected) return;
 
-    const handRect = UI.playerHand.getBoundingClientRect();
-    let markerX;
-    if (!sorted.length) markerX = handRect.width / 2;
-    else if (insertIndex === 0) markerX = sorted[0].rect.left - handRect.left;
-    else if (insertIndex >= sorted.length) markerX = sorted.at(-1).rect.right - handRect.left;
-    else markerX = (sorted[insertIndex - 1].rect.right + sorted[insertIndex].rect.left) / 2 - handRect.left;
-    handGesture.marker.style.left = `${markerX}px`;
+    const previousRects = capturePlayerHandRects();
+    handGesture.insertIndex = insertIndex;
+    const target = sorted[insertIndex]?.element || null;
+    UI.playerHand.insertBefore(handGesture.slot, target);
+    animateDirectHandReflow(previousRects);
   }
 
-  function endHandGesture(event) {
+  function animateDirectHandReflow(previousRects) {
+    requestAnimationFrame(() => {
+      UI.playerHand.querySelectorAll("[data-card-id]").forEach(element => {
+        if (element.dataset.cardId === handGesture?.cardId) return;
+        const previous = previousRects.get(element.dataset.cardId);
+        if (!previous) return;
+        const current = element.getBoundingClientRect();
+        const dx = previous.left - current.left;
+        const dy = previous.top - current.top;
+        if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+        element.animate([
+          { translate: `${dx}px ${dy}px` },
+          { translate: "0px 0px" }
+        ], { duration: 175, easing: "cubic-bezier(.2,.8,.2,1)" });
+      });
+    });
+  }
+
+  async function endHandGesture(event) {
     if (!handGesture || event.pointerId !== handGesture.pointerId) return;
     const gesture = handGesture;
-    if (gesture.moved) {
-      const round = state.round;
-      const previousRects = capturePlayerHandRects();
-      const fromIndex = round.hands.player.findIndex(card => card.id === gesture.cardId);
-      const [movedCard] = round.hands.player.splice(fromIndex, 1);
-      let insertIndex = gesture.insertIndex;
-      if (fromIndex < insertIndex) insertIndex -= 1;
-      insertIndex = Math.max(0, Math.min(round.hands.player.length, insertIndex));
-      round.hands.player.splice(insertIndex, 0, movedCard);
-      round.pendingHandFlip = previousRects;
-      cleanupHandGesture();
-      playSound("card");
-      render();
-    } else {
+
+    if (!gesture.moved) {
       cleanupHandGesture();
       if (gesture.playable && state.round?.currentTurn === "player" && state.round.phase === "playing") {
         playCard("player", gesture.cardId);
       }
+      return;
     }
+
+    if (gesture.mode === "play") {
+      cleanupHandGesture();
+      navigator.vibrate?.(12);
+      playCard("player", gesture.cardId);
+      return;
+    }
+
+    if (gesture.mode === "invalid-play") {
+      const message = getIllegalPlayReason(gesture.cardId);
+      await animateGhostBack(gesture);
+      cleanupHandGesture();
+      showToast(`<strong>No puedes jugar esa carta.</strong> ${message}`);
+      playSound("error");
+      return;
+    }
+
+    if (gesture.mode === "reorder") {
+      const round = state.round;
+      const fromIndex = round.hands.player.findIndex(card => card.id === gesture.cardId);
+      const insertIndex = Math.max(0, Math.min(round.hands.player.length - 1, gesture.insertIndex));
+      cleanupHandGesture();
+      const previousRects = capturePlayerHandRects();
+      const [movedCard] = round.hands.player.splice(fromIndex, 1);
+      round.hands.player.splice(Math.min(insertIndex, round.hands.player.length), 0, movedCard);
+      round.pendingHandFlip = previousRects;
+      playSound("card");
+      navigator.vibrate?.(7);
+      render();
+      return;
+    }
+
+    await animateGhostBack(gesture);
+    cleanupHandGesture();
   }
 
-  function cancelHandGesture() {
+  async function cancelHandGesture() {
+    const gesture = handGesture;
+    if (gesture?.moved) await animateGhostBack(gesture);
     cleanupHandGesture();
+  }
+
+  async function animateGhostBack(gesture) {
+    if (!gesture?.ghost || !gesture.element?.isConnected) return;
+    const ghostRect = gesture.ghost.getBoundingClientRect();
+    const sourceRect = gesture.sourceRect || gesture.element.getBoundingClientRect();
+    const dx = sourceRect.left + sourceRect.width / 2 - (ghostRect.left + ghostRect.width / 2);
+    const dy = sourceRect.top + sourceRect.height / 2 - (ghostRect.top + ghostRect.height / 2);
+    const animation = gesture.ghost.animate([
+      { transform: "translate(-50%, -88%) rotate(-3deg) scale(1.08)", opacity: .98 },
+      { transform: `translate(calc(-50% + ${dx}px), calc(-88% + ${dy}px)) rotate(0deg) scale(.96)`, opacity: .35 }
+    ], { duration: 220, easing: "cubic-bezier(.22,.78,.18,1)", fill: "forwards" });
+    try { await animation.finished; } catch (_) {}
+  }
+
+  function getIllegalPlayReason(cardId) {
+    const round = state.round;
+    if (!round || round.phase !== "playing") return "Ahora no está activa la fase de juego.";
+    if (round.currentTurn !== "player") return "Ahora debe jugar la IA.";
+    const card = round.hands.player.find(item => item.id === cardId);
+    if (!card) return "La carta ya no está en tu mano.";
+    const legal = getLegalCards("player");
+    if (legal.some(item => item.id === cardId)) return "Suelta la carta sobre el tapete para jugarla.";
+    if (round.trick.length === 1) {
+      const lead = round.trick[0].card;
+      if (legal.every(item => item.suit === lead.suit)) {
+        const canMount = legal.some(item => item.strength > lead.strength);
+        return canMount ? `Debes asistir a ${SUIT_LABELS[lead.suit]} y montar.` : `Debes asistir a ${SUIT_LABELS[lead.suit]}.`;
+      }
+      if (legal.every(item => item.suit === round.trumpSuit)) return `No tienes ${SUIT_LABELS[lead.suit]}: debes jugar triunfo.`;
+    }
+    return "Las reglas de la baza obligan a jugar otra carta.";
   }
 
   function cleanupHandGesture() {
     if (!handGesture) return;
     handGesture.element?.classList.remove("card-pressed", "gesture-source");
-    handGesture.element?.removeEventListener("pointermove", moveHandGesture);
     handGesture.ghost?.remove();
-    handGesture.marker?.remove();
-    document.body.classList.remove("reordering-hand");
+    handGesture.slot?.remove();
+    document.removeEventListener("pointermove", moveHandGesture);
+    document.removeEventListener("pointerup", endHandGesture);
+    document.removeEventListener("pointercancel", cancelHandGesture);
+    document.body.classList.remove("reordering-hand", "dragging-to-table");
+    UI.playerHand.classList.remove("showing-drop-slot");
+    UI.trickArea.classList.remove("play-drop-active", "play-drop-valid", "play-drop-invalid");
     handGesture = null;
   }
 
   function renderTrick() {
-    UI.aiTrickSlot.innerHTML = '<span class="slot-label">IA</span>';
-    UI.playerTrickSlot.innerHTML = '<span class="slot-label">TÚ</span>';
+    const playerPlay = state.round.trick.find(play => play.actor === "player") || null;
+    const aiPlay = state.round.trick.find(play => play.actor === "ai") || null;
+    patchTrickSlot(UI.playerTrickSlot, playerPlay, "TÚ");
+    patchTrickSlot(UI.aiTrickSlot, aiPlay, "IA");
+  }
 
-    state.round.trick.forEach((play, index) => {
-      const slot = play.actor === "player" ? UI.playerTrickSlot : UI.aiTrickSlot;
-      slot.innerHTML = "";
-      const cardElement = createCardElement(play.card);
-      cardElement.style.setProperty("--play-rotation", `${play.rotation ?? (play.actor === "player" ? -4 : 4)}deg`);
-      cardElement.style.setProperty("--play-x", `${play.offsetX ?? (index ? 4 : -3)}px`);
-      cardElement.style.setProperty("--play-y", `${play.offsetY ?? 0}px`);
-      slot.appendChild(cardElement);
-    });
+  function patchTrickSlot(slot, play, label) {
+    const desiredKey = play ? play.card.id : `empty:${label}`;
+    if (slot.dataset.renderKey !== desiredKey) {
+      slot.dataset.renderKey = desiredKey;
+      slot.replaceChildren();
+      if (play) {
+        const cardElement = createCardElement(play.card);
+        cardElement.dataset.cardId = play.card.id;
+        slot.appendChild(cardElement);
+      } else {
+        const empty = document.createElement("span");
+        empty.className = "slot-label";
+        empty.textContent = label;
+        slot.appendChild(empty);
+      }
+    }
+
+    if (play) {
+      const cardElement = slot.querySelector(".playing-card");
+      cardElement?.style.setProperty("--play-rotation", `${play.rotation ?? (play.actor === "player" ? -4 : 4)}deg`);
+      cardElement?.style.setProperty("--play-x", `${play.offsetX ?? 0}px`);
+      cardElement?.style.setProperty("--play-y", `${play.offsetY ?? 0}px`);
+    }
   }
 
   function renderDeck() {
@@ -630,13 +811,25 @@
     UI.deckStack.classList.toggle("draw-ready", playerMustDraw);
     UI.deckStack.setAttribute("aria-disabled", playerMustDraw ? "false" : "true");
 
-    UI.trumpCard.innerHTML = "";
-    if (round.trumpCard) {
-      UI.trumpCard.appendChild(createCardElement(round.trumpCard));
-    } else if (round.phase === "dealing") {
-      UI.trumpCard.innerHTML = '<span class="slot-label">POR DESCUBRIR</span>';
-    } else {
-      UI.trumpCard.innerHTML = '<span class="slot-label">AGOTADO</span>';
+    const desiredKey = round.trumpCard
+      ? `card:${round.trumpCard.id}`
+      : round.phase === "dealing"
+        ? "label:undiscovered"
+        : "label:exhausted";
+
+    if (UI.trumpCard.dataset.renderKey !== desiredKey) {
+      UI.trumpCard.dataset.renderKey = desiredKey;
+      UI.trumpCard.replaceChildren();
+      if (round.trumpCard) {
+        const cardElement = createCardElement(round.trumpCard);
+        cardElement.dataset.cardId = round.trumpCard.id;
+        UI.trumpCard.appendChild(cardElement);
+      } else {
+        const label = document.createElement("span");
+        label.className = "slot-label";
+        label.textContent = round.phase === "dealing" ? "POR DESCUBRIR" : "AGOTADO";
+        UI.trumpCard.appendChild(label);
+      }
     }
   }
 
@@ -797,7 +990,7 @@
     }
     if (round.phase !== "playing") return "La mano ha terminado.";
     if (round.currentTurn === "ai") return "La IA solo conoce sus cartas y las jugadas visibles.";
-    if (!isStrictPhase()) return "Baceta abierta. Toca para jugar o arrastra para ordenar tu mano.";
+    if (!isStrictPhase()) return "Baceta abierta. Toca una carta para jugarla, arrástrala al tapete o muévela entre tus cartas.";
     const legal = getLegalCards("player");
     if (legal.length === round.hands.player.length) return "Puedes jugar cualquier carta.";
     if (round.trick.length === 1) {
@@ -1223,6 +1416,10 @@
     later(() => {
       const current = state.round;
       if (!current || current.currentTurn !== "ai" || current.phase !== "playing") return;
+      if (handGesture) {
+        later(scheduleAiTurn, 240);
+        return;
+      }
       const card = chooseAiCard();
       playCard("ai", card.id);
     }, delay);
