@@ -1,7 +1,4 @@
-# Créditos de la baraja v8
+# Créditos del mazo v9
 
-Las 40 caras de las cartas proceden de las cuatro láminas aportadas por el usuario
-para este proyecto. Se han recortado, normalizado, redimensionado y optimizado
-individualmente en formato WebP.
-
-El reverso continúa siendo un diseño propio de Tute IA.
+Cartas integradas a partir del ZIP `cartas corregidas.zip` aportado por el usuario.
+Las cartas suministradas en PNG se han recortado y normalizado para completar el mazo final.
