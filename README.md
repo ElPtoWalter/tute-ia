@@ -1,20 +1,37 @@
-# Tute IA — Mesa Cero · v10
+# Tute IA — Mesa Cero · v11
 
-Versión centrada en cerrar el modo individual contra IA con interacción física y estable.
+## Novedad principal
 
-## Mejoras principales
+La aplicación ya no entra directamente en una partida. Ahora dispone de un menú principal offline con dos modos:
 
-- Hueco de inserción visible al reorganizar la mano.
-- Las cartas vecinas se desplazan suavemente para mostrar la posición final.
-- Una carta puede jugarse mediante clic/toque o arrastrándola al tapete.
-- El tapete muestra una zona válida o inválida durante el arrastre.
-- Mensajes concretos cuando una jugada incumple asistir, montar o fallar.
-- La carta de triunfo, la baceta, las cartas de mesa y las manos conservan sus nodos visuales cuando no cambian.
-- Eliminados los parpadeos provocados por reconstruir toda la mesa en cada actualización.
-- La IA espera si el jugador está manipulando una carta.
-- Respuesta háptica ligera en dispositivos compatibles.
-- Compatibilidad con `prefers-reduced-motion`.
+1. **Partida clásica** contra Doña Virtud, con las tres dificultades y todas las reglas actuales.
+2. **Tutorial clásico interactivo**, desarrollado sobre la misma mesa y el mismo sistema de interacción.
+
+## Tutorial clásico
+
+El recorrido incluye diez lecciones:
+
+- objetivo y estructura de la mesa;
+- valor y fuerza de las cartas;
+- palo de triunfo;
+- organización manual de la mano;
+- juego libre mientras queda baceta;
+- robo manual por orden de baza;
+- obligación de asistir y montar;
+- fallo con triunfo;
+- cantes de 20 y 40;
+- puntuación y final de la mano.
+
+Las acciones se realizan de verdad: arrastrar cartas, jugar mediante clic o gesto, robar de la baceta y cantar. Al completarlo, el navegador guarda el progreso localmente.
+
+## Preparado para futuras ampliaciones
+
+El menú incluye espacios reservados para:
+
+- variantes y normas personalizadas;
+- tutoriales adaptados a cada variante;
+- partidas online con amigos.
 
 ## Publicación
 
-Sube todo el contenido de esta carpeta a la raíz del repositorio, reemplazando la versión anterior. Después recarga con `Ctrl + Shift + R`.
+Sube todo el contenido a la raíz del repositorio y reemplaza la versión anterior. Después recarga con `Ctrl + Shift + R`.

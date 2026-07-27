@@ -1,3 +1,5 @@
-# Créditos del mazo v10
+# Créditos v11
 
-Cartas integradas a partir del ZIP `cartas corregidas.zip` aportado por el usuario. La versión v10 no modifica el diseño del mazo; mejora la interacción, las animaciones y la estabilidad visual de la mesa.
+La versión mantiene el mazo completo corregido aportado por el usuario e integrado en la versión anterior.
+
+El menú principal, la experiencia de selección de modos y el tutorial clásico interactivo han sido creados específicamente para Tute IA.

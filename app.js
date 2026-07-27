@@ -30,6 +30,7 @@
   let handGesture = null;
 
   const state = {
+    mode: "home",
     settings: {
       difficulty: "normal",
       targetRounds: 3,
@@ -40,8 +41,104 @@
       aiRounds: 0,
       round: 0
     },
+    tutorial: {
+      active: false,
+      stepIndex: 0,
+      completed: false,
+      busy: false
+    },
     round: null
   };
+
+  const TUTORIAL_STEPS = [
+    {
+      id: "welcome",
+      title: "Bienvenido a la mesa",
+      text: "Este recorrido utiliza exactamente la misma mesa, las mismas cartas y las mismas reglas que la partida clásica. Aprenderás jugando, no leyendo un manual interminable.",
+      tip: "El tutorial puede repetirse siempre desde el menú principal.",
+      focus: "table",
+      action: "next",
+      button: "Empezar"
+    },
+    {
+      id: "values",
+      title: "Valor y fuerza de las cartas",
+      text: "Las cartas que puntúan son el as (11), el tres (10), el rey (4), el caballo (3) y la sota (2). Para ganar una baza, su fuerza sigue este orden: as, tres, rey, caballo, sota, siete, seis, cinco, cuatro y dos.",
+      tip: "Los números del 2 al 7 no suman puntos, pero pueden servir para conservar cartas valiosas o controlar el triunfo.",
+      focus: "hand",
+      action: "next",
+      button: "Entendido"
+    },
+    {
+      id: "trump",
+      title: "El palo de triunfo",
+      text: "La carta visible junto a la baceta determina el triunfo. Una carta de triunfo gana a cualquier carta de los otros palos, aunque sea un dos contra un as.",
+      tip: "En esta lección pinta bastos. Fíjate en la carta visible junto al mazo.",
+      focus: "trump",
+      action: "next",
+      button: "Continuar"
+    },
+    {
+      id: "organize",
+      title: "Organiza tu mano",
+      text: "Tu mano conserva el orden de reparto. Mantén pulsada una carta y desplázala entre las demás: el hueco visible indica dónde quedará al soltarla.",
+      tip: "Mueve cualquier carta a una posición distinta para continuar.",
+      focus: "hand",
+      action: "reorder"
+    },
+    {
+      id: "open-play",
+      title: "Con baceta, juego libre",
+      text: "Mientras queden cartas para robar no estás obligado a asistir. Puedes jugar cualquier carta. Para practicar, juega el as de copas pulsándolo o arrastrándolo al tapete.",
+      tip: "El as de copas está resaltado. Después responderá la IA.",
+      focus: "hand",
+      action: "play",
+      allowedCardId: "copas-1"
+    },
+    {
+      id: "draw",
+      title: "El ganador roba primero",
+      text: "Tu as ha ganado la baza y suma 11 puntos. Tras cada baza roba primero quien la gana y después el rival. En esta versión debes hacerlo tú mismo.",
+      tip: "Pulsa la baceta o el botón «Robar de la baceta».",
+      focus: "deck",
+      action: "draw"
+    },
+    {
+      id: "mount",
+      title: "Sin baceta: asistir y montar",
+      text: "Cuando se agota la baceta comienzan las obligaciones. La IA ha salido con el siete de copas. Tienes copas y, además, puedes superar el siete: debes jugar el tres de copas.",
+      tip: "Las demás cartas quedan bloqueadas para evitar un renuncio.",
+      focus: "hand",
+      action: "play",
+      allowedCardId: "copas-3"
+    },
+    {
+      id: "trump-fail",
+      title: "Fallar con triunfo",
+      text: "La IA sale ahora con el as de espadas. No tienes espadas, pero sí un triunfo. Estás obligado a fallar con el dos de bastos, que gana la baza aunque sea la carta más baja del triunfo.",
+      tip: "Juega el dos de bastos.",
+      focus: "hand",
+      action: "play",
+      allowedCardId: "bastos-2"
+    },
+    {
+      id: "song",
+      title: "Cantar 20 o 40",
+      text: "Después de ganar una baza puedes cantar si conservas rey y caballo del mismo palo. En triunfo valen 40 puntos; en otro palo, 20.",
+      tip: "Pulsa «Cantar 40 en bastos».",
+      focus: "actions",
+      action: "song"
+    },
+    {
+      id: "finish",
+      title: "Ya sabes jugar al tute clásico",
+      text: "Las cartas suman 120 puntos y la última baza añade 10. Los cantes se agregan al total. Ya puedes iniciar una partida real contra la IA y consultar las reglas completas cuando lo necesites.",
+      tip: "Tutorial completado. El menú recordará tu progreso en este dispositivo.",
+      focus: "score",
+      action: "finish",
+      button: "Volver al menú"
+    }
+  ];
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -49,7 +146,8 @@
     cacheUI();
     bindUI();
     renderEmptyState();
-    UI.setupModal.showModal();
+    updateTutorialCompletionBadge();
+    showHome();
   }
 
   function cacheUI() {
@@ -67,7 +165,10 @@
       "resultKicker", "resultEmblem", "resultTitle", "resultSummary",
       "resultPlayerScore", "resultAiScore", "resultActionButton",
       "resultExitButton", "toastRegion", "brandButton",
-      "aiCapturePile", "playerCapturePile", "aiCaptureCount", "playerCaptureCount", "manualOrderHint"
+      "aiCapturePile", "playerCapturePile", "aiCaptureCount", "playerCaptureCount", "manualOrderHint",
+      "homeScreen", "appShell", "classicModeButton", "tutorialModeButton", "tutorialCompletionBadge",
+      "tutorialCoach", "tutorialKicker", "tutorialProgress", "tutorialTitle", "tutorialText", "tutorialTip",
+      "tutorialNextButton", "tutorialExitButton"
     ].forEach(id => UI[id] = document.getElementById(id));
   }
 
@@ -79,18 +180,34 @@
       });
     });
 
+    UI.classicModeButton.addEventListener("click", openClassicSetup);
+    UI.tutorialModeButton.addEventListener("click", startTutorial);
+    UI.tutorialNextButton.addEventListener("click", handleTutorialNext);
+    UI.tutorialExitButton.addEventListener("click", showHome);
+
     UI.setupForm.addEventListener("submit", event => {
       event.preventDefault();
       const difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "normal";
       state.settings.difficulty = difficulty;
       state.settings.targetRounds = Number(UI.targetSelect.value);
       state.settings.allowTute = UI.tuteToggle.checked;
+      state.mode = "game";
+      state.tutorial.active = false;
+      document.body.classList.remove("tutorial-mode");
       UI.setupModal.close();
+      showGameTable();
       startMatch();
     });
 
-    UI.newMatchButton.addEventListener("click", () => UI.setupModal.showModal());
-    UI.brandButton.addEventListener("click", () => UI.setupModal.showModal());
+    UI.setupModal.addEventListener("close", () => {
+      if (state.mode === "home") showHome();
+    });
+
+    UI.newMatchButton.addEventListener("click", () => {
+      if (state.mode === "tutorial") showHome();
+      else openClassicSetup();
+    });
+    UI.brandButton.addEventListener("click", showHome);
     UI.rulesButton.addEventListener("click", () => UI.rulesModal.showModal());
     UI.closeRulesButton.addEventListener("click", () => UI.rulesModal.close());
     UI.rulesUnderstoodButton.addEventListener("click", () => UI.rulesModal.close());
@@ -107,8 +224,471 @@
     UI.resultActionButton.addEventListener("click", handleResultAction);
     UI.resultExitButton.addEventListener("click", () => {
       UI.resultModal.close();
-      UI.setupModal.showModal();
+      showHome();
     });
+  }
+
+  function safeCloseDialog(dialog) {
+    if (dialog?.open) dialog.close();
+  }
+
+  function showGameTable() {
+    UI.homeScreen.classList.add("hidden");
+    UI.appShell.classList.remove("hidden");
+  }
+
+  function openClassicSetup() {
+    clearTimers();
+    cleanupHandGesture();
+    safeCloseDialog(UI.resultModal);
+    state.tutorial.active = false;
+    document.body.classList.remove("tutorial-mode");
+    UI.tutorialCoach.classList.add("hidden");
+    UI.aiName.textContent = "Doña Virtud";
+    UI.newMatchButton.textContent = "Partida clásica";
+    if (!UI.setupModal.open) UI.setupModal.showModal();
+  }
+
+  function showHome() {
+    clearTimers();
+    cleanupHandGesture();
+    safeCloseDialog(UI.setupModal);
+    safeCloseDialog(UI.rulesModal);
+    safeCloseDialog(UI.resultModal);
+    state.mode = "home";
+    state.tutorial.active = false;
+    state.tutorial.busy = false;
+    state.round = null;
+    document.body.classList.remove("tutorial-mode");
+    UI.tutorialCoach.classList.add("hidden");
+    UI.appShell.classList.add("hidden");
+    UI.homeScreen.classList.remove("hidden");
+    UI.aiName.textContent = "Doña Virtud";
+    UI.newMatchButton.textContent = "Partida clásica";
+    clearTutorialFocus();
+    renderEmptyState();
+    updateTutorialCompletionBadge();
+  }
+
+  function updateTutorialCompletionBadge() {
+    let complete = false;
+    try { complete = localStorage.getItem("tuteTutorialClassicComplete") === "true"; } catch (_) {}
+    state.tutorial.completed = complete;
+    UI.tutorialCompletionBadge.textContent = complete ? "Tutorial completado" : `${TUTORIAL_STEPS.length} lecciones`;
+    UI.tutorialModeButton.classList.toggle("tutorial-complete", complete);
+  }
+
+  function startTutorial() {
+    clearTimers();
+    cleanupHandGesture();
+    safeCloseDialog(UI.setupModal);
+    safeCloseDialog(UI.rulesModal);
+    safeCloseDialog(UI.resultModal);
+    state.mode = "tutorial";
+    state.tutorial.active = true;
+    state.tutorial.busy = false;
+    state.match.playerRounds = 0;
+    state.match.aiRounds = 0;
+    state.match.round = 1;
+    state.settings.targetRounds = 1;
+    state.settings.allowTute = true;
+    document.body.classList.add("tutorial-mode");
+    UI.aiName.textContent = "Maestra Virtud";
+    UI.newMatchButton.textContent = "Salir";
+    showGameTable();
+    UI.tutorialCoach.classList.remove("hidden");
+    setTutorialStep(0);
+  }
+
+  function makeCard(suit, rank) {
+    const data = RANK_MAP[rank];
+    return {
+      id: `${suit}-${rank}`,
+      suit,
+      rank,
+      label: data.label,
+      short: data.short,
+      points: data.points,
+      strength: data.strength
+    };
+  }
+
+  function makeTutorialRound(config = {}) {
+    const trumpCard = config.trumpCard || null;
+    return {
+      stock: config.stock || [],
+      trumpCard,
+      trumpSuit: config.trumpSuit || trumpCard?.suit || "bastos",
+      hands: {
+        player: config.playerHand || [],
+        ai: config.aiHand || []
+      },
+      captured: {
+        player: config.playerCaptured || [],
+        ai: config.aiCaptured || []
+      },
+      cardPoints: {
+        player: config.playerCardPoints || 0,
+        ai: config.aiCardPoints || 0
+      },
+      songPoints: {
+        player: config.playerSongPoints || 0,
+        ai: config.aiSongPoints || 0
+      },
+      tricksWon: {
+        player: config.playerTricks || 0,
+        ai: config.aiTricks || 0
+      },
+      hasWonTrick: {
+        player: Boolean(config.playerTricks),
+        ai: Boolean(config.aiTricks)
+      },
+      sungSuits: {
+        player: new Set(config.playerSung || []),
+        ai: new Set(config.aiSung || [])
+      },
+      playedCards: config.playedCards || (config.trick || []).map(play => play.card),
+      trick: config.trick || [],
+      leader: config.leader || "player",
+      currentTurn: config.currentTurn ?? null,
+      pendingCante: config.pendingCante || null,
+      lastTrickWinner: config.lastTrickWinner || null,
+      phase: config.phase || "playing",
+      log: config.log || ["<strong>Tutorial clásico.</strong> Sigue las indicaciones de la maestra."],
+      specialWin: null,
+      drawQueue: config.drawQueue || [],
+      drawIndex: config.drawIndex || 0,
+      drawActor: config.drawActor || null,
+      drawing: false,
+      lastDrawnId: null,
+      busyFlight: false,
+      collecting: false,
+      pendingHandFlip: null
+    };
+  }
+
+  function tutorialRoundForStep(index) {
+    const stockOpen = [makeCard("oros", 4), makeCard("espadas", 6), makeCard("copas", 6), makeCard("oros", 11)];
+    const commonTrump = makeCard("bastos", 5);
+
+    switch (index) {
+      case 0:
+        return makeTutorialRound({
+          playerHand: [makeCard("oros", 1), makeCard("copas", 3), makeCard("espadas", 12), makeCard("bastos", 7)],
+          aiHand: [makeCard("oros", 2), makeCard("copas", 4), makeCard("espadas", 5), makeCard("bastos", 6)],
+          stock: stockOpen,
+          trumpCard: commonTrump,
+          currentTurn: null
+        });
+      case 1:
+        return makeTutorialRound({
+          playerHand: [makeCard("oros", 1), makeCard("copas", 3), makeCard("espadas", 12), makeCard("bastos", 11), makeCard("oros", 10), makeCard("copas", 7)],
+          aiHand: [makeCard("oros", 2), makeCard("copas", 4), makeCard("espadas", 5)],
+          stock: stockOpen,
+          trumpCard: commonTrump,
+          currentTurn: null
+        });
+      case 2:
+        return makeTutorialRound({
+          playerHand: [makeCard("oros", 6), makeCard("copas", 4), makeCard("espadas", 1), makeCard("bastos", 2)],
+          aiHand: [makeCard("oros", 4), makeCard("copas", 5), makeCard("espadas", 6), makeCard("bastos", 7)],
+          stock: stockOpen,
+          trumpCard: commonTrump,
+          currentTurn: null
+        });
+      case 3:
+        return makeTutorialRound({
+          playerHand: [makeCard("oros", 2), makeCard("copas", 1), makeCard("espadas", 12), makeCard("bastos", 7)],
+          aiHand: [makeCard("oros", 4), makeCard("copas", 5), makeCard("espadas", 6), makeCard("bastos", 3)],
+          stock: stockOpen,
+          trumpCard: commonTrump,
+          currentTurn: null
+        });
+      case 4:
+        return makeTutorialRound({
+          playerHand: [makeCard("copas", 1), makeCard("oros", 5), makeCard("espadas", 2), makeCard("bastos", 12)],
+          aiHand: [makeCard("copas", 7), makeCard("oros", 4), makeCard("espadas", 6), makeCard("bastos", 3)],
+          stock: stockOpen,
+          trumpCard: commonTrump,
+          currentTurn: "player",
+          leader: "player",
+          log: ["<strong>Baceta abierta.</strong> Puedes jugar cualquier carta."]
+        });
+      case 5:
+        return makeTutorialRound({
+          playerHand: [makeCard("oros", 5), makeCard("espadas", 2), makeCard("bastos", 12)],
+          aiHand: [makeCard("oros", 4), makeCard("espadas", 6), makeCard("bastos", 3)],
+          playerCaptured: [makeCard("copas", 1), makeCard("copas", 7)],
+          playerCardPoints: 11,
+          playerTricks: 1,
+          stock: [makeCard("oros", 11), makeCard("copas", 6)],
+          trumpCard: commonTrump,
+          currentTurn: null,
+          phase: "awaitingDraw",
+          leader: "player",
+          drawQueue: ["player"],
+          drawActor: "player",
+          lastTrickWinner: "player",
+          log: ["<strong>Has ganado la baza</strong> con el as de copas.", "Te corresponde robar primero."]
+        });
+      case 6: {
+        const lead = makeCard("copas", 7);
+        return makeTutorialRound({
+          playerHand: [makeCard("copas", 3), makeCard("copas", 5), makeCard("oros", 1), makeCard("bastos", 2)],
+          aiHand: [makeCard("oros", 6), makeCard("espadas", 4), makeCard("bastos", 12)],
+          stock: [],
+          trumpCard: null,
+          trumpSuit: "bastos",
+          trick: [{ actor: "ai", card: lead, rotation: 4, offsetX: 0, offsetY: 0 }],
+          currentTurn: "player",
+          leader: "ai",
+          log: ["La IA juega <strong>Siete de copas</strong>.", "Sin baceta: debes asistir y montar si puedes."]
+        });
+      }
+      case 7: {
+        const lead = makeCard("espadas", 1);
+        return makeTutorialRound({
+          playerHand: [makeCard("bastos", 2), makeCard("oros", 12), makeCard("copas", 5)],
+          aiHand: [makeCard("oros", 6), makeCard("copas", 4), makeCard("bastos", 7)],
+          stock: [],
+          trumpCard: null,
+          trumpSuit: "bastos",
+          trick: [{ actor: "ai", card: lead, rotation: 4, offsetX: 0, offsetY: 0 }],
+          currentTurn: "player",
+          leader: "ai",
+          log: ["La IA juega <strong>As de espadas</strong>.", "No tienes espadas: debes fallar con triunfo."]
+        });
+      }
+      case 8:
+        return makeTutorialRound({
+          playerHand: [makeCard("bastos", 12), makeCard("bastos", 11), makeCard("oros", 1), makeCard("copas", 5)],
+          aiHand: [makeCard("oros", 6), makeCard("copas", 4), makeCard("espadas", 7)],
+          stock: [makeCard("oros", 4), makeCard("espadas", 6)],
+          trumpCard: makeCard("bastos", 4),
+          currentTurn: null,
+          playerTricks: 2,
+          pendingCante: { actor: "player", options: [{ type: "song", suit: "bastos", points: 40 }] },
+          log: ["Has ganado una baza y conservas <strong>rey y caballo de bastos</strong>."]
+        });
+      case 9:
+      default:
+        return makeTutorialRound({
+          playerHand: [],
+          aiHand: [],
+          stock: [],
+          trumpCard: null,
+          trumpSuit: "bastos",
+          phase: "roundOver",
+          playerCardPoints: 82,
+          aiCardPoints: 48,
+          playerSongPoints: 40,
+          playerTricks: 5,
+          aiTricks: 3,
+          lastTrickWinner: "player",
+          log: ["<strong>Tutorial completado.</strong> Resultado de ejemplo: 122 a 48."]
+        });
+    }
+  }
+
+  function currentTutorialStep() {
+    return TUTORIAL_STEPS[state.tutorial.stepIndex] || TUTORIAL_STEPS[0];
+  }
+
+  function setTutorialStep(index) {
+    if (!state.tutorial.active) return;
+    clearTimers();
+    cleanupHandGesture();
+    state.tutorial.stepIndex = Math.max(0, Math.min(TUTORIAL_STEPS.length - 1, index));
+    state.tutorial.busy = false;
+    state.round = tutorialRoundForStep(state.tutorial.stepIndex);
+    render();
+    renderTutorialCoach();
+  }
+
+  function renderTutorialCoach() {
+    if (!state.tutorial.active) return;
+    const step = currentTutorialStep();
+    UI.tutorialKicker.textContent = `LECCIÓN ${state.tutorial.stepIndex + 1} DE ${TUTORIAL_STEPS.length}`;
+    UI.tutorialTitle.textContent = step.title;
+    UI.tutorialText.innerHTML = step.text;
+    UI.tutorialTip.textContent = step.tip || "";
+    UI.tutorialTip.classList.toggle("hidden", !step.tip);
+    UI.tutorialNextButton.classList.toggle("hidden", !["next", "finish"].includes(step.action));
+    UI.tutorialNextButton.firstChild.textContent = `${step.button || "Continuar"} `;
+    UI.tutorialProgress.replaceChildren();
+    TUTORIAL_STEPS.forEach((_, index) => {
+      const pip = document.createElement("span");
+      if (index < state.tutorial.stepIndex) pip.classList.add("done");
+      if (index === state.tutorial.stepIndex) pip.classList.add("current");
+      UI.tutorialProgress.appendChild(pip);
+    });
+    applyTutorialFocus(step);
+  }
+
+  function clearTutorialFocus() {
+    document.querySelectorAll(".tutorial-focus, .tutorial-card-target").forEach(element => {
+      element.classList.remove("tutorial-focus", "tutorial-card-target");
+    });
+  }
+
+  function applyTutorialFocus(step) {
+    clearTutorialFocus();
+    let target = null;
+    if (step.focus === "hand") target = UI.playerHand;
+    else if (step.focus === "trump") target = document.querySelector(".trump-wrap");
+    else if (step.focus === "deck") target = UI.deckStack;
+    else if (step.focus === "actions") target = document.getElementById("actionDock");
+    else if (step.focus === "score") target = document.querySelector(".score-card");
+    else target = document.querySelector(".table-center");
+    target?.classList.add("tutorial-focus");
+    if (step.allowedCardId) {
+      UI.playerHand.querySelector(`[data-card-id="${step.allowedCardId}"]`)?.classList.add("tutorial-card-target");
+    }
+  }
+
+  function handleTutorialNext() {
+    if (!state.tutorial.active || state.tutorial.busy) return;
+    const step = currentTutorialStep();
+    if (step.action === "finish") {
+      completeTutorial();
+      return;
+    }
+    if (step.action === "next") setTutorialStep(state.tutorial.stepIndex + 1);
+  }
+
+  function completeTutorial() {
+    try { localStorage.setItem("tuteTutorialClassicComplete", "true"); } catch (_) {}
+    state.tutorial.completed = true;
+    playSound("victory");
+    showToast("<strong>Tutorial clásico completado.</strong> Ya puedes enfrentarte a la IA.");
+    showHome();
+  }
+
+  function notifyTutorialAction(action) {
+    if (!state.tutorial.active || currentTutorialStep().action !== action || state.tutorial.busy) return;
+    state.tutorial.busy = true;
+    later(() => setTutorialStep(state.tutorial.stepIndex + 1), 520);
+  }
+
+  async function tutorialMoveCard(actor, cardId) {
+    const round = state.round;
+    const hand = round.hands[actor];
+    const cardIndex = hand.findIndex(card => card.id === cardId);
+    const card = hand[cardIndex];
+    if (!card) return null;
+    const sourceElement = actor === "player"
+      ? UI.playerHand.querySelector(`[data-card-id="${cardId}"]`)
+      : UI.aiHand.children[cardIndex] || UI.aiHand.querySelector(".playing-card");
+    const targetSlot = actor === "player" ? UI.playerTrickSlot : UI.aiTrickSlot;
+    if (sourceElement) {
+      round.busyFlight = true;
+      const sourceRect = sourceElement.getBoundingClientRect();
+      const targetRect = targetSlot.getBoundingClientRect();
+      await animatePlayToTable(actor, card, sourceRect, targetRect);
+      round.busyFlight = false;
+    }
+    const previousRects = actor === "player" ? capturePlayerHandRects() : null;
+    hand.splice(cardIndex, 1);
+    if (actor === "player") round.pendingHandFlip = previousRects;
+    round.trick.push({
+      actor,
+      card,
+      rotation: actor === "player" ? -4 : 4,
+      offsetX: actor === "player" ? -2 : 2,
+      offsetY: 0
+    });
+    round.playedCards.push(card);
+    addLog(`${actor === "player" ? "Tú juegas" : "La IA juega"} <strong>${cardName(card)}</strong>.`);
+    playSound("card");
+    render();
+    return card;
+  }
+
+  async function handleTutorialCardPlay(actor, cardId) {
+    if (!state.tutorial.active || actor !== "player" || state.tutorial.busy) return;
+    const step = currentTutorialStep();
+    if (step.action !== "play") return;
+    if (step.allowedCardId && cardId !== step.allowedCardId) {
+      showToast(`<strong>Prueba con la carta resaltada.</strong> ${step.tip || ""}`);
+      playSound("error");
+      return;
+    }
+    state.tutorial.busy = true;
+    cleanupHandGesture();
+    await tutorialMoveCard("player", cardId);
+
+    if (step.id === "open-play") {
+      await sleep(300);
+      await tutorialMoveCard("ai", "copas-7");
+      state.round.cardPoints.player = 11;
+      state.round.tricksWon.player = 1;
+      state.round.captured.player.push(makeCard("copas", 1), makeCard("copas", 7));
+      addLog("<strong>Ganas la baza</strong> con el as de copas y sumas 11 puntos.");
+      playSound("winTrick");
+      await sleep(380);
+      await animateCollectTrick("player");
+      state.round.trick = [];
+      render();
+      await sleep(360);
+      setTutorialStep(5);
+      return;
+    }
+
+    const winner = "player";
+    const gained = state.round.trick.reduce((total, play) => total + play.card.points, 0);
+    state.round.cardPoints.player += gained;
+    state.round.tricksWon.player += 1;
+    state.round.captured.player.push(...state.round.trick.map(play => play.card));
+    addLog(step.id === "mount"
+      ? "<strong>Correcto.</strong> Has asistido y montado el siete."
+      : "<strong>Correcto.</strong> El triunfo gana al as de espadas.");
+    playSound("winTrick");
+    await sleep(330);
+    await animateCollectTrick(winner);
+    state.round.trick = [];
+    render();
+    await sleep(420);
+    setTutorialStep(state.tutorial.stepIndex + 1);
+  }
+
+  async function handleTutorialDraw() {
+    if (!state.tutorial.active || state.tutorial.busy || currentTutorialStep().action !== "draw") return;
+    const round = state.round;
+    state.tutorial.busy = true;
+    round.drawing = true;
+    const sourceRect = UI.deckStack.getBoundingClientRect();
+    const card = round.stock.pop();
+    renderDeck();
+    await animateCardFlight("player", card, sourceRect, false, 600);
+    const previousRects = capturePlayerHandRects();
+    round.hands.player.push(card);
+    round.pendingHandFlip = previousRects;
+    round.lastDrawnId = card.id;
+    round.drawing = false;
+    addLog(`Robas <strong>${cardName(card)}</strong>.`);
+    playSound("draw");
+    render();
+    await sleep(650);
+    setTutorialStep(6);
+  }
+
+  function handleTutorialCante(option) {
+    if (!state.tutorial.active || state.tutorial.busy || currentTutorialStep().action !== "song") return false;
+    if (!option || option.type !== "song" || option.points !== 40) {
+      showToast("<strong>En esta lección debes cantar las 40.</strong>");
+      playSound("error");
+      return true;
+    }
+    state.tutorial.busy = true;
+    state.round.pendingCante = null;
+    state.round.songPoints.player += 40;
+    state.round.sungSuits.player.add("bastos");
+    addLog("<strong>Cantas 40 en bastos.</strong>");
+    showToast("<strong>+40 puntos.</strong> Rey y caballo del triunfo.");
+    playSound("song");
+    render();
+    later(() => setTutorialStep(9), 780);
+    return true;
   }
 
   function clearTimers() {
@@ -432,6 +1012,7 @@
     renderCaptures();
     renderLog();
     renderActions();
+    if (state.tutorial.active) renderTutorialCoach();
   }
 
   function renderHands() {
@@ -504,6 +1085,18 @@
     element.classList.toggle("illegal", canPlayNow && !isPlayable);
     element.setAttribute("aria-disabled", isPlayable ? "false" : "true");
     element.setAttribute("aria-label", `${cardName(card)}${isPlayable ? ", jugar" : ", no disponible para jugar"}`);
+
+    let pointsBadge = element.querySelector(".tutorial-points-badge");
+    const showPoints = state.tutorial.active && currentTutorialStep().id === "values";
+    if (showPoints && !pointsBadge) {
+      pointsBadge = document.createElement("span");
+      pointsBadge.className = "tutorial-points-badge";
+      element.appendChild(pointsBadge);
+    }
+    if (pointsBadge) {
+      pointsBadge.textContent = `${card.points} puntos`;
+      pointsBadge.classList.toggle("hidden", !showPoints);
+    }
   }
 
   function syncAiHand(round) {
@@ -704,6 +1297,9 @@
       playSound("card");
       navigator.vibrate?.(7);
       render();
+      if (state.tutorial.active && currentTutorialStep().action === "reorder" && fromIndex !== insertIndex) {
+        notifyTutorialAction("reorder");
+      }
       return;
     }
 
@@ -732,6 +1328,9 @@
 
   function getIllegalPlayReason(cardId) {
     const round = state.round;
+    if (state.tutorial.active && currentTutorialStep().allowedCardId && cardId !== currentTutorialStep().allowedCardId) {
+      return "En esta lección debes usar la carta resaltada.";
+    }
     if (!round || round.phase !== "playing") return "Ahora no está activa la fase de juego.";
     if (round.currentTurn !== "player") return "Ahora debe jugar la IA.";
     const card = round.hands.player.find(item => item.id === cardId);
@@ -887,6 +1486,27 @@
       }
     }
 
+    if (state.tutorial.active) {
+      const step = currentTutorialStep();
+      UI.phaseBadge.textContent = ["mount", "trump-fail"].includes(step.id) ? "JUEGO OBLIGADO" : "TUTORIAL CLÁSICO";
+      UI.phaseBadge.classList.toggle("strict", ["mount", "trump-fail"].includes(step.id));
+      UI.ruleStateTitle.textContent = step.title;
+      UI.ruleStateText.textContent = step.tip || "Sigue la indicación de la maestra.";
+      UI.statusText.textContent = step.action === "reorder"
+        ? "Reordena una carta de tu mano."
+        : step.action === "play"
+          ? "Juega la carta resaltada."
+          : step.action === "draw"
+            ? "Pulsa la baceta para robar."
+            : step.action === "song"
+              ? "Realiza el cante disponible."
+              : step.action === "finish"
+                ? "Tutorial terminado."
+                : "Lee la explicación y continúa.";
+      UI.playerTurnPill.classList.toggle("visible", ["play", "draw", "reorder"].includes(step.action));
+      UI.aiTurnPill.classList.remove("visible");
+    }
+
     const unseen = round.hands.ai.length + drawPileCount();
     UI.unknownCards.textContent = unseen;
   }
@@ -896,7 +1516,9 @@
     const playerTotal = round.cardPoints.player + round.songPoints.player;
     const aiTotal = round.cardPoints.ai + round.songPoints.ai;
 
-    UI.roundNumber.textContent = `MANO ${state.match.round}`;
+    UI.roundNumber.textContent = state.tutorial.active
+      ? `LECCIÓN ${state.tutorial.stepIndex + 1}`
+      : `MANO ${state.match.round}`;
     UI.playerRounds.textContent = state.match.playerRounds;
     UI.aiRounds.textContent = state.match.aiRounds;
     UI.playerCardPoints.textContent = round.cardPoints.player;
@@ -907,14 +1529,20 @@
     UI.aiTotal.textContent = aiTotal;
     UI.playerTricks.textContent = round.tricksWon.player;
     UI.aiTricks.textContent = round.tricksWon.ai;
-    UI.targetRounds.textContent = `${state.settings.targetRounds} ${state.settings.targetRounds === 1 ? "mano" : "manos"}`;
+    const pipCount = state.tutorial.active ? TUTORIAL_STEPS.length : state.settings.targetRounds;
+    UI.targetRounds.textContent = state.tutorial.active
+      ? `${state.tutorial.stepIndex + 1} de ${TUTORIAL_STEPS.length}`
+      : `${state.settings.targetRounds} ${state.settings.targetRounds === 1 ? "mano" : "manos"}`;
 
-    UI.roundPips.style.setProperty("--pip-count", state.settings.targetRounds);
+    UI.roundPips.style.setProperty("--pip-count", pipCount);
     UI.roundPips.innerHTML = "";
-    for (let i = 0; i < state.settings.targetRounds; i += 1) {
+    for (let i = 0; i < pipCount; i += 1) {
       const pip = document.createElement("span");
       pip.className = "round-pip";
-      if (i < state.match.playerRounds) pip.classList.add("player");
+      if (state.tutorial.active) {
+        if (i < state.tutorial.stepIndex) pip.classList.add("player");
+        else if (i === state.tutorial.stepIndex) pip.classList.add("tutorial-current-pip");
+      } else if (i < state.match.playerRounds) pip.classList.add("player");
       else if (i < state.match.playerRounds + state.match.aiRounds) pip.classList.add("ai");
       UI.roundPips.appendChild(pip);
     }
@@ -1017,6 +1645,10 @@
   }
 
   async function playCard(actor, cardId) {
+    if (state.tutorial.active) {
+      await handleTutorialCardPlay(actor, cardId);
+      return;
+    }
     const round = state.round;
     if (!round || round.phase !== "playing" || round.currentTurn !== actor || round.pendingCante) return;
     if (round.busyFlight || round.collecting) return;
@@ -1076,6 +1708,14 @@
   function getLegalCards(actor) {
     const round = state.round;
     const hand = round.hands[actor];
+
+    if (state.tutorial.active && actor === "player") {
+      const allowedCardId = currentTutorialStep().allowedCardId;
+      if (allowedCardId) {
+        const allowed = hand.find(card => card.id === allowedCardId);
+        return allowed ? [allowed] : [];
+      }
+    }
 
     if (!isStrictPhase() || round.trick.length === 0) return [...hand];
 
@@ -1220,6 +1860,7 @@
   }
 
   function resolveCanteChoice(option) {
+    if (state.tutorial.active && handleTutorialCante(option)) return;
     const round = state.round;
     const pending = round.pendingCante;
     if (!pending) return;
@@ -1296,6 +1937,10 @@
   }
 
   function manualPlayerDraw() {
+    if (state.tutorial.active) {
+      handleTutorialDraw();
+      return;
+    }
     const round = state.round;
     if (!round || round.phase !== "awaitingDraw" || round.drawing) return;
     if (round.drawQueue[round.drawIndex] !== "player") return;
@@ -1408,6 +2053,7 @@
   }
 
   function scheduleAiTurn() {
+    if (state.tutorial.active) return;
     const round = state.round;
     if (!round || round.currentTurn !== "ai" || round.phase !== "playing" || round.pendingCante) return;
 

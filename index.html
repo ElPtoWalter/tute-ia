@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#071c17">
-  <meta name="description" content="Tute Habanero contra una inteligencia artificial. Juega gratis desde el navegador.">
-  <title>Tute IA — Mesa Cero</title>
+  <meta name="description" content="Juega al tute clásico contra una inteligencia artificial o aprende paso a paso con un tutorial interactivo, completamente offline.">
+  <title>Tute IA — Juega y aprende</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=10.0.0">
+  <link rel="stylesheet" href="styles.css?v=11.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -27,13 +27,105 @@
         <span id="soundIcon">♪</span>
       </button>
       <button class="soft-button" id="rulesButton">Reglas</button>
-      <button class="primary-button compact" id="newMatchButton">Nueva partida</button>
+      <button class="primary-button compact" id="newMatchButton">Partida clásica</button>
     </div>
   </header>
 
-  <main class="app-shell">
+
+  <section class="home-screen" id="homeScreen" aria-labelledby="homeTitle">
+    <div class="home-ambient home-ambient-one" aria-hidden="true"></div>
+    <div class="home-ambient home-ambient-two" aria-hidden="true"></div>
+
+    <div class="home-hero">
+      <div class="home-copy">
+        <span class="home-kicker"><i></i> FUNCIONA SIN CONEXIÓN</span>
+        <h1 id="homeTitle">Aprende, juega<br><em>y domina el tute.</em></h1>
+        <p>Elige una partida clásica contra la IA o empieza desde cero con un tutorial interactivo sobre la misma mesa de juego.</p>
+        <div class="home-features" aria-label="Características">
+          <span>Baraja española de 40 cartas</span>
+          <span>IA sin información oculta</span>
+          <span>Juego completamente offline</span>
+        </div>
+      </div>
+
+      <div class="home-deck-showcase" aria-hidden="true">
+        <img class="showcase-card card-one" src="assets/cards/oros-1.webp" alt="">
+        <img class="showcase-card card-two" src="assets/cards/copas-12.webp" alt="">
+        <img class="showcase-card card-three" src="assets/cards/espadas-11.webp" alt="">
+        <div class="showcase-seal"><strong>T</strong><span>MESA CERO</span></div>
+      </div>
+    </div>
+
+    <div class="mode-section">
+      <div class="mode-heading">
+        <div>
+          <span class="eyebrow">ELIGE CÓMO EMPEZAR</span>
+          <h2>Modos disponibles</h2>
+        </div>
+        <span class="mode-count">2 MODOS OFFLINE</span>
+      </div>
+
+      <div class="mode-grid">
+        <button class="mode-card mode-card-primary" id="classicModeButton" type="button">
+          <span class="mode-number">01</span>
+          <span class="mode-icon mode-icon-play">▶</span>
+          <span class="mode-card-copy">
+            <small>JUGAR</small>
+            <strong>Partida clásica</strong>
+            <span>Enfréntate a Doña Virtud con el reglamento actual: baceta, cantes, cambio del pinte y juego obligado al final.</span>
+          </span>
+          <span class="mode-meta">
+            <b>3 dificultades</b>
+            <i>Entrar →</i>
+          </span>
+        </button>
+
+        <button class="mode-card mode-card-tutorial" id="tutorialModeButton" type="button">
+          <span class="mode-number">02</span>
+          <span class="mode-icon">✦</span>
+          <span class="mode-card-copy">
+            <small>APRENDER</small>
+            <strong>Tutorial clásico</strong>
+            <span>Descubre el valor de las cartas, el triunfo, el robo, las obligaciones y los cantes mediante ejercicios sobre la mesa real.</span>
+          </span>
+          <span class="mode-meta">
+            <b id="tutorialCompletionBadge">10 lecciones</b>
+            <i>Comenzar →</i>
+          </span>
+        </button>
+      </div>
+
+      <div class="future-modes" aria-label="Próximos modos">
+        <article>
+          <span>PRÓXIMAMENTE</span>
+          <strong>Variantes y normas personalizadas</strong>
+          <p>Escoge las reglas de casa y recibe un tutorial adaptado a esa variante.</p>
+        </article>
+        <article>
+          <span>MÁS ADELANTE</span>
+          <strong>Partidas online con amigos</strong>
+          <p>Salas privadas, invitaciones y partidas de cuatro jugadores por parejas.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <main class="app-shell hidden" id="appShell">
     <section class="table-panel" aria-label="Mesa de juego">
       <div class="table-glow" aria-hidden="true"></div>
+
+      <aside class="tutorial-coach hidden" id="tutorialCoach" aria-live="polite">
+        <div class="tutorial-coach-top">
+          <span class="tutorial-kicker" id="tutorialKicker">LECCIÓN 1</span>
+          <button class="tutorial-exit" id="tutorialExitButton" type="button">Salir al menú</button>
+        </div>
+        <div class="tutorial-progress" id="tutorialProgress" aria-label="Progreso del tutorial"></div>
+        <h2 id="tutorialTitle">Bienvenido al tute</h2>
+        <p id="tutorialText"></p>
+        <div class="tutorial-tip hidden" id="tutorialTip"></div>
+        <button class="primary-button tutorial-next" id="tutorialNextButton" type="button">Continuar <span>→</span></button>
+      </aside>
+
       <div class="capture-pile ai-capture" id="aiCapturePile" aria-label="Bazas capturadas por la IA">
         <span class="capture-card one"></span><span class="capture-card two"></span>
         <strong id="aiCaptureCount">0</strong>
@@ -190,8 +282,8 @@
   <dialog class="modal setup-modal" id="setupModal">
     <form method="dialog" class="modal-card" id="setupForm">
       <button class="close-modal" value="cancel" aria-label="Cerrar">×</button>
-      <span class="eyebrow">NUEVA PARTIDA</span>
-      <h1>Elige a tu rival</h1>
+      <span class="eyebrow">PARTIDA CLÁSICA</span>
+      <h1>Configura la partida</h1>
       <p class="modal-copy">Tute habanero para dos jugadores. Ocho cartas por mano, baceta y obligaciones completas al agotarse el robo.</p>
 
       <fieldset class="choice-group">
@@ -279,7 +371,7 @@
 
 
       <p class="art-credit">
-        Baraja original de Tute IA: 40 cartas vectoriales creadas individualmente, con pintas tradicionales, figuras propias y reverso exclusivo.
+        Mazo personalizado de Tute IA: 40 cartas corregidas e integradas individualmente, con reverso exclusivo y carga optimizada para jugar offline.
       </p>
 
       <button class="primary-button" id="rulesUnderstoodButton">Entendido</button>
@@ -303,12 +395,12 @@
         Siguiente mano
         <span>→</span>
       </button>
-      <button class="text-button" id="resultExitButton">Volver a configurar</button>
+      <button class="text-button" id="resultExitButton">Volver al menú</button>
     </div>
   </dialog>
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <script src="app.js?v=10.0.0"></script>
+  <script src="app.js?v=11.0.0"></script>
 </body>
 </html>
