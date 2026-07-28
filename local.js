@@ -20,6 +20,8 @@
   const UI = {};
   let handGesture = null;
   let musicEnabled = false;
+  let localAutosaveTimer = null;
+  let localSaveRecord = null;
 
   const state = {
     config: {
@@ -59,6 +61,7 @@
     syncSetupUI();
     renderRules();
     UI.localSetup.showModal();
+    refreshLocalSaveCard();
   }
 
   function cacheUI() {
@@ -71,7 +74,7 @@
       "localRuleText", "localCardsLeft", "localTricksPlayed", "localLeader", "localLog", "localSetup", "localSetupForm",
       "fourPlayerOptions", "localNameGrid", "localRulesModal", "closeLocalRules", "localRulesHeading", "localRulesGrid",
       "understandLocalRules", "localResult", "localResultSeal", "localResultTitle", "localResultText", "localFinalRanking",
-      "localRematch", "localMusic"
+      "localRematch", "localMusic", "localResumeCard", "localResumeTitle", "localResumeMeta", "localResumeSave", "localDiscardSave"
     ].forEach(id => { UI[id] = document.getElementById(id); });
 
     for (let i = 0; i < 4; i += 1) {
@@ -105,6 +108,9 @@
       if (event.key === "Enter" || event.key === " ") { event.preventDefault(); manualDraw(); }
     });
     UI.localMusicButton.addEventListener("click", toggleMusic);
+    UI.localResumeSave?.addEventListener("click", resumeLocalGame);
+    UI.localDiscardSave?.addEventListener("click", discardLocalSave);
+    window.addEventListener("tute:privacy-lock", lockPrivateView);
     UI.localRematch.addEventListener("click", () => {
       UI.localResult.close();
       startGame();
@@ -149,6 +155,7 @@
 
   async function startGame() {
     cleanupHandGesture();
+    window.TutePWA?.setPlaying(true);
     state.players = Array.from({ length: state.config.count }, (_, id) => ({
       id,
       name: state.config.names[id],
@@ -254,6 +261,7 @@
     renderLog();
     renderDeclarations();
     renderPrivacy();
+    queueLocalAutosave();
   }
 
   function renderSeats() {
@@ -857,6 +865,7 @@
     if (isPointNearHand(event.clientX, event.clientY)) {
       setGestureMode("reorder");
       updateDropIndex(event.clientX);
+      autoScrollActiveHand(event.clientX);
       return;
     }
     setGestureMode("cancel");
@@ -889,6 +898,14 @@
   function isPointNearHand(x, y) {
     const rect = UI.privateHand.getBoundingClientRect();
     return x >= rect.left - 80 && x <= rect.right + 80 && y >= rect.top - 85 && y <= rect.bottom + 105;
+  }
+
+  function autoScrollActiveHand(clientX) {
+    const hand = UI.privateHand;
+    const rect = hand.getBoundingClientRect();
+    const edge = 48;
+    if (clientX < rect.left + edge) hand.scrollLeft -= 11;
+    if (clientX > rect.right - edge) hand.scrollLeft += 11;
   }
 
   function setGestureMode(mode) {
@@ -1002,6 +1019,9 @@
 
   function finishGame(specialWinner = null, reason = "puntos") {
     state.phase = "finished";
+    window.TuteDB?.remove("local-current").catch(() => {});
+    localSaveRecord = null;
+    window.TutePWA?.setPlaying(false);
     state.revealed = false;
     render();
     let title = "Partida terminada";
@@ -1048,6 +1068,88 @@
       ["08", count === 2 ? "Cambio del pinte" : teams ? "Parejas" : "Orden de turno", count === 2 ? "Después de ganar una baza, el siete cambia un pinte alto y el dos cambia un pinte bajo." : teams ? "Los jugadores 1 y 3 forman equipo; los jugadores 2 y 4 forman el otro." : "Quien gana una baza abre la siguiente."]
     ];
     UI.localRulesGrid.innerHTML = rules.map(([n, title, text]) => `<article><span>${n}</span><h3>${title}</h3><p>${text}</p></article>`).join("");
+  }
+
+  function normalizeLocalState(snapshot) {
+    snapshot.players ||= [];
+    snapshot.players.forEach(player => {
+      if (!(player.sung instanceof Set)) player.sung = new Set(player.sung || []);
+    });
+    snapshot.busy = false;
+    snapshot.revealed = false;
+    snapshot.lastDrawnId = null;
+    if (!["finished", "setup", "dealing"].includes(snapshot.phase)) snapshot.phase = "handoff";
+    return snapshot;
+  }
+
+  function localSnapshot() {
+    const snapshot = structuredClone(state);
+    return normalizeLocalState(snapshot);
+  }
+
+  function queueLocalAutosave() {
+    if (!window.TuteDB || !state.players.length || ["setup", "dealing", "finished"].includes(state.phase) || state.busy) return;
+    clearTimeout(localAutosaveTimer);
+    localAutosaveTimer = setTimeout(async () => {
+      try {
+        const snapshot = localSnapshot();
+        localSaveRecord = await window.TuteDB.save("local-current", snapshot, {
+          title: `${state.config.count} jugadores · ${state.config.teams ? "por parejas" : "individual"}`,
+          detail: `Baza ${state.trickNumber} · turno de ${state.players[state.current]?.name || "jugador"}`,
+          href: "local.html"
+        });
+        refreshLocalSaveCard();
+      } catch (_) {}
+    }, 500);
+  }
+
+  async function refreshLocalSaveCard() {
+    if (!UI.localResumeCard || !window.TuteDB) return;
+    try {
+      localSaveRecord = await window.TuteDB.load("local-current");
+      const valid = Boolean(localSaveRecord?.value?.players?.length && localSaveRecord.value.phase !== "finished");
+      UI.localResumeCard.classList.toggle("hidden", !valid);
+      if (!valid) return;
+      UI.localResumeTitle.textContent = localSaveRecord.meta?.title || "Continuar mesa local";
+      const age = Math.max(0, Math.round((Date.now() - localSaveRecord.updatedAt) / 60000));
+      UI.localResumeMeta.textContent = `${localSaveRecord.meta?.detail || "Partida guardada"} · ${age < 1 ? "ahora" : `hace ${age} min`}`;
+    } catch (_) { UI.localResumeCard.classList.add("hidden"); }
+  }
+
+  async function discardLocalSave() {
+    await window.TuteDB?.remove("local-current").catch(() => {});
+    localSaveRecord = null;
+    UI.localResumeCard?.classList.add("hidden");
+    window.TutePWA?.toast("Partida local descartada.");
+  }
+
+  async function resumeLocalGame() {
+    try {
+      const record = localSaveRecord || await window.TuteDB.load("local-current");
+      if (!record?.value?.players?.length) throw new Error("invalid-save");
+      cleanupHandGesture();
+      const snapshot = normalizeLocalState(record.value);
+      Object.keys(state).forEach(key => delete state[key]);
+      Object.assign(state, snapshot);
+      UI.localSetup.close();
+      clearTable();
+      renderRules();
+      preparePrivateTurn(state.current, state.stage || "play");
+      startMusic();
+      window.TutePWA?.setPlaying(true);
+      window.TutePWA?.toast("Mesa local recuperada con las manos ocultas.");
+    } catch (_) {
+      discardLocalSave();
+      window.TutePWA?.toast("La partida guardada no se pudo recuperar.");
+    }
+  }
+
+  function lockPrivateView() {
+    if (!state.players.length || !state.revealed || state.phase !== "active") return;
+    state.revealed = false;
+    state.phase = "handoff";
+    cleanupHandGesture();
+    render();
   }
 
   function updateStats() {

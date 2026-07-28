@@ -80,6 +80,10 @@
   const mode = MODES[params.get("mode")] || MODES.arrastrado3;
   const tutorialRequested = params.get("tutorial") === "1";
   const UI = {};
+  let multiAutosaveTimer = null;
+  let multiSaveRecord = null;
+  let multiGesture = null;
+  let suppressHumanClickUntil = 0;
   const state = {
     difficulty: "normal",
     players: [],
@@ -116,10 +120,11 @@
     renderRules();
     renderTutorial();
     UI.multiSetup.showModal();
+    refreshMultiSaveCard();
   }
 
   function cacheUI() {
-    ["modeKicker","modeTitle","multiMusicButton","multiRulesButton","multiTable","multiTutorial","multiTutorialKicker","multiTutorialTitle","multiTutorialText","multiTutorialDots","multiTutorialNext","multiTutorialExit","multiPhase","multiStatus","multiTrump","multiTrumpSuit","multiTrickRing","multiDropCore","multiCanteActions","multiHint","scoreTitle","trickCounter","multiScoreList","multiRuleTitle","multiRuleText","playerCardsLeft","tricksPlayed","currentLeader","multiLog","multiSetup","multiSetupForm","setupModeKicker","setupModeTitle","setupModeDescription","setupFacts","multiRulesModal","closeMultiRules","multiRulesTitle","multiRulesGrid","understandMultiRules","multiResult","multiResultSeal","multiResultTitle","multiResultText","multiFinalRanking","multiRematch","multiMusic"].forEach(id => UI[id] = document.getElementById(id));
+    ["modeKicker","modeTitle","multiMusicButton","multiRulesButton","multiTable","multiTutorial","multiTutorialKicker","multiTutorialTitle","multiTutorialText","multiTutorialDots","multiTutorialNext","multiTutorialExit","multiPhase","multiStatus","multiTrump","multiTrumpSuit","multiTrickRing","multiDropCore","multiCanteActions","multiHint","scoreTitle","trickCounter","multiScoreList","multiRuleTitle","multiRuleText","playerCardsLeft","tricksPlayed","currentLeader","multiLog","multiSetup","multiSetupForm","setupModeKicker","setupModeTitle","setupModeDescription","setupFacts","multiRulesModal","closeMultiRules","multiRulesTitle","multiRulesGrid","understandMultiRules","multiResult","multiResultSeal","multiResultTitle","multiResultText","multiFinalRanking","multiRematch","multiMusic","multiResumeCard","multiResumeTitle","multiResumeMeta","multiResumeSave","multiDiscardSave"].forEach(id => UI[id] = document.getElementById(id));
     for (let i=0;i<4;i+=1) {
       UI[`seat${i}`] = document.getElementById(`seat${i}`);
       UI[`hand${i}`] = document.getElementById(`hand${i}`);
@@ -165,6 +170,8 @@
     UI.closeMultiRules.addEventListener("click", () => UI.multiRulesModal.close());
     UI.understandMultiRules.addEventListener("click", () => UI.multiRulesModal.close());
     UI.multiMusicButton.addEventListener("click", toggleMusic);
+    UI.multiResumeSave?.addEventListener("click", resumeMultiGame);
+    UI.multiDiscardSave?.addEventListener("click", discardMultiSave);
     UI.multiRematch.addEventListener("click", () => { UI.multiResult.close(); startGame(); });
     UI.multiTrickRing.addEventListener("dragover", event => { event.preventDefault(); UI.multiTrickRing.classList.add("drag-active"); });
     UI.multiTrickRing.addEventListener("dragleave", () => UI.multiTrickRing.classList.remove("drag-active"));
@@ -234,6 +241,7 @@
   }
 
   function startGame() {
+    window.TutePWA?.setPlaying(true);
     state.deck=shuffle(buildDeck());
     state.players=Array.from({length:mode.players},(_,id)=>({ id, name:mode.names[id], human:id===0, hand:[], cardPoints:0, songPoints:0, tricks:0, captured:[], sung:new Set() }));
     state.trick=[];
@@ -310,6 +318,7 @@
     renderLog();
     renderDeclarations();
     renderTurns();
+    queueMultiAutosave();
   }
 
   function renderHands() {
@@ -324,7 +333,8 @@
           if (!el) {
             el=createCard(card,false);
             el.draggable=true;
-            el.addEventListener("click",()=>humanPlay(card.id));
+            el.addEventListener("click",()=>{ if (Date.now() >= suppressHumanClickUntil) humanPlay(card.id); });
+            el.addEventListener("pointerdown", event => beginMultiGesture(event, card.id, el));
             el.addEventListener("dragstart",event=>{ event.dataTransfer.setData("text/plain",card.id); el.classList.add("dragging"); });
             el.addEventListener("dragend",()=>{ el.classList.remove("dragging"); UI.multiTrickRing.classList.remove("drag-active"); });
             el.addEventListener("dragover",event=>event.preventDefault());
@@ -364,6 +374,193 @@
     if (from<to) to-=1;
     hand.splice(to+(before?0:1),0,card);
     renderHands();
+  }
+
+  function beginMultiGesture(event, cardId, element) {
+    if (state.phase !== "playing" || state.current !== 0 || state.busy || state.pendingDeclaration || event.button > 0 || event.isPrimary === false) return;
+    event.preventDefault();
+    const legal = getLegalCards(0).some(card => card.id === cardId);
+    element.setPointerCapture?.(event.pointerId);
+    multiGesture = {
+      pointerId: event.pointerId,
+      cardId,
+      element,
+      playable: legal,
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
+      mode: "tap",
+      insertIndex: state.players[0].hand.findIndex(card => card.id === cardId),
+      ghost: null,
+      slot: null,
+      sourceRect: null
+    };
+    document.addEventListener("pointermove", moveMultiGesture, { passive: false });
+    document.addEventListener("pointerup", endMultiGesture, { once: true });
+    document.addEventListener("pointercancel", cancelMultiGesture, { once: true });
+  }
+
+  function moveMultiGesture(event) {
+    if (!multiGesture || event.pointerId !== multiGesture.pointerId) return;
+    const dx = event.clientX - multiGesture.startX;
+    const dy = event.clientY - multiGesture.startY;
+    if (!multiGesture.moved && Math.hypot(dx, dy) < 9) return;
+    if (!multiGesture.moved) startMultiDrag(event);
+    event.preventDefault();
+    multiGesture.ghost.style.left = `${event.clientX}px`;
+    multiGesture.ghost.style.top = `${event.clientY}px`;
+    if (pointInsideMultiTable(event.clientX, event.clientY)) {
+      setMultiGestureMode(multiGesture.playable ? "play" : "invalid");
+      return;
+    }
+    if (pointNearMultiHand(event.clientX, event.clientY)) {
+      setMultiGestureMode("reorder");
+      updateMultiDropIndex(event.clientX);
+      autoScrollMultiHand(event.clientX);
+      return;
+    }
+    setMultiGestureMode("cancel");
+  }
+
+  function startMultiDrag(event) {
+    multiGesture.moved = true;
+    suppressHumanClickUntil = Date.now() + 500;
+    const rect = multiGesture.element.getBoundingClientRect();
+    multiGesture.sourceRect = rect;
+    multiGesture.element.classList.add("gesture-source");
+    const ghost = multiGesture.element.cloneNode(true);
+    ghost.classList.remove("legal", "illegal", "dragging", "gesture-source");
+    ghost.classList.add("hand-drag-ghost", "multi-drag-ghost");
+    Object.assign(ghost.style, { width: `${rect.width}px`, height: `${rect.height}px`, left: `${event.clientX}px`, top: `${event.clientY}px` });
+    document.body.appendChild(ghost);
+    multiGesture.ghost = ghost;
+    const slot = document.createElement("span");
+    slot.className = "hand-drop-slot multi-drop-slot";
+    slot.innerHTML = "<b>AQUÍ</b>";
+    multiGesture.slot = slot;
+    setMultiGestureMode("reorder");
+    updateMultiDropIndex(event.clientX, true);
+  }
+
+  function pointInsideMultiTable(x, y) {
+    const rect = UI.multiTrickRing.getBoundingClientRect();
+    return x >= rect.left - 65 && x <= rect.right + 65 && y >= rect.top - 65 && y <= rect.bottom + 65;
+  }
+
+  function pointNearMultiHand(x, y) {
+    const rect = UI.hand0.getBoundingClientRect();
+    return x >= rect.left - 70 && x <= rect.right + 70 && y >= rect.top - 90 && y <= rect.bottom + 100;
+  }
+
+  function setMultiGestureMode(modeName) {
+    if (!multiGesture || multiGesture.mode === modeName) return;
+    multiGesture.mode = modeName;
+    UI.multiTrickRing.classList.toggle("play-drop-active", modeName === "play" || modeName === "invalid");
+    UI.multiTrickRing.classList.toggle("play-drop-valid", modeName === "play");
+    UI.multiTrickRing.classList.toggle("play-drop-invalid", modeName === "invalid");
+    UI.multiDropCore.querySelector("span").textContent = modeName === "invalid" ? "JUGADA NO VÁLIDA" : "SUELTA PARA JUGAR";
+    if (modeName === "reorder") {
+      if (multiGesture.slot && !multiGesture.slot.isConnected) UI.hand0.appendChild(multiGesture.slot);
+    } else multiGesture.slot?.remove();
+  }
+
+  function updateMultiDropIndex(clientX, force = false) {
+    if (!multiGesture || multiGesture.mode !== "reorder") return;
+    const cards = [...UI.hand0.querySelectorAll("[data-card-id]")].filter(element => element.dataset.cardId !== multiGesture.cardId);
+    const sorted = cards.map(element => ({ element, rect: element.getBoundingClientRect() })).sort((a, b) => a.rect.left - b.rect.left);
+    const index = sorted.filter(item => clientX > item.rect.left + item.rect.width / 2).length;
+    if (!force && index === multiGesture.insertIndex && multiGesture.slot?.isConnected) return;
+    const before = new Map(cards.map(element => [element.dataset.cardId, element.getBoundingClientRect()]));
+    multiGesture.insertIndex = index;
+    UI.hand0.insertBefore(multiGesture.slot, sorted[index]?.element || null);
+    requestAnimationFrame(() => {
+      cards.forEach(element => {
+        const oldRect = before.get(element.dataset.cardId);
+        if (!oldRect) return;
+        const next = element.getBoundingClientRect();
+        const moveX = oldRect.left - next.left;
+        const moveY = oldRect.top - next.top;
+        if (Math.abs(moveX) > 1 || Math.abs(moveY) > 1) {
+          element.animate([{ translate: `${moveX}px ${moveY}px` }, { translate: "0 0" }], { duration: 170, easing: "cubic-bezier(.2,.8,.2,1)" });
+        }
+      });
+    });
+  }
+
+  function autoScrollMultiHand(clientX) {
+    const rect = UI.hand0.getBoundingClientRect();
+    const edge = 46;
+    if (clientX < rect.left + edge) UI.hand0.scrollLeft -= 10;
+    if (clientX > rect.right - edge) UI.hand0.scrollLeft += 10;
+  }
+
+  async function endMultiGesture(event) {
+    if (!multiGesture || event.pointerId !== multiGesture.pointerId) return;
+    const gesture = multiGesture;
+    if (!gesture.moved) {
+      cleanupMultiGesture();
+      if (gesture.playable) humanPlay(gesture.cardId);
+      return;
+    }
+    if (gesture.mode === "play") {
+      cleanupMultiGesture();
+      navigator.vibrate?.(10);
+      humanPlay(gesture.cardId);
+      return;
+    }
+    if (gesture.mode === "invalid") {
+      await animateMultiGhostBack(gesture);
+      cleanupMultiGesture();
+      toast(getRuleReading().text);
+      return;
+    }
+    if (gesture.mode === "reorder") {
+      const hand = state.players[0].hand;
+      const from = hand.findIndex(card => card.id === gesture.cardId);
+      const insert = Math.max(0, Math.min(hand.length - 1, gesture.insertIndex));
+      cleanupMultiGesture();
+      if (from >= 0) {
+        const [card] = hand.splice(from, 1);
+        hand.splice(Math.min(insert, hand.length), 0, card);
+        navigator.vibrate?.(6);
+        renderHands();
+        queueMultiAutosave();
+      }
+      return;
+    }
+    await animateMultiGhostBack(gesture);
+    cleanupMultiGesture();
+  }
+
+  async function cancelMultiGesture() {
+    const gesture = multiGesture;
+    if (gesture?.moved) await animateMultiGhostBack(gesture);
+    cleanupMultiGesture();
+  }
+
+  async function animateMultiGhostBack(gesture) {
+    if (!gesture?.ghost || !gesture.element?.isConnected) return;
+    const ghostRect = gesture.ghost.getBoundingClientRect();
+    const sourceRect = gesture.sourceRect || gesture.element.getBoundingClientRect();
+    const dx = sourceRect.left + sourceRect.width / 2 - (ghostRect.left + ghostRect.width / 2);
+    const dy = sourceRect.top + sourceRect.height / 2 - (ghostRect.top + ghostRect.height / 2);
+    const animation = gesture.ghost.animate([
+      { transform: "translate(-50%,-88%) rotate(-3deg) scale(1.06)", opacity: .98 },
+      { transform: `translate(calc(-50% + ${dx}px),calc(-88% + ${dy}px)) rotate(0deg) scale(.96)`, opacity: .25 }
+    ], { duration: 210, easing: "cubic-bezier(.22,.78,.18,1)", fill: "forwards" });
+    try { await animation.finished; } catch (_) {}
+  }
+
+  function cleanupMultiGesture() {
+    if (!multiGesture) return;
+    multiGesture.element?.classList.remove("gesture-source");
+    multiGesture.ghost?.remove();
+    multiGesture.slot?.remove();
+    document.removeEventListener("pointermove", moveMultiGesture);
+    document.removeEventListener("pointerup", endMultiGesture);
+    document.removeEventListener("pointercancel", cancelMultiGesture);
+    UI.multiTrickRing.classList.remove("play-drop-active", "play-drop-valid", "play-drop-invalid", "drag-active");
+    multiGesture = null;
   }
 
   function renderTrick() {
@@ -707,6 +904,9 @@
 
   function finishGame(specialWinner=null,reason="puntos") {
     state.phase="finished";
+    window.TuteDB?.remove(`multi-${mode.id}`).catch(() => {});
+    multiSaveRecord = null;
+    window.TutePWA?.setPlaying(false);
     state.current=-1;
     render();
     let winnerText="",humanWon=false,ranking=[];
@@ -734,6 +934,69 @@
     UI.multiFinalRanking.innerHTML=ranking.map((entry,i)=>`<div class="final-row"><span>${i+1}. ${entry.name}</span><strong>${entry.score}</strong></div>`).join("");
     updateStats(humanWon);
     setTimeout(()=>UI.multiResult.showModal(),450);
+  }
+
+  function normalizeMultiState(snapshot) {
+    snapshot.players ||= [];
+    snapshot.players.forEach(player => {
+      if (!(player.sung instanceof Set)) player.sung = new Set(player.sung || []);
+    });
+    snapshot.busy = false;
+    return snapshot;
+  }
+
+  function queueMultiAutosave() {
+    if (!window.TuteDB || !state.players.length || ["setup", "dealing", "finished"].includes(state.phase) || state.busy) return;
+    clearTimeout(multiAutosaveTimer);
+    multiAutosaveTimer = setTimeout(async () => {
+      try {
+        const snapshot = normalizeMultiState(structuredClone(state));
+        multiSaveRecord = await window.TuteDB.save(`multi-${mode.id}`, snapshot, {
+          title: mode.title,
+          detail: `Baza ${state.trickNumber} · ${state.players[0]?.hand.length || 0} cartas en tu mano`,
+          href: `multi.html?mode=${mode.id}`
+        });
+        refreshMultiSaveCard();
+      } catch (_) {}
+    }, 600);
+  }
+
+  async function refreshMultiSaveCard() {
+    if (!UI.multiResumeCard || !window.TuteDB) return;
+    try {
+      multiSaveRecord = await window.TuteDB.load(`multi-${mode.id}`);
+      const valid = Boolean(multiSaveRecord?.value?.players?.length && multiSaveRecord.value.phase !== "finished");
+      UI.multiResumeCard.classList.toggle("hidden", !valid);
+      if (!valid) return;
+      UI.multiResumeTitle.textContent = multiSaveRecord.meta?.title || mode.title;
+      const age = Math.max(0, Math.round((Date.now() - multiSaveRecord.updatedAt) / 60000));
+      UI.multiResumeMeta.textContent = `${multiSaveRecord.meta?.detail || "Partida guardada"} · ${age < 1 ? "ahora" : `hace ${age} min`}`;
+    } catch (_) { UI.multiResumeCard.classList.add("hidden"); }
+  }
+
+  async function discardMultiSave() {
+    await window.TuteDB?.remove(`multi-${mode.id}`).catch(() => {});
+    multiSaveRecord = null;
+    UI.multiResumeCard?.classList.add("hidden");
+    window.TutePWA?.toast("Partida guardada descartada.");
+  }
+
+  async function resumeMultiGame() {
+    try {
+      const record = multiSaveRecord || await window.TuteDB.load(`multi-${mode.id}`);
+      if (!record?.value?.players?.length) throw new Error("invalid-save");
+      Object.assign(state, normalizeMultiState(record.value));
+      UI.multiSetup.close();
+      clearTable();
+      render();
+      startMusic();
+      window.TutePWA?.setPlaying(true);
+      if (state.phase === "playing" && state.current !== 0) setTimeout(scheduleAi, 450);
+      window.TutePWA?.toast("Partida recuperada.");
+    } catch (_) {
+      discardMultiSave();
+      window.TutePWA?.toast("La partida guardada no se pudo recuperar.");
+    }
   }
 
   function updateStats(humanWon) {

@@ -186,6 +186,9 @@
   let customRules = { ...DEFAULT_CUSTOM_RULES };
   let musicEnabled = false;
   let selectedVariantId = "house";
+  let soloAutosaveTimer = null;
+  let soloSaveRecord = null;
+  let homeSaveRecord = null;
 
   const state = {
     mode: "home",
@@ -578,6 +581,8 @@
     renderHomeStats();
     updateMusicUi();
     showHome();
+    refreshSoloSaveCard();
+    handleLaunchShortcut();
   }
 
   function cacheUI() {
@@ -604,7 +609,8 @@
       "customExchange", "customTute", "customCapote", "setupEyebrow", "setupTitle", "setupCopy", "selectedVariantSummary",
       "rulesModalTitle", "rulesModalCopy", "dynamicRulesGrid", "variantLiveBadge", "capoteButton",
       "backgroundMusic", "musicButton", "musicIcon", "musicPopover", "musicStatus", "musicVolume", "homeMusicButton",
-      "statGames", "statWins", "statWinRate", "statFavorite", "closeSetupButton", "closeCustomRulesButton"
+      "statGames", "statWins", "statWinRate", "statFavorite", "closeSetupButton", "closeCustomRulesButton",
+      "resumeGameCard", "resumeGameTitle", "resumeGameMeta", "resumeGameButton", "discardResumeButton", "openPwaPanelButton"
     ].forEach(id => UI[id] = document.getElementById(id));
   }
 
@@ -617,6 +623,9 @@
     });
 
     UI.classicModeButton.addEventListener("click", openVariantSelector);
+    UI.openPwaPanelButton?.addEventListener("click", () => window.TutePWA?.openPanel());
+    UI.resumeGameButton?.addEventListener("click", resumeLatestSave);
+    UI.discardResumeButton?.addEventListener("click", discardSoloSave);
     UI.tutorialModeButton.addEventListener("click", openTutorialSelector);
     UI.customModeButton.addEventListener("click", openCustomRules);
     UI.closeVariantButton.addEventListener("click", () => UI.variantModal.close());
@@ -745,6 +754,8 @@
     updateTutorialCompletionBadge();
     renderHomeStats();
     updateMusicUi();
+    window.TutePWA?.setPlaying(false);
+    refreshSoloSaveCard();
   }
 
   function updateTutorialCompletionBadge() {
@@ -1232,6 +1243,7 @@
 
   function startMatch() {
     clearTimers();
+    window.TutePWA?.setPlaying(true);
     state.match.playerRounds = 0;
     state.match.aiRounds = 0;
     state.match.playerPoints = 0;
@@ -1553,6 +1565,7 @@
     renderLog();
     renderActions();
     if (state.tutorial.active) renderTutorialCoach();
+    queueSoloAutosave();
   }
 
   function renderHands() {
@@ -1702,6 +1715,7 @@
     if (isPointNearHand(event.clientX, event.clientY)) {
       setGestureMode("reorder");
       updateHandDropIndex(event.clientX);
+      autoScrollActiveHand(event.clientX);
       return;
     }
     setGestureMode("cancel");
@@ -1743,6 +1757,14 @@
     const rect = UI.playerHand.getBoundingClientRect();
     return x >= rect.left - 90 && x <= rect.right + 90 &&
       y >= rect.top - 85 && y <= rect.bottom + 105;
+  }
+
+  function autoScrollActiveHand(clientX) {
+    const hand = UI.playerHand;
+    const rect = hand.getBoundingClientRect();
+    const edge = 48;
+    if (clientX < rect.left + edge) hand.scrollLeft -= 11;
+    if (clientX > rect.right - edge) hand.scrollLeft += 11;
   }
 
   function setGestureMode(mode) {
@@ -2857,6 +2879,9 @@
     UI.resultAiScore.textContent = pointMode ? state.match.aiPoints : aiScore;
 
     if (matchOver) {
+      window.TuteDB?.remove("solo-current").catch(() => {});
+      soloSaveRecord = null;
+      window.TutePWA?.setPlaying(false);
       UI.resultKicker.textContent = pointMode ? `OBJETIVO ${state.settings.rules.targetPoints} ALCANZADO` : "PARTIDA TERMINADA";
       UI.resultEmblem.textContent = matchWinner === "player" ? "V" : "D";
       UI.resultTitle.textContent = matchWinner === "player" ? "Has conquistado la mesa" : "Doña Virtud gana la partida";
@@ -2963,6 +2988,133 @@
     }
   }
 
+  function handleLaunchShortcut() {
+    const mode = new URLSearchParams(location.search).get("mode");
+    if (!mode) return;
+    history.replaceState({}, "", location.pathname);
+    setTimeout(() => {
+      if (mode === "solo") openVariantSelector();
+      if (mode === "tutorial") openTutorialSelector();
+    }, 180);
+  }
+
+  function normalizeSoloRound(round) {
+    if (!round) return null;
+    round.sungSuits ||= { player: new Set(), ai: new Set() };
+    if (!(round.sungSuits.player instanceof Set)) round.sungSuits.player = new Set(round.sungSuits.player || []);
+    if (!(round.sungSuits.ai instanceof Set)) round.sungSuits.ai = new Set(round.sungSuits.ai || []);
+    round.pendingHandFlip = null;
+    round.dragCardId = null;
+    round.busyFlight = false;
+    round.drawing = false;
+    return round;
+  }
+
+  function soloSnapshot() {
+    if (!state.round) return null;
+    const round = structuredClone(state.round);
+    normalizeSoloRound(round);
+    return {
+      settings: structuredClone(state.settings),
+      match: structuredClone(state.match),
+      round,
+      savedMode: state.mode,
+      variantName: getVariant(state.settings.variantId).name
+    };
+  }
+
+  function queueSoloAutosave() {
+    if (!window.TuteDB || state.mode !== "game" || !state.round) return;
+    const round = state.round;
+    if (["dealing", "roundOver"].includes(round.phase) || round.drawing || round.busyFlight) return;
+    clearTimeout(soloAutosaveTimer);
+    soloAutosaveTimer = setTimeout(async () => {
+      try {
+        const snapshot = soloSnapshot();
+        if (!snapshot) return;
+        soloSaveRecord = await window.TuteDB.save("solo-current", snapshot, {
+          title: `${snapshot.variantName} contra IA`,
+          detail: `Mano ${snapshot.match.round} · ${snapshot.round.hands.player.length} cartas en tu mano`,
+          href: "index.html"
+        });
+        refreshSoloSaveCard();
+      } catch (_) {}
+    }, 650);
+  }
+
+  async function refreshSoloSaveCard() {
+    if (!UI.resumeGameCard || !window.TuteDB) return;
+    try {
+      const records = await window.TuteDB.list();
+      homeSaveRecord = records.find(record => {
+        if (record.key === "solo-current") return Boolean(record.value?.round && record.value.round.phase !== "roundOver");
+        if (record.key === "local-current") return Boolean(record.value?.players?.length && record.value.phase !== "finished");
+        if (record.key.startsWith("multi-")) return Boolean(record.value?.players?.length && record.value.phase !== "finished");
+        return false;
+      }) || null;
+      soloSaveRecord = homeSaveRecord?.key === "solo-current" ? homeSaveRecord : await window.TuteDB.load("solo-current");
+      const valid = Boolean(homeSaveRecord);
+      UI.resumeGameCard.classList.toggle("hidden", !valid);
+      if (!valid) return;
+      UI.resumeGameTitle.textContent = homeSaveRecord.meta?.title || "Continuar partida";
+      const ageMinutes = Math.max(0, Math.round((Date.now() - homeSaveRecord.updatedAt) / 60000));
+      UI.resumeGameMeta.textContent = `${homeSaveRecord.meta?.detail || "Partida guardada"} · ${ageMinutes < 1 ? "ahora" : `hace ${ageMinutes} min`}`;
+    } catch (_) {
+      homeSaveRecord = null;
+      UI.resumeGameCard.classList.add("hidden");
+    }
+  }
+
+  async function discardSoloSave() {
+    const key = homeSaveRecord?.key || "solo-current";
+    await window.TuteDB?.remove(key).catch(() => {});
+    if (key === "solo-current") soloSaveRecord = null;
+    homeSaveRecord = null;
+    UI.resumeGameCard?.classList.add("hidden");
+    window.TutePWA?.toast("Partida guardada descartada.");
+    refreshSoloSaveCard();
+  }
+
+  async function resumeLatestSave() {
+    if (!homeSaveRecord) await refreshSoloSaveCard();
+    if (!homeSaveRecord) return;
+    if (homeSaveRecord.key === "solo-current") {
+      soloSaveRecord = homeSaveRecord;
+      resumeSoloGame();
+      return;
+    }
+    const href = homeSaveRecord.meta?.href;
+    if (href) location.href = href;
+  }
+
+  async function resumeSoloGame() {
+    try {
+      const record = soloSaveRecord || await window.TuteDB.load("solo-current");
+      const snapshot = record?.value;
+      if (!snapshot?.round) throw new Error("save-invalid");
+      clearTimers();
+      cleanupHandGesture();
+      Object.assign(state.settings, snapshot.settings || {});
+      Object.assign(state.match, snapshot.match || {});
+      state.round = normalizeSoloRound(snapshot.round);
+      state.mode = "game";
+      state.tutorial.active = false;
+      selectedVariantId = state.settings.variantId || "house";
+      UI.variantLiveBadge.textContent = getVariant(selectedVariantId).shortName.toUpperCase();
+      showGameTable();
+      renderRulesModal();
+      render();
+      ensureMusicStarted();
+      window.TutePWA?.setPlaying(true);
+      if (state.round.phase === "playing" && state.round.currentTurn === "ai") later(scheduleAiTurn, 480);
+      if (state.round.phase === "awaitingDraw" && state.round.drawQueue?.[state.round.drawIndex] === "ai") later(advanceDrawQueue, 480);
+      window.TutePWA?.toast("Partida recuperada.");
+    } catch (_) {
+      discardSoloSave();
+      window.TutePWA?.toast("La partida guardada no se pudo recuperar.");
+    }
+  }
+
   function updatePersistentStats(roundWinner, matchWinner) {
     try {
       const current = JSON.parse(localStorage.getItem("tuteIaStats") || "{}");
@@ -2979,9 +3131,4 @@
     } catch (_) {}
   }
 
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker.register("sw.js").catch(() => {});
-    });
-  }
 })();

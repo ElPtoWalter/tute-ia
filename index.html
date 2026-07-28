@@ -4,11 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#071c17">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tute IA">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="color-scheme" content="dark">
   <meta name="description" content="Club offline de tute: partidas contra IA, multijugador local pasa el móvil, tutoriales, reglas de casa y música de mesa.">
   <title>Tute IA — Club offline</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=13.0.0">
+  <link rel="icon" href="assets/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css?v=14.0.0">
+  <link rel="stylesheet" href="pwa.css?v=14.0.0">
+  <link rel="stylesheet" href="mobile.css?v=14.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -73,7 +82,7 @@
           <span class="eyebrow">CLUB OFFLINE</span>
           <h2>Elige qué quieres hacer</h2>
         </div>
-        <span class="mode-count">V13 · PASA EL MÓVIL</span>
+        <span class="mode-count">V14 · MOBILE + PWA</span>
       </div>
 
       <div class="mode-grid mode-grid-four">
@@ -121,6 +130,16 @@
           <span class="mode-meta"><b>Motor parametrizable</b><i>Personalizar →</i></span>
         </button>
       </div>
+
+      <section class="resume-card hidden" id="resumeGameCard" aria-live="polite">
+        <div class="resume-card-copy"><span>PARTIDA GUARDADA</span><strong id="resumeGameTitle">Continúa donde lo dejaste</strong><small id="resumeGameMeta">Guardado automáticamente en este dispositivo</small></div>
+        <div class="resume-card-actions"><button id="discardResumeButton" type="button">Descartar</button><button class="resume-primary" id="resumeGameButton" type="button">Continuar partida</button></div>
+      </section>
+
+      <section class="offline-ready-card">
+        <div><span>APP INSTALABLE</span><strong>Preparada para móvil y sin conexión</strong><small>Cartas, reglas, tutoriales y partidas guardadas funcionan offline. La música completa se descarga de forma opcional.</small></div>
+        <button id="openPwaPanelButton" type="button">Instalar y gestionar</button>
+      </section>
 
       <div class="club-dashboard">
         <article class="club-stat"><span>PARTIDAS</span><strong id="statGames">0</strong><small>jugadas en este dispositivo</small></article>
@@ -447,7 +466,8 @@
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <audio id="backgroundMusic" src="assets/audio/casino-jazz-background.mp3" preload="metadata" loop></audio>
-  <script src="app.js?v=13.0.0"></script>
+  <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="metadata" loop></audio>
+  <script src="pwa.js?v=14.0.0"></script>
+  <script src="app.js?v=14.0.0"></script>
 </body>
 </html>

@@ -4,10 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#071c17">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tute IA">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="color-scheme" content="dark">
   <meta name="description" content="Multijugador local de Tute IA para 2, 3 o 4 personas en un único dispositivo, con privacidad pasa el móvil.">
   <title>Tute IA — Pasa el móvil</title>
-  <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="local.css?v=13.0.0">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="local.css?v=14.0.0">
+  <link rel="stylesheet" href="pwa.css?v=14.0.0">
+  <link rel="stylesheet" href="mobile.css?v=14.0.0">
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -154,6 +164,11 @@
         <p>Después de cada jugada, cante o robo aparecerá una pantalla opaca indicando a quién debes entregar el dispositivo.</p>
       </div>
 
+      <section class="resume-card hidden" id="localResumeCard">
+        <div class="resume-card-copy"><span>PARTIDA LOCAL GUARDADA</span><strong id="localResumeTitle">Continuar mesa</strong><small id="localResumeMeta">Las manos volverán a mostrarse con privacidad</small></div>
+        <div class="resume-card-actions"><button id="localDiscardSave" type="button">Descartar</button><button class="resume-primary" id="localResumeSave" type="button">Continuar</button></div>
+      </section>
+
       <button class="gold-action start-local" type="submit">Preparar partida →</button>
       <a href="index.html" class="modal-back">Volver al menú</a>
     </form>
@@ -181,7 +196,8 @@
     </div>
   </dialog>
 
-  <audio id="localMusic" src="assets/audio/casino-jazz-background.mp3" preload="metadata" loop></audio>
-  <script src="local.js?v=13.0.0"></script>
+  <audio id="localMusic" src="assets/audio/casino-jazz-lite.mp3" preload="metadata" loop></audio>
+  <script src="pwa.js?v=14.0.0"></script>
+  <script src="local.js?v=14.0.0"></script>
 </body>
 </html>

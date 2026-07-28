@@ -4,9 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071c17">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Tute IA">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="color-scheme" content="dark">
   <title>Tute IA — Mesa multijugador offline</title>
-  <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="multi.css?v=13.0.0">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="multi.css?v=14.0.0">
+  <link rel="stylesheet" href="pwa.css?v=14.0.0">
+  <link rel="stylesheet" href="mobile.css?v=14.0.0">
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -85,6 +95,11 @@
       <p id="setupModeDescription"></p>
       <div class="mode-facts" id="setupFacts"></div>
       <fieldset><legend>Dificultad de las IA</legend><label><input type="radio" name="multiDifficulty" value="easy"> Tranquila</label><label><input type="radio" name="multiDifficulty" value="normal" checked> Competitiva</label><label><input type="radio" name="multiDifficulty" value="hard"> Maestra</label></fieldset>
+      <section class="resume-card hidden" id="multiResumeCard">
+        <div class="resume-card-copy"><span>PARTIDA GUARDADA</span><strong id="multiResumeTitle">Continuar mesa</strong><small id="multiResumeMeta">Guardado automático</small></div>
+        <div class="resume-card-actions"><button id="multiDiscardSave" type="button">Descartar</button><button class="resume-primary" id="multiResumeSave" type="button">Continuar</button></div>
+      </section>
+
       <button class="gold-action start-multi" value="default">Sentarse y repartir →</button>
       <a href="index.html" class="modal-back">Volver al menú</a>
     </form>
@@ -93,7 +108,8 @@
   <dialog id="multiRulesModal" class="multi-modal"><div class="multi-modal-card"><button class="modal-close" id="closeMultiRules">×</button><span class="modal-kicker">REGLAMENTO</span><h1 id="multiRulesTitle"></h1><div class="multi-rules-grid" id="multiRulesGrid"></div><button class="gold-action" id="understandMultiRules">Entendido</button></div></dialog>
   <dialog id="multiResult" class="multi-modal"><div class="multi-modal-card result-card"><span class="modal-kicker">PARTIDA TERMINADA</span><div class="result-seal" id="multiResultSeal">V</div><h1 id="multiResultTitle"></h1><p id="multiResultText"></p><div class="final-ranking" id="multiFinalRanking"></div><button class="gold-action" id="multiRematch">Revancha →</button><a href="index.html" class="modal-back">Volver al menú</a></div></dialog>
 
-  <audio id="multiMusic" src="assets/audio/casino-jazz-background.mp3" preload="metadata" loop></audio>
-  <script src="multi.js?v=13.0.0"></script>
+  <audio id="multiMusic" src="assets/audio/casino-jazz-lite.mp3" preload="metadata" loop></audio>
+  <script src="pwa.js?v=14.0.0"></script>
+  <script src="multi.js?v=14.0.0"></script>
 </body>
 </html>

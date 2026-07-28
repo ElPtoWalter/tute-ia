@@ -1,24 +1,44 @@
-# Tute IA — Club offline · v13
+# Tute IA — Mobile First + PWA offline · v14
 
-## Novedad principal: multijugador local «pasa el móvil»
+Esta versión transforma el proyecto en una aplicación web instalable, preparada para móviles y capaz de continuar funcionando sin conexión después de la primera carga completa.
 
-La aplicación mantiene todos los modos contra IA y añade partidas humanas en un único dispositivo:
+## Experiencia móvil
 
-- 2 jugadores: ocho cartas, baceta, triunfo visible y obligaciones completas desde la primera baza.
-- 3 jugadores: trece cartas, una carta apartada y sin triunfo inicial; el primer cante fija el pinte.
-- 4 jugadores: diez cartas cada uno, modalidad individual o por parejas.
+- Diseño específico para pantallas pequeñas, orientación vertical y horizontal.
+- Compatibilidad con áreas seguras de iPhone, notch e isla dinámica.
+- Cartas, manos, mesa, menús y diálogos adaptados a interacción táctil.
+- Reordenación por arrastre, hueco de inserción y desplazamiento automático de la mano al acercarse a los extremos.
+- Toque para jugar y arrastre hasta el tapete.
+- Pantalla privada reforzada en el modo «pasa el móvil».
+- Ocultación automática de la mano al minimizar, cambiar de pestaña o bloquear el dispositivo.
+- Bloqueo de pantalla activa durante las partidas cuando el navegador lo permite.
 
-Entre acciones aparece una pantalla opaca que indica a quién hay que entregar el dispositivo. Ninguna mano queda visible durante el cambio de jugador.
+## Aplicación instalable
 
-## Interacción
+- Manifest PWA completo, iconos normales y maskable, accesos directos y capturas.
+- Instalación en Android desde el navegador.
+- Instrucciones integradas para añadirla a la pantalla de inicio en iPhone o iPad.
+- Apertura en modo aplicación, sin depender de las barras normales del navegador.
+- Opción de pantalla completa.
 
-- Jugar mediante pulsación o arrastrando la carta al centro.
-- Reordenar la mano con hueco visible.
-- Robos privados y manuales en la modalidad de dos jugadores.
-- Cantes privados después de ganar una baza.
-- Cambio del pinte con siete o dos en la modalidad de dos jugadores.
-- Música Casino Jazz disponible sin conexión.
+## Offline y guardado
 
-## Actualización
+- Cartas, reglas, tutoriales, interfaces y música ligera precargados por el service worker.
+- Página de respaldo cuando no existe conexión.
+- Partidas contra IA, multijugador local y mesas multijugador contra IA guardadas automáticamente en IndexedDB.
+- Continuación de la última partida desde el menú.
+- Exportación e importación de una copia de seguridad en JSON.
+- Solicitud opcional de almacenamiento persistente.
+- Aviso de nuevas versiones sin eliminar partidas guardadas.
 
-Sube todo el contenido a la raíz del repositorio y reemplaza los archivos anteriores. La caché de esta versión es `tute-ia-v13.0.0`.
+## Música
+
+- Pista ligera de cinco minutos incluida en la instalación offline inicial.
+- Pista completa de treinta minutos disponible mediante descarga opcional desde el panel de la aplicación.
+- La pista completa no ralentiza la instalación básica.
+
+## Publicación
+
+Sube todo el contenido de esta carpeta a la raíz del repositorio y reemplaza la versión anterior. Tras el despliegue, abre la web una vez con conexión para completar la instalación offline.
+
+La versión de caché es `14.0.0`.

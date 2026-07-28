@@ -1,19 +1,26 @@
-# QA v13
+# QA v14
 
-## Verificaciones realizadas
+## Validación estática
 
-- Sintaxis validada en `app.js`, `multi.js`, `local.js` y `sw.js`.
-- 40 cartas `.webp` y el reverso presentes.
-- Menú principal cargado en Chromium sin errores y enlazado con `local.html`.
-- Configuraciones locales de 2, 3 y 4 jugadores incluidas.
-- Modalidad de cuatro individual y por parejas incluida.
-- Regla de tres jugadores actualizada: no existe triunfo inicial y el primer cante fija el pinte.
-- Seis casos críticos de legalidad comprobados: montar, asistir tras fallo, pisar, descarte libre, juego sin triunfo y salida de triunfo.
-- Caché offline actualizada a `v13.0.0`, incluyendo `local.html`, `local.css` y `local.js`.
+- Sintaxis validada con Node en `app.js`, `local.js`, `multi.js`, `pwa.js` y `sw.js`.
+- CSS analizado sin errores de sintaxis en los cinco archivos de estilos.
+- Manifest validado como JSON.
+- 40 cartas `.webp`, reverso, iconos, capturas y pistas de audio presentes.
+- Los 62 recursos de instalación básica declarados en el service worker existen.
+- Referencias locales de los tres documentos HTML comprobadas.
+- No existen identificadores HTML duplicados.
 
-## Pruebas reales en Chromium
+## Pruebas interactivas en Chromium
 
-- Mesa local de 3: 13 cartas por jugador, triunfo «POR DECIDIR», baceta oculta, reordenación de mano mediante arrastre y entrega automática al siguiente jugador.
-- Mesa local de 2: 8 cartas iniciales, baceta de 24, dos jugadas legales, robo privado por ambos jugadores y baceta reducida a 22.
-- Mesa local de 4 por parejas en viewport móvil: 10 cartas, equipos 1+3 y 2+4, mano privada y adaptación responsive.
-- No se registraron errores de consola ni excepciones en estos recorridos.
+Las páginas se ejecutaron mediante un documento autocontenido en Chromium, debido al bloqueo del entorno de pruebas sobre direcciones locales.
+
+- Menú móvil: cuatro modos principales, ocho variantes y panel PWA abiertos correctamente.
+- Partida contra IA: reparto completo de 8 cartas por jugador, baceta de 24 y fase de arrastre activa.
+- Multijugador local a tres: 13 cartas por jugador, triunfo «POR DECIDIR», pantalla privada de entrega y ocultación inmediata mediante el evento de privacidad.
+- Mesa contra dos IA: 13 cartas por jugador, sin triunfo inicial, carta jugada correctamente y respuesta de la IA.
+- `TutePWA` y `TuteDB` disponibles durante la ejecución.
+- No se registraron excepciones de JavaScript en esos recorridos.
+
+## Limitación de la prueba
+
+El entorno no permitió servir la aplicación desde un origen HTTP local, por lo que no se realizó una instalación real del service worker dentro de Chromium. La lógica del service worker, sus rutas y todos los recursos de precarga sí fueron validados de forma estática. La instalación PWA debe confirmarse una vez desplegada en GitHub Pages.

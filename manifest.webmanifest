@@ -1,22 +1,112 @@
 {
+  "id": "./?source=pwa",
   "name": "Tute IA — Club offline",
   "short_name": "Tute IA",
-  "description": "Tute offline contra IA y multijugador local pasa el móvil para 2, 3 o 4 personas, con tutoriales, reglas de casa y música.",
-  "start_url": "./",
+  "description": "Tute offline contra IA y multijugador local pasa el móvil para 2, 3 o 4 personas, con tutoriales, reglas de casa, guardado automático y música.",
+  "start_url": "./?source=pwa",
+  "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "fullscreen",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
   "background_color": "#04110e",
   "theme_color": "#071c17",
-  "lang": "es",
+  "lang": "es-ES",
+  "dir": "ltr",
+  "categories": [
+    "games",
+    "entertainment",
+    "education"
+  ],
+  "prefer_related_applications": false,
+  "launch_handler": {
+    "client_mode": [
+      "navigate-existing",
+      "auto"
+    ]
+  },
   "icons": [
     {
       "src": "assets/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "assets/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Partida contra IA",
+      "short_name": "Contra IA",
+      "description": "Abrir el selector de partidas offline",
+      "url": "./?mode=solo",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Multijugador local",
+      "short_name": "Pasa el móvil",
+      "description": "Preparar una partida local para 2, 3 o 4 personas",
+      "url": "./local.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Tutorial",
+      "short_name": "Aprender",
+      "description": "Abrir los tutoriales adaptativos",
+      "url": "./?mode=tutorial",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Menú principal de Tute IA en móvil"
+    },
+    {
+      "src": "assets/screenshots/local-handoff.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Pantalla privada para pasar el móvil entre jugadores"
+    },
+    {
+      "src": "assets/screenshots/desktop-table.png",
+      "sizes": "1365x768",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Mesa de juego offline"
     }
   ]
 }
