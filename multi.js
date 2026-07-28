@@ -214,14 +214,14 @@
   async function startMusic() {
     const enabled = localStorage.getItem("tuteIaMusicEnabled") !== "false";
     if (!enabled) return;
-    try { await UI.multiMusic.play(); UI.multiMusicButton.textContent = "♫"; } catch (_) {}
+    try { await UI.multiMusic.play(); UI.multiMusicButton.textContent = "♫"; window.TuteMusicContinuity?.sync(); } catch (_) {}
   }
 
   async function toggleMusic() {
     if (UI.multiMusic.paused) {
       try { await UI.multiMusic.play(); localStorage.setItem("tuteIaMusicEnabled","true"); UI.multiMusicButton.textContent="♫"; } catch (_) {}
     } else {
-      UI.multiMusic.pause(); localStorage.setItem("tuteIaMusicEnabled","false"); UI.multiMusicButton.textContent="♩";
+      window.TuteMusicContinuity?.savePosition(); UI.multiMusic.pause(); localStorage.setItem("tuteIaMusicEnabled","false"); UI.multiMusicButton.textContent="♩";
     }
   }
 
@@ -824,7 +824,7 @@
     if (declarations.length) {
       state.pendingDeclaration={player:winner,options:declarations};
       render();
-      if (winner!==0) setTimeout(()=>resolveDeclaration(declarations[0]),500);
+      if (winner!==0) setTimeout(()=>void resolveDeclaration(declarations[0]),500);
       return;
     }
     continueAfterTrick();
@@ -863,7 +863,7 @@
     return options;
   }
 
-  function resolveDeclaration(option) {
+  async function resolveDeclaration(option) {
     const pending=state.pendingDeclaration;
     if (!pending) return;
     const player=state.players[pending.player];
@@ -884,6 +884,7 @@
     player.songPoints+=option.points;
     player.sung.add(option.suit);
     render();
+    if (window.TuteCanteFX) await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: player.name, setsTrump: Boolean(option.setsTrump) });
     continueAfterTrick();
   }
 

@@ -2,7 +2,7 @@
   "id": "./?source=pwa",
   "name": "Tute IA — Club offline",
   "short_name": "Tute IA",
-  "description": "Tute offline contra IA y multijugador local pasa el móvil para 2, 3 o 4 personas, con tutoriales, reglas de casa, guardado automático y música.",
+  "description": "Tute offline con IA, multijugador local, música continua y cantes animados.",
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",

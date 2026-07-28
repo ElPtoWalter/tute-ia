@@ -1,4 +1,4 @@
-# Créditos v14
+# Créditos v15
 
 - Mazo corregido aportado por el usuario.
 - Música ambiental aportada por el usuario y optimizada en dos calidades para reproducción offline.

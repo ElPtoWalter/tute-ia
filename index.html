@@ -15,9 +15,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=14.0.0">
-  <link rel="stylesheet" href="pwa.css?v=14.0.0">
-  <link rel="stylesheet" href="mobile.css?v=14.0.0">
+  <link rel="stylesheet" href="styles.css?v=15.1.0">
+  <link rel="stylesheet" href="pwa.css?v=15.1.0">
+  <link rel="stylesheet" href="mobile.css?v=15.1.0">
+  <link rel="stylesheet" href="cante-effects.css?v=15.1.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -82,7 +83,7 @@
           <span class="eyebrow">CLUB OFFLINE</span>
           <h2>Elige qué quieres hacer</h2>
         </div>
-        <span class="mode-count">V14 · MOBILE + PWA</span>
+        <span class="mode-count">V15 · CANTES + MÚSICA</span>
       </div>
 
       <div class="mode-grid mode-grid-four">
@@ -189,7 +190,7 @@
           </div>
           <div class="turn-pill" id="aiTurnPill">PENSANDO</div>
         </div>
-        <div class="hand opponent-hand" id="aiHand" aria-label="Cartas de la inteligencia artificial"></div>
+        <div class="ai-hand-wrap"><div class="hand opponent-hand" id="aiHand" aria-label="Cartas de la inteligencia artificial"></div><span class="ai-hand-count" id="aiHandCount">0 CARTAS</span></div>
       </div>
 
       <div class="table-center">
@@ -466,8 +467,10 @@
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="metadata" loop></audio>
-  <script src="pwa.js?v=14.0.0"></script>
-  <script src="app.js?v=14.0.0"></script>
+  <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
+  <script src="pwa.js?v=15.1.0"></script>
+  <script src="music-continuity.js?v=15.1.0"></script>
+  <script src="cante-effects.js?v=15.1.0"></script>
+  <script src="app.js?v=15.1.0"></script>
 </body>
 </html>

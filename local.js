@@ -164,7 +164,8 @@
       songPoints: 0,
       tricks: 0,
       captured: [],
-      sung: new Set()
+      sung: new Set(),
+      postStockCanteChanceUsed: false
     }));
     state.dealer = Math.floor(Math.random() * state.config.count);
     state.leader = (state.dealer + 1) % state.config.count;
@@ -629,12 +630,23 @@
     renderTrick();
 
     const declarations = getDeclarations(winner);
-    if (declarations.length) {
+    const canDeclareNow = canDeclareAfterTrick(winner);
+    if (declarations.length && canDeclareNow) {
       state.pendingDeclaration = { player: winner, options: declarations };
       preparePrivateTurn(winner, "declaration");
       return;
     }
     continueAfterTrick();
+  }
+
+  function canDeclareAfterTrick(playerId) {
+    if (!state.config.hasStock) return true;
+    if (drawPileCount() > 0) return true;
+
+    const player = state.players[playerId];
+    if (!player || player.postStockCanteChanceUsed) return false;
+    player.postStockCanteChanceUsed = true;
+    return true;
   }
 
   async function collectTrick(winner) {
@@ -703,7 +715,7 @@
     return options;
   }
 
-  function resolveDeclaration(option) {
+  async function resolveDeclaration(option) {
     if (state.phase !== "active" || state.stage !== "declaration" || !state.pendingDeclaration) return;
     const player = state.players[state.pendingDeclaration.player];
     state.pendingDeclaration = null;
@@ -727,6 +739,8 @@
     }
     player.songPoints += option.points;
     player.sung.add(option.suit);
+    render();
+    if (window.TuteCanteFX) await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: player.name, setsTrump: Boolean(option.setsTrump) });
     continueAfterTrick();
   }
 
@@ -1063,7 +1077,7 @@
       ["03", "Montar", "Si la baza sigue ganándose con el palo de salida y puedes superarla, debes hacerlo."],
       ["04", "Baza fallada", "Si ya gana un triunfo pero tienes el palo de salida, debes asistir, aunque no necesitas superar la carta inicial."],
       ["05", "Fallar y pisar", "Sin el palo de salida, debes usar triunfo. Si ya hay triunfo, debes superarlo cuando puedas; si no puedes, el descarte es libre."],
-      ["06", "Cantes", count === 3 ? "No existe triunfo inicial. El primer cante vale 40 y fija ese palo como triunfo; los siguientes valen 40 o 20." : "Después de ganar una baza, rey y caballo del triunfo valen 40; los demás palos, 20."],
+      ["06", "Cantes", count === 3 ? "No existe triunfo inicial. El primer cante vale 40 y fija ese palo como triunfo; los siguientes valen 40 o 20." : count === 2 ? "Mientras queda baceta puedes cantar después de cualquier baza ganada. Al agotarse, solo puedes cantar al ganar tu primera baza de la fase final: 40 en triunfo o 20 en otro palo." : "Después de ganar una baza, rey y caballo del triunfo valen 40; los demás palos, 20."],
       ["07", "Final", "Las cartas suman 120 puntos y la última baza añade 10. Gana el mayor total."],
       ["08", count === 2 ? "Cambio del pinte" : teams ? "Parejas" : "Orden de turno", count === 2 ? "Después de ganar una baza, el siete cambia un pinte alto y el dos cambia un pinte bajo." : teams ? "Los jugadores 1 y 3 forman equipo; los jugadores 2 y 4 forman el otro." : "Quien gana una baza abre la siguiente."]
     ];
@@ -1074,6 +1088,7 @@
     snapshot.players ||= [];
     snapshot.players.forEach(player => {
       if (!(player.sung instanceof Set)) player.sung = new Set(player.sung || []);
+      player.postStockCanteChanceUsed = Boolean(player.postStockCanteChanceUsed);
     });
     snapshot.busy = false;
     snapshot.revealed = false;
@@ -1166,7 +1181,7 @@
 
   async function startMusic() {
     try {
-      const enabled = localStorage.getItem("tuteIaMusicEnabled") === "true";
+      const enabled = localStorage.getItem("tuteIaMusicEnabled") !== "false";
       const volume = Number(localStorage.getItem("tuteIaMusicVolume"));
       UI.localMusic.volume = Number.isFinite(volume) ? volume : .28;
       if (enabled) {
@@ -1174,6 +1189,7 @@
         musicEnabled = true;
         UI.localMusicButton.textContent = "♫";
       }
+      window.TuteMusicContinuity?.sync();
     } catch (_) {}
   }
 
@@ -1186,6 +1202,7 @@
         UI.localMusicButton.textContent = "♫";
       } catch (_) {}
     } else {
+      window.TuteMusicContinuity?.savePosition();
       UI.localMusic.pause();
       musicEnabled = false;
       localStorage.setItem("tuteIaMusicEnabled", "false");

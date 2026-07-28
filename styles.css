@@ -3153,3 +3153,11 @@ body.tutorial-mode #newMatchButton::before { content: ""; }
 
 /* v13 · Multijugador local */
 .mode-grid-four{grid-template-columns:repeat(2,minmax(0,1fr))}.mode-grid-four .mode-card{min-height:300px}.mode-card-local{background:radial-gradient(circle at 92% 2%,rgba(211,126,75,.17),transparent 19rem),linear-gradient(145deg,rgba(69,41,28,.96),rgba(10,31,27,.98));text-decoration:none}.mode-card-local .mode-icon{color:#fff1df;background:linear-gradient(145deg,#d88d5b,#965334)}.mode-card-local .mode-card-copy small,.mode-card-local .mode-meta i{color:#efae80}@media(max-width:760px){.mode-grid-four{grid-template-columns:1fr}}
+
+
+/* V15 · mano rival fiel al número real de cartas */
+.ai-hand-wrap{position:relative;width:min(76vw,680px);min-height:calc(var(--card-h)*.73 + 28px);display:grid;justify-items:center;overflow:visible}
+.ai-hand-count{position:absolute;z-index:80;right:4%;top:4px;min-width:58px;padding:5px 9px;border:1px solid rgba(240,207,131,.28);border-radius:999px;color:#f3d58b;background:rgba(4,25,19,.86);box-shadow:0 8px 20px rgba(0,0,0,.28);font-size:8px;font-weight:950;letter-spacing:.1em;text-align:center;pointer-events:none}
+.opponent-hand{position:relative;width:100%;height:calc(var(--card-h)*.76);min-height:calc(var(--card-h)*.76);padding:0!important;margin-bottom:-34px;transform:scale(.76);transform-origin:top center;overflow:visible}
+.opponent-hand .playing-card{position:absolute;left:50%;top:0;margin-left:0!important;transform:translateX(calc(-50% + var(--ai-fan-x,0px))) translateY(var(--rest-y,0px)) rotate(var(--rest-rotate,0deg));transform-origin:50% -20%;transition:transform .28s cubic-bezier(.18,.82,.18,1),opacity .2s ease}
+@media(max-width:720px){.ai-hand-wrap{width:min(94vw,560px);min-height:128px}.ai-hand-count{right:1%;top:-2px;font-size:7px}.opponent-hand{transform:scale(.62);height:132px;margin-bottom:-44px}}

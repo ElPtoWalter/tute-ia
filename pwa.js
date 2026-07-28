@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "14.0.0";
+  const VERSION = "15.1.0";
   const DB_NAME = "tute-ia-offline";
   const STORE = "saves";
   const FULL_AUDIO = "./assets/audio/casino-jazz-background.mp3";
@@ -246,6 +246,7 @@
         audio.currentTime = Math.min(time, quality === "full" ? time : 299);
         audio.play().catch(() => {});
       }
+      window.TuteMusicContinuity?.bind(audio);
     });
   }
 

@@ -30,7 +30,7 @@
       code: "REGLAS DE CASA",
       name: "Arrastre total",
       shortName: "Arrastre total",
-      description: "Tu reglamento: obligaciones completas desde la primera baza. Se asiste, se monta cuando la baza sigue en el palo de salida, se falla y se pisa.",
+      description: "Tu reglamento: obligaciones completas desde la primera baza. Cantes durante la baceta y una última oportunidad en la primera baza ganada de la fase final.",
       tutorialDescription: "Aprende el reglamento que utilizas habitualmente, con obligaciones completas incluso mientras queda baceta.",
       featured: true,
       rules: {
@@ -41,7 +41,9 @@
         mustOvertrump: true,
         freeDiscardIfCannotOvertrump: true,
         songs: true,
-        songsStockOnly: true,
+        songsStockOnly: false,
+        songsAfterStockOnly: false,
+        songsPostStockFirstWinOnly: true,
         exchange: true,
         allowTute: true,
         capote: false,
@@ -171,6 +173,8 @@
     freeDiscardIfCannotOvertrump: true,
     songs: true,
     songsStockOnly: false,
+    songsAfterStockOnly: false,
+    songsPostStockFirstWinOnly: false,
     exchange: true,
     allowTute: true,
     capote: false,
@@ -289,7 +293,7 @@
     {
       id: "song",
       title: "Cantar 20 o 40",
-      text: "Después de ganar una baza puedes cantar si conservas rey y caballo del mismo palo. En triunfo valen 40 puntos; en otro palo, 20.",
+      text: "Después de ganar una baza puedes cantar si conservas rey y caballo del mismo palo. En Arrastre total puedes hacerlo durante toda la baceta; al agotarse, tu primera baza ganada es la última oportunidad. En triunfo valen 40 puntos; en otro palo, 20.",
       tip: "Pulsa «Cantar 40 en bastos».",
       focus: "actions",
       action: "song"
@@ -344,7 +348,13 @@
     if (rules.mustBeat) pills.push("Montar");
     if (rules.mustTrump) pills.push("Fallar");
     if (rules.mustOvertrump) pills.push("Pisar");
-    if (rules.songs) pills.push("Cantes 20/40");
+    if (rules.songs) pills.push(
+      rules.songsPostStockFirstWinOnly
+        ? "Cantes libres + última oportunidad"
+        : rules.songsAfterStockOnly
+          ? "Cantes al agotarse la baceta"
+          : "Cantes 20/40"
+    );
     if (rules.capote) pills.push("Capote");
     if (rules.matchMode === "points") pills.push(`A ${rules.targetPoints} tantos`);
     return pills;
@@ -481,7 +491,7 @@
       ["02", "Durante la baceta", stockText, true],
       ["03", "Baza ya fallada", overtrumpText, variant.id === "house"],
       ["04", "Sin baceta", afterText],
-      ["05", "Cantes", rules.songs ? `${rules.songsStockOnly ? "Solo mientras queda baceta. " : ""}Rey y caballo de triunfo valen 40; los de otro palo, 20.` : "Los cantes están desactivados en este reglamento."],
+      ["05", "Cantes", rules.songs ? `${rules.songsPostStockFirstWinOnly ? "Mientras queda baceta puedes cantar después de cualquier baza ganada. Al agotarse, cada jugador conserva una única oportunidad: su primera baza ganada de la fase final. " : rules.songsAfterStockOnly ? "No se puede cantar mientras queda baceta. Cuando se agota, el cante puede declararse después de ganar una baza. " : rules.songsStockOnly ? "Solo mientras queda baceta. " : ""}Rey y caballo de triunfo valen 40; los de otro palo, 20.` : "Los cantes están desactivados en este reglamento."],
       ["06", "Acciones especiales", `${rules.exchange ? "Cambio del pinte activado. " : "Sin cambio del pinte. "}${rules.allowTute ? "Tute de cuatro reyes o caballos permitido. " : "Sin victoria automática por tute. "}${rules.capote ? "Capote disponible al comenzar la fase final." : "Sin capote."}`]
     ];
   }
@@ -532,6 +542,7 @@
     if (!musicEnabled || !UI.backgroundMusic?.paused) return;
     try {
       await UI.backgroundMusic.play();
+      window.TuteMusicContinuity?.savePosition();
       updateMusicUi();
     } catch (_) {}
   }
@@ -543,6 +554,7 @@
     if (musicEnabled) {
       try { await UI.backgroundMusic.play(); } catch (_) { musicEnabled = false; }
     } else UI.backgroundMusic.pause();
+    window.TuteMusicContinuity?.savePosition();
     updateMusicUi();
   }
 
@@ -580,6 +592,7 @@
     updateTutorialCompletionBadge();
     renderHomeStats();
     updateMusicUi();
+    window.TuteMusicContinuity?.sync();
     showHome();
     refreshSoloSaveCard();
     handleLaunchShortcut();
@@ -587,7 +600,7 @@
 
   function cacheUI() {
     [
-      "aiName", "aiHand", "playerHand", "aiTrickSlot", "playerTrickSlot", "trickArea", "playDropIndicator",
+      "aiName", "aiHand", "aiHandCount", "playerHand", "aiTrickSlot", "playerTrickSlot", "trickArea", "playDropIndicator",
       "deckStack", "deckCount", "trumpCard", "phaseBadge", "statusText",
       "canteActions", "exchangeButton", "hintText", "aiTurnPill",
       "playerTurnPill", "roundNumber", "playerRounds", "aiRounds",
@@ -846,6 +859,10 @@
       sungSuits: {
         player: new Set(config.playerSung || []),
         ai: new Set(config.aiSung || [])
+      },
+      postStockCanteChanceUsed: {
+        player: Boolean(config.playerPostStockCanteChanceUsed),
+        ai: Boolean(config.aiPostStockCanteChanceUsed)
       },
       playedCards: config.playedCards || (config.trick || []).map(play => play.card),
       trick: config.trick || [],
@@ -1292,6 +1309,10 @@
         player: new Set(),
         ai: new Set()
       },
+      postStockCanteChanceUsed: {
+        player: false,
+        ai: false
+      },
       playedCards: [],
       trick: [],
       leader: starter,
@@ -1548,6 +1569,7 @@
   function renderEmptyState() {
     UI.playerHand.innerHTML = "";
     UI.aiHand.innerHTML = "";
+    if (UI.aiHandCount) UI.aiHandCount.textContent = "0 CARTAS";
     UI.trumpCard.innerHTML = "";
     UI.aiTrickSlot.innerHTML = '<span class="slot-label">IA</span>';
     UI.playerTrickSlot.innerHTML = '<span class="slot-label">TÚ</span>';
@@ -1656,13 +1678,25 @@
     while (UI.aiHand.children.length < round.hands.ai.length) UI.aiHand.appendChild(createBackCard());
     while (UI.aiHand.children.length > round.hands.ai.length) UI.aiHand.lastElementChild?.remove();
 
-    const aiCount = round.hands.ai.length || 1;
+    const aiCount = round.hands.ai.length;
+    const available = Math.max(220, Math.min(UI.aiHand.clientWidth || window.innerWidth * .52, 660));
+    const cardWidth = UI.aiHand.firstElementChild?.getBoundingClientRect().width || 92;
+    const maximumSpan = Math.max(cardWidth * .6, available - cardWidth * .74);
+    const desiredSpacing = window.innerWidth <= 620 ? 22 : window.innerWidth <= 980 ? 30 : 39;
+    const span = aiCount > 1 ? Math.min(maximumSpan, desiredSpacing * (aiCount - 1)) : 0;
+
     [...UI.aiHand.children].forEach((back, index) => {
       const normalized = aiCount > 1 ? (index - (aiCount - 1) / 2) / ((aiCount - 1) / 2) : 0;
       back.style.zIndex = index + 1;
-      back.style.setProperty("--rest-rotate", `${normalized * -7.5}deg`);
-      back.style.setProperty("--rest-y", `${Math.abs(normalized) * 8}px`);
+      back.style.setProperty("--ai-fan-x", `${normalized * span / 2}px`);
+      back.style.setProperty("--rest-rotate", `${normalized * -8.5}deg`);
+      back.style.setProperty("--rest-y", `${Math.abs(normalized) * 9}px`);
     });
+
+    if (UI.aiHandCount) {
+      UI.aiHandCount.textContent = `${aiCount} ${aiCount === 1 ? "CARTA" : "CARTAS"}`;
+      UI.aiHandCount.setAttribute("aria-label", `La inteligencia artificial tiene ${aiCount} ${aiCount === 1 ? "carta" : "cartas"}`);
+    }
   }
 
   function beginHandGesture(event, cardId, isPlayable) {
@@ -2164,14 +2198,14 @@
         button.textContent = option.type === "tute"
           ? `Cantar ${option.label}`
           : `Cantar ${option.points} en ${SUIT_LABELS[option.suit]}`;
-        button.addEventListener("click", () => resolveCanteChoice(option));
+        button.addEventListener("click", () => void resolveCanteChoice(option));
         UI.canteActions.appendChild(button);
       });
 
       const pass = document.createElement("button");
       pass.className = "pass-button";
       pass.textContent = "No cantar";
-      pass.addEventListener("click", () => resolveCanteChoice(null));
+      pass.addEventListener("click", () => void resolveCanteChoice(null));
       UI.canteActions.appendChild(pass);
       UI.hintText.textContent = "Solo puede declararse un cante por baza ganada.";
     } else {
@@ -2399,6 +2433,29 @@
     later(() => target.classList.remove("capture-bump"), 260);
   }
 
+  function canOfferSongsNow(actor) {
+    const rules = state.settings.rules;
+    const round = state.round;
+    if (!rules.songs || !round) return false;
+
+    if (rules.songsPostStockFirstWinOnly) {
+      if (drawPileCount() > 0) return true;
+      return !round.postStockCanteChanceUsed?.[actor];
+    }
+
+    if (rules.songsAfterStockOnly) return drawPileCount() === 0;
+    if (rules.songsStockOnly) return drawPileCount() > 0;
+    return true;
+  }
+
+  function consumePostStockCanteChance(actor) {
+    const rules = state.settings.rules;
+    const round = state.round;
+    if (!round || !rules.songsPostStockFirstWinOnly || drawPileCount() > 0) return;
+    round.postStockCanteChanceUsed ||= { player: false, ai: false };
+    round.postStockCanteChanceUsed[actor] = true;
+  }
+
   async function resolveTrick() {
     const round = state.round;
     if (!round || round.trick.length !== 2 || round.collecting) return;
@@ -2434,7 +2491,8 @@
     }
 
     const options = getCanteOptions(winner);
-    const canSingNow = state.settings.rules.songs && (!state.settings.rules.songsStockOnly || drawPileCount() > 0);
+    const canSingNow = canOfferSongsNow(winner);
+    consumePostStockCanteChance(winner);
     if (options.length > 0 && canSingNow) {
       round.pendingCante = { actor: winner, options };
       render();
@@ -2493,7 +2551,7 @@
     const round = state.round;
     if (!round.pendingCante || round.pendingCante.actor !== "ai") return;
     const choice = chooseAiCante(options);
-    resolveCanteChoice(choice);
+    void resolveCanteChoice(choice);
   }
 
   function chooseAiCante(options) {
@@ -2503,7 +2561,7 @@
     return [...options].sort((a, b) => b.points - a.points)[0];
   }
 
-  function resolveCanteChoice(option) {
+  async function resolveCanteChoice(option) {
     if (state.tutorial.active && handleTutorialCante(option)) return;
     const round = state.round;
     const pending = round.pendingCante;
@@ -2529,7 +2587,11 @@
     round.sungSuits[actor].add(option.suit);
     addLog(`<strong>${actor === "player" ? "Cantas" : "La IA canta"} ${option.points} en ${SUIT_LABELS[option.suit]}.</strong>`);
     showToast(`<strong>+${option.points}</strong> para ${actor === "player" ? "ti" : "la IA"} · ${SUIT_LABELS[option.suit]}`);
-    playSound("song");
+    playSound(option.points === 40 ? "song40" : "song");
+    render();
+    if (window.TuteCanteFX) {
+      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? "Eduardo" : "Doña Virtud" });
+    }
     continueAfterTrick();
   }
 
@@ -2966,6 +3028,7 @@
         winTrick: [[390, .04, .01], [540, .055, .07]],
         loseTrick: [[260, .04, .01], [210, .06, .07]],
         song: [[440, .06, .01], [550, .06, .09], [660, .09, .17]],
+        song40: [[392, .07, .01], [494, .07, .08], [587, .08, .15], [784, .12, .23], [988, .16, .35]],
         error: [[155, .08, .01]],
         victory: [[392, .08, .01], [494, .08, .11], [587, .08, .21], [784, .16, .31]],
         defeat: [[330, .09, .01], [277, .09, .12], [220, .15, .23]]
@@ -3003,6 +3066,9 @@
     round.sungSuits ||= { player: new Set(), ai: new Set() };
     if (!(round.sungSuits.player instanceof Set)) round.sungSuits.player = new Set(round.sungSuits.player || []);
     if (!(round.sungSuits.ai instanceof Set)) round.sungSuits.ai = new Set(round.sungSuits.ai || []);
+    round.postStockCanteChanceUsed ||= { player: false, ai: false };
+    round.postStockCanteChanceUsed.player = Boolean(round.postStockCanteChanceUsed.player);
+    round.postStockCanteChanceUsed.ai = Boolean(round.postStockCanteChanceUsed.ai);
     round.pendingHandFlip = null;
     round.dragCardId = null;
     round.busyFlight = false;
