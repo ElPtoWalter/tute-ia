@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071c17">
+  <meta name="description" content="Multijugador local de Tute IA para 2, 3 o 4 personas en un único dispositivo, con privacidad pasa el móvil.">
+  <title>Tute IA — Pasa el móvil</title>
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="local.css?v=13.0.0">
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="local-topbar">
+    <a class="local-brand" href="index.html"><span>T</span><div><strong>TUTE IA</strong><small>CLUB OFFLINE</small></div></a>
+    <div class="local-title"><span>MULTIJUGADOR LOCAL</span><strong>Pasa el móvil</strong></div>
+    <div class="local-top-actions">
+      <button id="localMusicButton" class="round-button" type="button" aria-label="Música">♫</button>
+      <button id="localRulesButton" class="soft-action" type="button">Reglas</button>
+      <a href="index.html" class="gold-action">Menú</a>
+    </div>
+  </header>
+
+  <main class="local-layout">
+    <section class="local-table" id="localTable">
+      <div class="felt-ornament" aria-hidden="true"></div>
+
+      <article class="seat seat-bottom-left" id="localSeat0">
+        <span class="seat-avatar" id="avatar0">J1</span>
+        <div><small id="role0">JUGADOR 1</small><strong id="name0">Jugador 1</strong></div>
+        <b id="count0">0</b><i id="turn0">TURNO</i>
+      </article>
+      <article class="seat seat-left" id="localSeat1">
+        <span class="seat-avatar" id="avatar1">J2</span>
+        <div><small id="role1">JUGADOR 2</small><strong id="name1">Jugador 2</strong></div>
+        <b id="count1">0</b><i id="turn1">TURNO</i>
+      </article>
+      <article class="seat seat-top" id="localSeat2">
+        <span class="seat-avatar" id="avatar2">J3</span>
+        <div><small id="role2">JUGADOR 3</small><strong id="name2">Jugador 3</strong></div>
+        <b id="count2">0</b><i id="turn2">TURNO</i>
+      </article>
+      <article class="seat seat-right" id="localSeat3">
+        <span class="seat-avatar" id="avatar3">J4</span>
+        <div><small id="role3">JUGADOR 4</small><strong id="name3">Jugador 4</strong></div>
+        <b id="count3">0</b><i id="turn3">TURNO</i>
+      </article>
+
+      <div class="local-center">
+        <div class="local-status">
+          <span id="localPhase">PREPARANDO</span>
+          <strong id="localStatus">Configura la mesa para comenzar.</strong>
+        </div>
+
+        <div class="public-table-row">
+          <div class="stock-pod" id="stockPod">
+            <span>BACETA</span>
+            <button class="local-deck" id="localDeck" type="button" aria-label="Robar de la baceta" aria-disabled="true">
+              <span class="deck-card layer-3"></span><span class="deck-card layer-2"></span><span class="deck-card layer-1"></span>
+              <img src="assets/cards/back.svg" alt="" draggable="false">
+              <b id="localDeckCount">0</b>
+            </button>
+          </div>
+
+          <div class="trump-pod">
+            <span>TRIUNFO</span>
+            <div id="localTrump"></div>
+            <b id="localTrumpSuit">—</b>
+          </div>
+
+          <div class="trick-ring" id="localTrickRing">
+            <div class="local-slot slot-0" id="localSlot0"><span>J1</span></div>
+            <div class="local-slot slot-1" id="localSlot1"><span>J2</span></div>
+            <div class="local-slot slot-2" id="localSlot2"><span>J3</span></div>
+            <div class="local-slot slot-3" id="localSlot3"><span>J4</span></div>
+            <div class="drop-core" id="localDropCore"><span>SUELTA PARA JUGAR</span></div>
+          </div>
+        </div>
+
+        <div class="local-action-dock" id="localActionDock">
+          <div id="localDeclarationActions" class="declaration-actions"></div>
+          <p id="localHint">Pulsa «Preparar partida».</p>
+        </div>
+      </div>
+
+      <section class="private-zone" id="privateZone" aria-label="Mano privada del jugador activo">
+        <div class="private-zone-head">
+          <div><span>MANO PRIVADA</span><strong id="activePlayerName">—</strong></div>
+          <small id="privateInstruction">Solo debe mirar el jugador activo</small>
+        </div>
+        <div class="private-hand" id="privateHand"></div>
+        <div class="order-helper">↔ Arrastra para ordenar · Pulsa o lleva una carta al centro para jugar</div>
+      </section>
+
+      <section class="privacy-curtain" id="privacyCurtain" aria-live="polite">
+        <div class="privacy-card">
+          <span class="privacy-kicker" id="handoffKicker">PASA EL DISPOSITIVO</span>
+          <div class="privacy-avatar" id="handoffAvatar">J1</div>
+          <h1 id="handoffName">Jugador 1</h1>
+          <p id="handoffAction">Te toca jugar.</p>
+          <div class="handoff-meta" id="handoffMeta"></div>
+          <button class="gold-action reveal-action" id="revealHandButton" type="button">Soy Jugador 1 · ver mi mano</button>
+          <small>La mano permanecerá oculta hasta pulsar el botón.</small>
+        </div>
+      </section>
+    </section>
+
+    <aside class="local-sidebar">
+      <section class="side-panel">
+        <div class="panel-heading"><div><small>MARCADOR</small><h2 id="localScoreTitle">Puntuación</h2></div><span id="localTrickCounter">BAZA 1</span></div>
+        <div id="localScoreList" class="score-list"></div>
+      </section>
+      <section class="side-panel rule-panel">
+        <div class="panel-heading"><div><small>REGLA ACTIVA</small><h2 id="localRuleTitle">Arrastre completo</h2></div><i></i></div>
+        <p id="localRuleText">El palo de salida tiene prioridad.</p>
+        <div class="rule-stats"><span><b id="localCardsLeft">0</b> cartas</span><span><b id="localTricksPlayed">0</b> bazas</span><span><b id="localLeader">—</b> sale</span></div>
+      </section>
+      <section class="side-panel log-panel">
+        <div class="panel-heading"><div><small>CRÓNICA</small><h2>Últimas jugadas</h2></div></div>
+        <div id="localLog" class="local-log"></div>
+      </section>
+    </aside>
+  </main>
+
+  <dialog id="localSetup" class="local-modal">
+    <form id="localSetupForm" class="modal-card">
+      <span class="modal-kicker">NUEVA MESA LOCAL</span>
+      <h1>¿Cuántos vais a jugar?</h1>
+      <p>Todos usaréis este dispositivo. Entre turnos se ocultarán automáticamente todas las cartas.</p>
+
+      <fieldset class="player-count-fieldset">
+        <legend>Número de jugadores</legend>
+        <label><input type="radio" name="localPlayerCount" value="2" checked><span><b>2</b><strong>Uno contra uno</strong><small>8 cartas, baceta y arrastre desde la primera baza</small></span></label>
+        <label><input type="radio" name="localPlayerCount" value="3"><span><b>3</b><strong>Todos contra todos</strong><small>13 cartas; el primer cante decide el triunfo</small></span></label>
+        <label><input type="radio" name="localPlayerCount" value="4"><span><b>4</b><strong>Mesa completa</strong><small>Individual o por parejas</small></span></label>
+      </fieldset>
+
+      <fieldset id="fourPlayerOptions" class="four-options hidden">
+        <legend>Modalidad para cuatro</legend>
+        <label><input type="radio" name="localFourMode" value="individual" checked> Todos contra todos</label>
+        <label><input type="radio" name="localFourMode" value="pairs"> Parejas enfrentadas</label>
+      </fieldset>
+
+      <div class="name-grid" id="localNameGrid">
+        <label>Jugador 1<input id="playerName0" maxlength="18" value="Jugador 1"></label>
+        <label>Jugador 2<input id="playerName1" maxlength="18" value="Jugador 2"></label>
+        <label class="optional-player" data-player-index="2">Jugador 3<input id="playerName2" maxlength="18" value="Jugador 3"></label>
+        <label class="optional-player" data-player-index="3">Jugador 4<input id="playerName3" maxlength="18" value="Jugador 4"></label>
+      </div>
+
+      <div class="privacy-explainer">
+        <strong>Privacidad automática</strong>
+        <p>Después de cada jugada, cante o robo aparecerá una pantalla opaca indicando a quién debes entregar el dispositivo.</p>
+      </div>
+
+      <button class="gold-action start-local" type="submit">Preparar partida →</button>
+      <a href="index.html" class="modal-back">Volver al menú</a>
+    </form>
+  </dialog>
+
+  <dialog id="localRulesModal" class="local-modal">
+    <div class="modal-card rules-card">
+      <button class="modal-close" id="closeLocalRules" type="button">×</button>
+      <span class="modal-kicker">REGLAMENTO LOCAL</span>
+      <h1 id="localRulesHeading">Pasa el móvil</h1>
+      <div id="localRulesGrid" class="rules-grid"></div>
+      <button class="gold-action" id="understandLocalRules" type="button">Entendido</button>
+    </div>
+  </dialog>
+
+  <dialog id="localResult" class="local-modal">
+    <div class="modal-card result-card">
+      <span class="modal-kicker">PARTIDA TERMINADA</span>
+      <div class="result-seal" id="localResultSeal">V</div>
+      <h1 id="localResultTitle">Partida terminada</h1>
+      <p id="localResultText"></p>
+      <div id="localFinalRanking" class="final-ranking"></div>
+      <button class="gold-action" id="localRematch" type="button">Revancha →</button>
+      <a href="index.html" class="modal-back">Volver al menú</a>
+    </div>
+  </dialog>
+
+  <audio id="localMusic" src="assets/audio/casino-jazz-background.mp3" preload="metadata" loop></audio>
+  <script src="local.js?v=13.0.0"></script>
+</body>
+</html>

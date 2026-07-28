@@ -1,37 +1,24 @@
-# Tute IA — Mesa Cero · v11
+# Tute IA — Club offline · v13
 
-## Novedad principal
+## Novedad principal: multijugador local «pasa el móvil»
 
-La aplicación ya no entra directamente en una partida. Ahora dispone de un menú principal offline con dos modos:
+La aplicación mantiene todos los modos contra IA y añade partidas humanas en un único dispositivo:
 
-1. **Partida clásica** contra Doña Virtud, con las tres dificultades y todas las reglas actuales.
-2. **Tutorial clásico interactivo**, desarrollado sobre la misma mesa y el mismo sistema de interacción.
+- 2 jugadores: ocho cartas, baceta, triunfo visible y obligaciones completas desde la primera baza.
+- 3 jugadores: trece cartas, una carta apartada y sin triunfo inicial; el primer cante fija el pinte.
+- 4 jugadores: diez cartas cada uno, modalidad individual o por parejas.
 
-## Tutorial clásico
+Entre acciones aparece una pantalla opaca que indica a quién hay que entregar el dispositivo. Ninguna mano queda visible durante el cambio de jugador.
 
-El recorrido incluye diez lecciones:
+## Interacción
 
-- objetivo y estructura de la mesa;
-- valor y fuerza de las cartas;
-- palo de triunfo;
-- organización manual de la mano;
-- juego libre mientras queda baceta;
-- robo manual por orden de baza;
-- obligación de asistir y montar;
-- fallo con triunfo;
-- cantes de 20 y 40;
-- puntuación y final de la mano.
+- Jugar mediante pulsación o arrastrando la carta al centro.
+- Reordenar la mano con hueco visible.
+- Robos privados y manuales en la modalidad de dos jugadores.
+- Cantes privados después de ganar una baza.
+- Cambio del pinte con siete o dos en la modalidad de dos jugadores.
+- Música Casino Jazz disponible sin conexión.
 
-Las acciones se realizan de verdad: arrastrar cartas, jugar mediante clic o gesto, robar de la baceta y cantar. Al completarlo, el navegador guarda el progreso localmente.
+## Actualización
 
-## Preparado para futuras ampliaciones
-
-El menú incluye espacios reservados para:
-
-- variantes y normas personalizadas;
-- tutoriales adaptados a cada variante;
-- partidas online con amigos.
-
-## Publicación
-
-Sube todo el contenido a la raíz del repositorio y reemplaza la versión anterior. Después recarga con `Ctrl + Shift + R`.
+Sube todo el contenido a la raíz del repositorio y reemplaza los archivos anteriores. La caché de esta versión es `tute-ia-v13.0.0`.

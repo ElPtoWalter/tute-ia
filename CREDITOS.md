@@ -1,5 +1,7 @@
-# Créditos v11
+# Créditos v13
 
-La versión mantiene el mazo completo corregido aportado por el usuario e integrado en la versión anterior.
+- Mazo corregido aportado por el usuario.
+- Música ambiental aportada por el usuario y optimizada para reproducción offline.
+- Desarrollo del modo «pasa el móvil», privacidad entre turnos y reglamentos locales para Tute IA.
 
-El menú principal, la experiencia de selección de modos y el tutorial clásico interactivo han sido creados específicamente para Tute IA.
+Antes de publicar contenido multimedia en una web pública, debe comprobarse que se dispone de los derechos de uso correspondientes.

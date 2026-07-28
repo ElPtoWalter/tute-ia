@@ -1,9 +1,16 @@
-const CACHE = "tute-ia-v11.0.0";
-const ASSETS = [
+const CACHE = "tute-ia-v13.0.0";
+const AUDIO_ASSET = "./assets/audio/casino-jazz-background.mp3";
+const CORE_ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=11.0.0",
-  "./app.js?v=11.0.0",
+  "./styles.css?v=13.0.0",
+  "./app.js?v=13.0.0",
+  "./multi.html",
+  "./multi.css?v=13.0.0",
+  "./multi.js?v=13.0.0",
+  "./local.html",
+  "./local.css?v=13.0.0",
+  "./local.js?v=13.0.0",
   "./manifest.webmanifest",
   "./assets/icon-192.png",
   "./assets/icon-512.png",
@@ -51,19 +58,64 @@ const ASSETS = [
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS)));
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    await cache.addAll(CORE_ASSETS);
+    try {
+      const audioResponse = await fetch(AUDIO_ASSET);
+      if (audioResponse.ok) await cache.put(AUDIO_ASSET, audioResponse);
+    } catch (_) {}
+  })());
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
-  event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
-  );
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))));
   self.clients.claim();
 });
 
+async function audioResponseFor(request) {
+  const cache = await caches.open(CACHE);
+  let fullResponse = await cache.match(AUDIO_ASSET);
+  if (!fullResponse) {
+    try {
+      const fetched = await fetch(AUDIO_ASSET);
+      if (fetched.ok) {
+        await cache.put(AUDIO_ASSET, fetched.clone());
+        fullResponse = fetched;
+      }
+    } catch (_) {}
+  }
+  if (!fullResponse) return fetch(request);
+  const range = request.headers.get("range");
+  if (!range) return fullResponse;
+  const match = /bytes=(\d+)-(\d*)/.exec(range);
+  if (!match) return fullResponse;
+  const buffer = await fullResponse.arrayBuffer();
+  const size = buffer.byteLength;
+  const start = Math.min(Number(match[1]), Math.max(0, size - 1));
+  const requestedEnd = match[2] ? Number(match[2]) : size - 1;
+  const end = Math.min(Math.max(start, requestedEnd), size - 1);
+  const chunk = buffer.slice(start, end + 1);
+  return new Response(chunk, {
+    status: 206,
+    statusText: "Partial Content",
+    headers: {
+      "Content-Type": fullResponse.headers.get("Content-Type") || "audio/mpeg",
+      "Content-Length": String(chunk.byteLength),
+      "Content-Range": `bytes ${start}-${end}/${size}`,
+      "Accept-Ranges": "bytes"
+    }
+  });
+}
+
 self.addEventListener("fetch", event => {
   if (event.request.method !== "GET") return;
+  const requestUrl = new URL(event.request.url);
+  if (requestUrl.pathname.endsWith("casino-jazz-background.mp3")) {
+    event.respondWith(audioResponseFor(event.request));
+    return;
+  }
   event.respondWith(
     fetch(event.request)
       .then(response => {

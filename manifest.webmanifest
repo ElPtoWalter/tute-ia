@@ -1,7 +1,7 @@
 {
-  "name": "Tute IA — Juega y aprende",
+  "name": "Tute IA — Club offline",
   "short_name": "Tute IA",
-  "description": "Tute clásico contra una inteligencia artificial y tutorial interactivo offline.",
+  "description": "Tute offline contra IA y multijugador local pasa el móvil para 2, 3 o 4 personas, con tutoriales, reglas de casa y música.",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#04110e",

@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#071c17">
-  <meta name="description" content="Juega al tute clásico contra una inteligencia artificial o aprende paso a paso con un tutorial interactivo, completamente offline.">
-  <title>Tute IA — Juega y aprende</title>
+  <meta name="description" content="Club offline de tute: partidas contra IA, multijugador local pasa el móvil, tutoriales, reglas de casa y música de mesa.">
+  <title>Tute IA — Club offline</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
-  <link rel="stylesheet" href="styles.css?v=11.0.0">
+  <link rel="stylesheet" href="styles.css?v=13.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -23,7 +23,17 @@
     </button>
 
     <div class="topbar-actions">
-      <button class="icon-button" id="soundButton" title="Activar o desactivar sonido" aria-label="Sonido">
+      <div class="music-control-wrap">
+        <button class="icon-button" id="musicButton" title="Música de fondo" aria-label="Música de fondo">
+          <span id="musicIcon">♫</span>
+        </button>
+        <div class="music-popover hidden" id="musicPopover">
+          <div><span class="music-live-dot"></span><strong>Casino Jazz</strong></div>
+          <small id="musicStatus">Música pausada</small>
+          <label><span>Volumen</span><input id="musicVolume" type="range" min="0" max="100" value="28"></label>
+        </div>
+      </div>
+      <button class="icon-button" id="soundButton" title="Efectos de sonido" aria-label="Efectos de sonido">
         <span id="soundIcon">♪</span>
       </button>
       <button class="soft-button" id="rulesButton">Reglas</button>
@@ -39,12 +49,13 @@
     <div class="home-hero">
       <div class="home-copy">
         <span class="home-kicker"><i></i> FUNCIONA SIN CONEXIÓN</span>
-        <h1 id="homeTitle">Aprende, juega<br><em>y domina el tute.</em></h1>
-        <p>Elige una partida clásica contra la IA o empieza desde cero con un tutorial interactivo sobre la misma mesa de juego.</p>
+        <h1 id="homeTitle">Tu club de tute,<br><em>completamente offline.</em></h1>
+        <p>Escoge el reglamento de tu mesa, aprende sus obligaciones con ejercicios reales y enfréntate a una IA que juega exactamente con esas normas.</p>
         <div class="home-features" aria-label="Características">
-          <span>Baraja española de 40 cartas</span>
-          <span>IA sin información oculta</span>
-          <span>Juego completamente offline</span>
+          <span>8 mesas contra IA</span>
+          <span>Multijugador local para 2, 3 y 4</span><span>Reglas de casa configurables</span>
+          <span>Tutorial adaptado a la variante</span>
+          <span>Casino Jazz de fondo</span>
         </div>
       </div>
 
@@ -59,53 +70,68 @@
     <div class="mode-section">
       <div class="mode-heading">
         <div>
-          <span class="eyebrow">ELIGE CÓMO EMPEZAR</span>
-          <h2>Modos disponibles</h2>
+          <span class="eyebrow">CLUB OFFLINE</span>
+          <h2>Elige qué quieres hacer</h2>
         </div>
-        <span class="mode-count">2 MODOS OFFLINE</span>
+        <span class="mode-count">V13 · PASA EL MÓVIL</span>
       </div>
 
-      <div class="mode-grid">
+      <div class="mode-grid mode-grid-four">
         <button class="mode-card mode-card-primary" id="classicModeButton" type="button">
           <span class="mode-number">01</span>
           <span class="mode-icon mode-icon-play">▶</span>
           <span class="mode-card-copy">
             <small>JUGAR</small>
-            <strong>Partida clásica</strong>
-            <span>Enfréntate a Doña Virtud con el reglamento actual: baceta, cantes, cambio del pinte y juego obligado al final.</span>
+            <strong>Partida offline</strong>
+            <span>Elige reglas a dos o entra en mesas completas de tres y cuatro jugadores contra varias IA.</span>
           </span>
-          <span class="mode-meta">
-            <b>3 dificultades</b>
-            <i>Entrar →</i>
-          </span>
+          <span class="mode-meta"><b>8 mesas jugables</b><i>Elegir variante →</i></span>
         </button>
 
-        <button class="mode-card mode-card-tutorial" id="tutorialModeButton" type="button">
+        <a class="mode-card mode-card-local" id="localModeButton" href="local.html">
           <span class="mode-number">02</span>
+          <span class="mode-icon">⇄</span>
+          <span class="mode-card-copy">
+            <small>PASA EL MÓVIL</small>
+            <strong>Multijugador local</strong>
+            <span>Juega entre dos, tres o cuatro personas en el mismo dispositivo. Cada mano se oculta automáticamente antes de entregar el móvil.</span>
+          </span>
+          <span class="mode-meta"><b>Sin cuentas ni conexión</b><i>Preparar mesa →</i></span>
+        </a>
+
+        <button class="mode-card mode-card-tutorial" id="tutorialModeButton" type="button">
+          <span class="mode-number">03</span>
           <span class="mode-icon">✦</span>
           <span class="mode-card-copy">
-            <small>APRENDER</small>
-            <strong>Tutorial clásico</strong>
-            <span>Descubre el valor de las cartas, el triunfo, el robo, las obligaciones y los cantes mediante ejercicios sobre la mesa real.</span>
+            <small>ACADEMIA</small>
+            <strong>Tutorial adaptativo</strong>
+            <span>Las lecciones cambian según las obligaciones de la variante seleccionada: asistir, montar, fallar y pisar.</span>
           </span>
-          <span class="mode-meta">
-            <b id="tutorialCompletionBadge">10 lecciones</b>
-            <i>Comenzar →</i>
+          <span class="mode-meta"><b id="tutorialCompletionBadge">Elige reglamento</b><i>Aprender →</i></span>
+        </button>
+
+        <button class="mode-card mode-card-custom" id="customModeButton" type="button">
+          <span class="mode-number">04</span>
+          <span class="mode-icon">⚙</span>
+          <span class="mode-card-copy">
+            <small>MESA A MEDIDA</small>
+            <strong>Configura tus normas</strong>
+            <span>Decide cuándo se arrastra, si hay que montar, cuándo se canta, cambio del pinte, tute, capote y objetivo.</span>
           </span>
+          <span class="mode-meta"><b>Motor parametrizable</b><i>Personalizar →</i></span>
         </button>
       </div>
 
-      <div class="future-modes" aria-label="Próximos modos">
-        <article>
-          <span>PRÓXIMAMENTE</span>
-          <strong>Variantes y normas personalizadas</strong>
-          <p>Escoge las reglas de casa y recibe un tutorial adaptado a esa variante.</p>
-        </article>
-        <article>
-          <span>MÁS ADELANTE</span>
-          <strong>Partidas online con amigos</strong>
-          <p>Salas privadas, invitaciones y partidas de cuatro jugadores por parejas.</p>
-        </article>
+      <div class="club-dashboard">
+        <article class="club-stat"><span>PARTIDAS</span><strong id="statGames">0</strong><small>jugadas en este dispositivo</small></article>
+        <article class="club-stat"><span>VICTORIAS</span><strong id="statWins">0</strong><small id="statWinRate">0 % de efectividad</small></article>
+        <article class="club-stat"><span>REGLAMENTO FAVORITO</span><strong id="statFavorite">Arrastre total</strong><small>se actualiza automáticamente</small></article>
+        <article class="club-now-playing"><span class="music-live-dot"></span><div><span>AMBIENTE DE MESA</span><strong>Casino Jazz · pista optimizada offline</strong></div><button id="homeMusicButton" type="button">Reproducir</button></article>
+      </div>
+
+      <div class="future-modes">
+        <article><span>YA DISPONIBLE</span><strong>Mesas humanas en un solo dispositivo</strong><p>Uno contra uno, tres jugadores con primer cante y cuatro individual o por parejas, con pantalla privada entre turnos.</p></article>
+        <article><span>SIGUIENTE GRAN PASO</span><strong>Multijugador online</strong><p>Salas privadas y partidas a distancia llegarán después; el modo pasa el móvil permite jugar juntos sin servidor ni cuentas.</p></article>
       </div>
     </div>
   </section>
@@ -149,7 +175,7 @@
 
       <div class="table-center">
         <div class="status-strip">
-          <span id="phaseBadge">BACETA ABIERTA</span>
+          <span id="phaseBadge">BACETA ABIERTA</span><span class="variant-live-badge" id="variantLiveBadge">ARRASTRE TOTAL</span>
           <strong id="statusText">Preparando la mesa…</strong>
         </div>
 
@@ -188,6 +214,7 @@
             Robar de la baceta
           </button>
           <button class="exchange-button hidden" id="exchangeButton"></button>
+          <button class="capote-button hidden" id="capoteButton" type="button">Anunciar capote</button>
           <p id="hintText">Pulsa «Repartir cartas» para comenzar.</p>
         </div>
       </div>
@@ -279,12 +306,61 @@
     </aside>
   </main>
 
+  <dialog class="modal variant-modal" id="variantModal">
+    <div class="modal-card wide-modal-card">
+      <button class="close-modal" id="closeVariantButton" aria-label="Cerrar">×</button>
+      <span class="eyebrow">PARTIDA OFFLINE · DOS JUGADORES</span>
+      <h1>Escoge el reglamento</h1>
+      <p class="modal-copy">Cada tarjeta modifica de verdad las cartas legales, la IA, los avisos, los cantes y la forma de resolver la partida.</p>
+      <div class="variant-grid" id="variantGrid"></div>
+    </div>
+  </dialog>
+
+  <dialog class="modal variant-modal" id="tutorialSelectModal">
+    <div class="modal-card wide-modal-card">
+      <button class="close-modal" id="closeTutorialSelectButton" aria-label="Cerrar">×</button>
+      <span class="eyebrow">ACADEMIA MESA CERO</span>
+      <h1>¿Qué reglamento quieres aprender?</h1>
+      <p class="modal-copy">El tutorial prepara manos controladas y cambia sus ejercicios para enseñarte las obligaciones exactas de cada variante.</p>
+      <div class="variant-grid tutorial-variant-grid" id="tutorialVariantGrid"></div>
+    </div>
+  </dialog>
+
+  <dialog class="modal custom-rules-modal" id="customRulesModal">
+    <form method="dialog" class="modal-card wide-modal-card" id="customRulesForm">
+      <button class="close-modal" id="closeCustomRulesButton" type="button" aria-label="Cerrar">×</button>
+      <span class="eyebrow">MESA A MEDIDA</span>
+      <h1>Crea tu reglamento</h1>
+      <p class="modal-copy">Guárdalo como «Mi mesa» y úsalo tanto para jugar como para consultar un resumen de obligaciones.</p>
+      <div class="custom-rules-layout">
+        <section>
+          <h3>Mientras queda baceta</h3>
+          <label class="rule-select"><span>Obligaciones</span><select id="customStockDuty"><option value="free">Juego libre</option><option value="trumpOnly">Asistir si salen de triunfo</option><option value="full" selected>Obligaciones completas</option></select></label>
+          <h3>Obligaciones</h3>
+          <label class="custom-toggle"><span><strong>Montar</strong><small>Superar dentro del palo cuando sea necesario.</small></span><input id="customMustBeat" type="checkbox" checked></label>
+          <label class="custom-toggle"><span><strong>Fallar</strong><small>Jugar triunfo al no tener el palo de salida.</small></span><input id="customMustTrump" type="checkbox" checked></label>
+          <label class="custom-toggle"><span><strong>Pisar</strong><small>Superar el triunfo ganador cuando no puedes asistir.</small></span><input id="customMustOvertrump" type="checkbox" checked></label>
+        </section>
+        <section>
+          <h3>Premios y acciones</h3>
+          <label class="custom-toggle"><span><strong>Cantes de 20 y 40</strong><small>Rey y caballo después de ganar baza.</small></span><input id="customSongs" type="checkbox" checked></label>
+          <label class="custom-toggle"><span><strong>Cantar solo con baceta</strong><small>Bloquea nuevos cantes cuando se agota el robo.</small></span><input id="customSongsStockOnly" type="checkbox"></label>
+          <label class="custom-toggle"><span><strong>Cambio del pinte</strong><small>Intercambio con el siete o el dos de triunfo.</small></span><input id="customExchange" type="checkbox" checked></label>
+          <label class="custom-toggle"><span><strong>Tute</strong><small>Cuatro reyes o cuatro caballos ganan directamente.</small></span><input id="customTute" type="checkbox" checked></label>
+          <label class="custom-toggle"><span><strong>Capote</strong><small>Permite anunciar todas las bazas finales.</small></span><input id="customCapote" type="checkbox"></label>
+        </section>
+      </div>
+      <button class="primary-button start-button" value="default">Guardar y configurar partida <span>→</span></button>
+    </form>
+  </dialog>
+
   <dialog class="modal setup-modal" id="setupModal">
     <form method="dialog" class="modal-card" id="setupForm">
-      <button class="close-modal" value="cancel" aria-label="Cerrar">×</button>
-      <span class="eyebrow">PARTIDA CLÁSICA</span>
-      <h1>Configura la partida</h1>
-      <p class="modal-copy">Tute habanero para dos jugadores. Ocho cartas por mano, baceta y obligaciones completas al agotarse el robo.</p>
+      <button class="close-modal" id="closeSetupButton" type="button" aria-label="Cerrar">×</button>
+      <span class="eyebrow" id="setupEyebrow">PARTIDA OFFLINE</span>
+      <h1 id="setupTitle">Configura la partida</h1>
+      <p class="modal-copy" id="setupCopy">Selecciona un reglamento para preparar la mesa.</p>
+      <div class="selected-variant-summary" id="selectedVariantSummary"></div>
 
       <fieldset class="choice-group">
         <legend>Dificultad</legend>
@@ -333,41 +409,11 @@
   <dialog class="modal" id="rulesModal">
     <div class="modal-card rules-content">
       <button class="close-modal" id="closeRulesButton" aria-label="Cerrar">×</button>
-      <span class="eyebrow">REGLAMENTO DE ESTA VERSIÓN</span>
-      <h1>Tute habanero</h1>
+      <span class="eyebrow">REGLAMENTO ACTIVO</span>
+      <h1 id="rulesModalTitle">Arrastre total</h1>
+      <p class="modal-copy" id="rulesModalCopy"></p>
 
-      <div class="rules-grid">
-        <article>
-          <span class="rule-number">01</span>
-          <h3>Valor y fuerza</h3>
-          <p>As 11, tres 10, rey 4, caballo 3 y sota 2. La fuerza es: as, tres, rey, caballo, sota, siete, seis, cinco, cuatro y dos.</p>
-        </article>
-        <article>
-          <span class="rule-number">02</span>
-          <h3>Durante la baceta</h3>
-          <p>No hay obligación de asistir. Gana el triunfo más alto o, si no aparece, la carta mayor del palo de salida. Tras cada baza debes robar tú mismo tocando la baceta.</p>
-        </article>
-        <article>
-          <span class="rule-number">03</span>
-          <h3>Sin baceta</h3>
-          <p>Es obligatorio asistir y montar. Sin el palo de salida, hay que fallar con triunfo; si tampoco hay triunfo, se juega libre.</p>
-        </article>
-        <article>
-          <span class="rule-number">04</span>
-          <h3>Cantes</h3>
-          <p>Tras ganar una baza y antes de robar: rey y caballo de triunfo valen 40; los de otro palo valen 20. Solo un cante por baza.</p>
-        </article>
-        <article>
-          <span class="rule-number">05</span>
-          <h3>Cambio del pinte</h3>
-          <p>Tras ganar una baza, el siete cambia un pinte valioso y el dos cambia un pinte blanco, mientras la carta siga visible.</p>
-        </article>
-        <article>
-          <span class="rule-number">06</span>
-          <h3>Final</h3>
-          <p>Las cartas suman 120 puntos y la última baza añade 10. Gana la mano quien tenga más tantos; el empate se resuelve con las últimas.</p>
-        </article>
-      </div>
+      <div class="rules-grid" id="dynamicRulesGrid"></div>
 
 
       <p class="art-credit">
@@ -401,6 +447,7 @@
 
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
-  <script src="app.js?v=11.0.0"></script>
+  <audio id="backgroundMusic" src="assets/audio/casino-jazz-background.mp3" preload="metadata" loop></audio>
+  <script src="app.js?v=13.0.0"></script>
 </body>
 </html>

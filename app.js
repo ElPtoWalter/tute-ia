@@ -23,22 +23,184 @@
   ];
 
   const RANK_MAP = Object.fromEntries(RANKS.map(r => [r.rank, r]));
+
+  const VARIANTS = {
+    house: {
+      id: "house",
+      code: "REGLAS DE CASA",
+      name: "Arrastre total",
+      shortName: "Arrastre total",
+      description: "Tu reglamento: obligaciones completas desde la primera baza. Se asiste, se monta cuando la baza sigue en el palo de salida, se falla y se pisa.",
+      tutorialDescription: "Aprende el reglamento que utilizas habitualmente, con obligaciones completas incluso mientras queda baceta.",
+      featured: true,
+      rules: {
+        stockDuty: "full",
+        afterStockDuty: "full",
+        mustBeat: true,
+        mustTrump: true,
+        mustOvertrump: true,
+        freeDiscardIfCannotOvertrump: true,
+        songs: true,
+        songsStockOnly: true,
+        exchange: true,
+        allowTute: true,
+        capote: false,
+        matchMode: "rounds",
+        targetPoints: null
+      }
+    },
+    habanero: {
+      id: "habanero",
+      code: "BACETA LIBRE",
+      name: "Tute habanero",
+      shortName: "Habanero",
+      description: "Juego libre mientras queda baceta. Al agotarse el robo comienzan las obligaciones completas. Incluye capote opcional.",
+      tutorialDescription: "Distingue con claridad la fase libre de la fase obligada y practica el capote final.",
+      rules: {
+        stockDuty: "free",
+        afterStockDuty: "full",
+        mustBeat: true,
+        mustTrump: true,
+        mustOvertrump: true,
+        freeDiscardIfCannotOvertrump: false,
+        songs: true,
+        songsStockOnly: false,
+        exchange: true,
+        allowTute: true,
+        capote: true,
+        matchMode: "rounds",
+        targetPoints: null
+      }
+    },
+    fournier: {
+      id: "fournier",
+      code: "CLÁSICO FOURNIER",
+      name: "Fournier a dos",
+      shortName: "Fournier",
+      description: "Con baceta solo se obliga cuando el palo de salida es triunfo. Sin baceta se asiste, se monta y se falla de forma completa.",
+      tutorialDescription: "Aprende la obligación especial de asistir cuando se abre de triunfo durante la baceta.",
+      rules: {
+        stockDuty: "trumpOnly",
+        afterStockDuty: "full",
+        mustBeat: true,
+        mustTrump: true,
+        mustOvertrump: true,
+        freeDiscardIfCannotOvertrump: false,
+        songs: true,
+        songsStockOnly: false,
+        exchange: true,
+        allowTute: true,
+        capote: false,
+        matchMode: "rounds",
+        targetPoints: null
+      }
+    },
+    americano: {
+      id: "americano",
+      code: "OBJETIVO 121",
+      name: "Tute americano",
+      shortName: "Americano",
+      description: "Asistencia a triunfo durante la baceta, obligaciones completas al final, sin victoria automática por tute y marcador acumulado a 121.",
+      tutorialDescription: "Practica las obligaciones Fournier y comprende el marcador acumulativo a 121 tantos.",
+      rules: {
+        stockDuty: "trumpOnly",
+        afterStockDuty: "full",
+        mustBeat: true,
+        mustTrump: true,
+        mustOvertrump: true,
+        freeDiscardIfCannotOvertrump: false,
+        songs: true,
+        songsStockOnly: false,
+        exchange: true,
+        allowTute: false,
+        capote: false,
+        matchMode: "points",
+        targetPoints: 121
+      }
+    },
+    arrastrado3: {
+      id: "arrastrado3",
+      code: "3 JUGADORES",
+      name: "Tute arrastrado",
+      shortName: "Arrastrado",
+      description: "Tú contra dos IA. Trece cartas por jugador, una carta apartada y sin triunfo inicial: el primer cante fija el pinte.",
+      tutorialDescription: "Mesa guiada para aprender turnos de tres, asistencia, fallo, pisado y cómo el primer cante decide el triunfo.",
+      engine: "multi",
+      href: "multi.html?mode=arrastrado3",
+      rules: { stockDuty: "full", afterStockDuty: "full", mustBeat: true, mustTrump: true, mustOvertrump: true, freeDiscardIfCannotOvertrump: true, songs: true, songsStockOnly: false, exchange: false, allowTute: true, capote: false, matchMode: "rounds", targetPoints: null }
+    },
+    pairs4: {
+      id: "pairs4",
+      code: "4 JUGADORES · PAREJAS",
+      name: "Clásico por parejas",
+      shortName: "Parejas",
+      description: "Tú y tu compañero IA contra dos rivales. Diez cartas cada uno, juego obligado y marcador por equipos.",
+      tutorialDescription: "Aprende a jugar por parejas, proteger al compañero y sumar los cantes del equipo.",
+      engine: "multi",
+      href: "multi.html?mode=pairs4",
+      rules: { stockDuty: "full", afterStockDuty: "full", mustBeat: true, mustTrump: true, mustOvertrump: true, freeDiscardIfCannotOvertrump: true, songs: true, songsStockOnly: false, exchange: false, allowTute: true, capote: false, matchMode: "rounds", targetPoints: null }
+    },
+    individual4: {
+      id: "individual4",
+      code: "4 JUGADORES · INDIVIDUAL",
+      name: "Tute individual a cuatro",
+      shortName: "Individual 4",
+      description: "Cuatro jugadores y puntuación individual. Cada decisión afecta a tres rivales diferentes.",
+      tutorialDescription: "Practica la lectura de una baza con cuatro cartas y las prioridades cuando ya ha aparecido triunfo.",
+      engine: "multi",
+      href: "multi.html?mode=individual4",
+      rules: { stockDuty: "full", afterStockDuty: "full", mustBeat: true, mustTrump: true, mustOvertrump: true, freeDiscardIfCannotOvertrump: true, songs: true, songsStockOnly: false, exchange: false, allowTute: true, capote: false, matchMode: "rounds", targetPoints: null }
+    },
+    custom: {
+      id: "custom",
+      code: "MESA A MEDIDA",
+      name: "Mi mesa",
+      shortName: "Mi mesa",
+      description: "Reglamento creado por ti desde el configurador avanzado.",
+      tutorialDescription: "Resumen práctico de las obligaciones elegidas en tu reglamento.",
+      rules: null
+    }
+  };
+
+  const DEFAULT_CUSTOM_RULES = {
+    stockDuty: "full",
+    afterStockDuty: "full",
+    mustBeat: true,
+    mustTrump: true,
+    mustOvertrump: true,
+    freeDiscardIfCannotOvertrump: true,
+    songs: true,
+    songsStockOnly: false,
+    exchange: true,
+    allowTute: true,
+    capote: false,
+    matchMode: "rounds",
+    targetPoints: null
+  };
+
   const UI = {};
   let audioContext = null;
   let soundEnabled = true;
   let timers = [];
   let handGesture = null;
+  let customRules = { ...DEFAULT_CUSTOM_RULES };
+  let musicEnabled = false;
+  let selectedVariantId = "house";
 
   const state = {
     mode: "home",
     settings: {
       difficulty: "normal",
       targetRounds: 3,
-      allowTute: true
+      allowTute: true,
+      variantId: "house",
+      rules: { ...VARIANTS.house.rules }
     },
     match: {
       playerRounds: 0,
       aiRounds: 0,
+      playerPoints: 0,
+      aiPoints: 0,
       round: 0
     },
     tutorial: {
@@ -50,7 +212,7 @@
     round: null
   };
 
-  const TUTORIAL_STEPS = [
+  const BASE_TUTORIAL_STEPS = [
     {
       id: "welcome",
       title: "Bienvenido a la mesa",
@@ -140,13 +302,281 @@
     }
   ];
 
+  let TUTORIAL_STEPS = BASE_TUTORIAL_STEPS.map(step => ({ ...step }));
+
+
+  function cloneRules(rules) {
+    return { ...(rules || DEFAULT_CUSTOM_RULES) };
+  }
+
+  function getVariant(id = state.settings.variantId) {
+    if (id === "custom") return { ...VARIANTS.custom, rules: cloneRules(customRules) };
+    return VARIANTS[id] || VARIANTS.house;
+  }
+
+  function loadPreferences() {
+    try {
+      const savedVariant = localStorage.getItem("tuteIaVariant");
+      if (savedVariant && VARIANTS[savedVariant]) selectedVariantId = savedVariant;
+      const savedRules = JSON.parse(localStorage.getItem("tuteIaCustomRules") || "null");
+      if (savedRules) customRules = { ...DEFAULT_CUSTOM_RULES, ...savedRules };
+      const savedVolume = Number(localStorage.getItem("tuteIaMusicVolume"));
+      if (Number.isFinite(savedVolume) && UI.musicVolume) UI.musicVolume.value = String(Math.round(savedVolume * 100));
+      musicEnabled = localStorage.getItem("tuteIaMusicEnabled") !== "false";
+    } catch (_) {}
+    const volume = Number(UI.musicVolume?.value || 28) / 100;
+    if (UI.backgroundMusic) UI.backgroundMusic.volume = Math.max(0, Math.min(1, volume));
+  }
+
+  function saveSelectedVariant(id) {
+    selectedVariantId = id;
+    try { localStorage.setItem("tuteIaVariant", id); } catch (_) {}
+  }
+
+  function rulePillsFor(rules) {
+    const stockLabel = rules.stockDuty === "full" ? "Obligaciones desde el inicio"
+      : rules.stockDuty === "trumpOnly" ? "Asistir a triunfo con baceta"
+      : "Baceta libre";
+    const pills = [stockLabel];
+    if (rules.mustBeat) pills.push("Montar");
+    if (rules.mustTrump) pills.push("Fallar");
+    if (rules.mustOvertrump) pills.push("Pisar");
+    if (rules.songs) pills.push("Cantes 20/40");
+    if (rules.capote) pills.push("Capote");
+    if (rules.matchMode === "points") pills.push(`A ${rules.targetPoints} tantos`);
+    return pills;
+  }
+
+  function variantCardMarkup(variant, tutorial = false) {
+    const rules = variant.rules || customRules;
+    const pills = rulePillsFor(rules).slice(0, 6).map(label => `<span>${label}</span>`).join("");
+    return `<button class="variant-option${variant.featured ? " featured" : ""}" type="button" data-variant-id="${variant.id}">
+      <span class="variant-top"><span class="variant-code">${variant.code}</span><span class="variant-status">${tutorial ? "TUTORIAL" : "JUGABLE"}</span></span>
+      <h3>${variant.name}</h3>
+      <p>${tutorial ? variant.tutorialDescription : variant.description}</p>
+      <span class="variant-rule-pills">${pills}</span>
+    </button>`;
+  }
+
+  function buildVariantSelectors() {
+    const variants = [getVariant("house"), getVariant("habanero"), getVariant("fournier"), getVariant("americano"), getVariant("arrastrado3"), getVariant("pairs4"), getVariant("individual4"), getVariant("custom")];
+    UI.variantGrid.innerHTML = variants.map(variant => variantCardMarkup(variant, false)).join("");
+    UI.tutorialVariantGrid.innerHTML = variants.map(variant => variantCardMarkup(variant, true)).join("");
+    UI.variantGrid.querySelectorAll("[data-variant-id]").forEach(button => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.variantId;
+        safeCloseDialog(UI.variantModal);
+        const variant = getVariant(id);
+        if (variant.engine === "multi") {
+          saveSelectedVariant(id);
+          window.location.href = variant.href;
+        } else if (id === "custom") openCustomRules();
+        else openSetupForVariant(id);
+      });
+    });
+    UI.tutorialVariantGrid.querySelectorAll("[data-variant-id]").forEach(button => {
+      button.addEventListener("click", () => {
+        const id = button.dataset.variantId;
+        safeCloseDialog(UI.tutorialSelectModal);
+        const variant = getVariant(id);
+        if (variant.engine === "multi") {
+          saveSelectedVariant(id);
+          window.location.href = `${variant.href}&tutorial=1`;
+        } else if (id === "custom") {
+          saveSelectedVariant("custom");
+          startTutorial("custom");
+        } else startTutorial(id);
+      });
+    });
+  }
+
+  function openVariantSelector() {
+    clearTimers();
+    cleanupHandGesture();
+    buildVariantSelectors();
+    safeCloseDialog(UI.resultModal);
+    if (!UI.variantModal.open) UI.variantModal.showModal();
+    ensureMusicStarted();
+  }
+
+  function openTutorialSelector() {
+    buildVariantSelectors();
+    if (!UI.tutorialSelectModal.open) UI.tutorialSelectModal.showModal();
+    ensureMusicStarted();
+  }
+
+  function openCustomRules() {
+    UI.customStockDuty.value = customRules.stockDuty;
+    UI.customMustBeat.checked = customRules.mustBeat;
+    UI.customMustTrump.checked = customRules.mustTrump;
+    UI.customMustOvertrump.checked = customRules.mustOvertrump;
+    UI.customSongs.checked = customRules.songs;
+    UI.customSongsStockOnly.checked = customRules.songsStockOnly;
+    UI.customExchange.checked = customRules.exchange;
+    UI.customTute.checked = customRules.allowTute;
+    UI.customCapote.checked = customRules.capote;
+    if (!UI.customRulesModal.open) UI.customRulesModal.showModal();
+    ensureMusicStarted();
+  }
+
+  function saveCustomRulesFromForm() {
+    customRules = {
+      ...DEFAULT_CUSTOM_RULES,
+      stockDuty: UI.customStockDuty.value,
+      mustBeat: UI.customMustBeat.checked,
+      mustTrump: UI.customMustTrump.checked,
+      mustOvertrump: UI.customMustOvertrump.checked,
+      freeDiscardIfCannotOvertrump: true,
+      songs: UI.customSongs.checked,
+      songsStockOnly: UI.customSongsStockOnly.checked,
+      exchange: UI.customExchange.checked,
+      allowTute: UI.customTute.checked,
+      capote: UI.customCapote.checked
+    };
+    try { localStorage.setItem("tuteIaCustomRules", JSON.stringify(customRules)); } catch (_) {}
+    buildVariantSelectors();
+  }
+
+  function openSetupForVariant(id) {
+    const variant = getVariant(id);
+    saveSelectedVariant(id);
+    state.settings.variantId = id;
+    state.settings.rules = cloneRules(variant.rules);
+    state.settings.allowTute = state.settings.rules.allowTute;
+    UI.tuteToggle.checked = state.settings.allowTute;
+    UI.tuteToggle.disabled = !state.settings.rules.allowTute;
+    UI.setupEyebrow.textContent = variant.code;
+    UI.setupTitle.textContent = variant.name;
+    UI.setupCopy.textContent = variant.description;
+    UI.selectedVariantSummary.innerHTML = `<span class="summary-mark">${id === "house" ? "E" : id === "americano" ? "121" : "T"}</span><div><strong>${variant.name}</strong><p>${rulePillsFor(variant.rules).join(" · ")}</p></div>`;
+    const pointMode = variant.rules.matchMode === "points";
+    UI.targetSelect.innerHTML = pointMode
+      ? `<option value="121" selected>Primero en 121 tantos</option><option value="201">Primero en 201 tantos</option>`
+      : `<option value="1">Una mano</option><option value="3" selected>Al mejor de 5</option><option value="5">Al mejor de 9</option>`;
+    state.tutorial.active = false;
+    document.body.classList.remove("tutorial-mode");
+    UI.tutorialCoach.classList.add("hidden");
+    UI.aiName.textContent = "Doña Virtud";
+    UI.newMatchButton.textContent = variant.shortName;
+    renderRulesModal();
+    if (!UI.setupModal.open) UI.setupModal.showModal();
+  }
+
+  function buildRuleArticles(variant) {
+    const rules = variant.rules;
+    const stockText = rules.stockDuty === "full"
+      ? "Desde la primera baza debes asistir. Si la baza sigue en el palo de salida, debes montar cuando puedas. Sin ese palo, fallas con triunfo."
+      : rules.stockDuty === "trumpOnly"
+        ? "Mientras quede baceta solo existe obligación cuando el palo de salida es triunfo. En los demás palos hay juego libre."
+        : "Mientras quede baceta puedes jugar cualquier carta, sin obligación de asistir ni montar.";
+    const afterText = "Cuando se agota la baceta se aplican las obligaciones completas: asistir, montar, fallar y pisar cuando corresponda.";
+    const overtrumpText = rules.freeDiscardIfCannotOvertrump
+      ? "Si no tienes el palo y ya se ha fallado, debes superar el triunfo ganador si puedes. Si no puedes pisarlo, el descarte es libre."
+      : "Si no tienes el palo y ya se ha fallado, debes superar el triunfo ganador si puedes; en caso contrario debes jugar un triunfo disponible.";
+    return [
+      ["01", "Valor y fuerza", "As 11, tres 10, rey 4, caballo 3 y sota 2. La fuerza es as, tres, rey, caballo, sota, siete, seis, cinco, cuatro y dos."],
+      ["02", "Durante la baceta", stockText, true],
+      ["03", "Baza ya fallada", overtrumpText, variant.id === "house"],
+      ["04", "Sin baceta", afterText],
+      ["05", "Cantes", rules.songs ? `${rules.songsStockOnly ? "Solo mientras queda baceta. " : ""}Rey y caballo de triunfo valen 40; los de otro palo, 20.` : "Los cantes están desactivados en este reglamento."],
+      ["06", "Acciones especiales", `${rules.exchange ? "Cambio del pinte activado. " : "Sin cambio del pinte. "}${rules.allowTute ? "Tute de cuatro reyes o caballos permitido. " : "Sin victoria automática por tute. "}${rules.capote ? "Capote disponible al comenzar la fase final." : "Sin capote."}`]
+    ];
+  }
+
+  function renderRulesModal() {
+    const variant = getVariant();
+    UI.rulesModalTitle.textContent = variant.name;
+    UI.rulesModalCopy.textContent = variant.description;
+    UI.dynamicRulesGrid.innerHTML = buildRuleArticles(variant).map(([number, title, text, emphasis]) => `<article class="${emphasis ? "rule-emphasis" : ""}"><span class="rule-number">${number}</span><h3>${title}</h3><p>${text}</p></article>`).join("");
+  }
+
+  function buildTutorialSteps(variantId) {
+    const variant = getVariant(variantId);
+    const steps = BASE_TUTORIAL_STEPS.map(step => ({ ...step }));
+    steps[0].text = `Este recorrido utiliza la mesa real y el reglamento <strong>${variant.name}</strong>. Aprenderás jugando con manos preparadas.`;
+    steps[4] = { ...steps[4], id: "stock-rule" };
+    if (variant.rules.stockDuty === "free") {
+      steps[4].title = "Con baceta, juego libre";
+      steps[4].text = "Mientras queden cartas para robar no estás obligado a asistir. Para comprobarlo, abre la baza con el as de copas.";
+      steps[4].tip = "Pulsa o arrastra el as de copas al tapete.";
+      steps[4].allowedCardId = "copas-1";
+    } else if (variant.rules.stockDuty === "trumpOnly") {
+      steps[4].title = "Con baceta: el triunfo obliga";
+      steps[4].text = "Durante la baceta hay juego libre salvo cuando la carta de salida es triunfo. La IA ha salido de bastos: debes asistir y montar con el tres.";
+      steps[4].tip = "Juega el tres de bastos.";
+      steps[4].allowedCardId = "bastos-3";
+    } else {
+      steps[4].title = "Arrastre desde la primera baza";
+      steps[4].text = "Aunque quede baceta, debes asistir y superar cuando la baza continúa en el palo de salida. La IA juega siete de copas: debes montar con el tres.";
+      steps[4].tip = "Juega el tres de copas; el cinco no supera al siete.";
+      steps[4].allowedCardId = "copas-3";
+    }
+    steps[6].text = variant.rules.stockDuty === "full"
+      ? "La obligación que ya has practicado continúa durante toda la mano. La IA sale con el siete de copas y debes montar con el tres."
+      : "Al agotarse la baceta comienzan las obligaciones completas. La IA sale con el siete de copas y debes montar con el tres.";
+    steps[9].title = `Ya sabes jugar a ${variant.name}`;
+    steps[9].text = variant.rules.matchMode === "points"
+      ? `En ${variant.name}, los tantos se acumulan entre manos hasta alcanzar el objetivo. La partida real utilizará 121 por defecto.`
+      : `Ya conoces las obligaciones, el triunfo, el robo y los cantes de ${variant.name}.`;
+    return steps;
+  }
+
+  function tutorialStorageKey(variantId) {
+    return `tuteTutorialComplete:${variantId}`;
+  }
+
+  async function ensureMusicStarted() {
+    if (!musicEnabled || !UI.backgroundMusic?.paused) return;
+    try {
+      await UI.backgroundMusic.play();
+      updateMusicUi();
+    } catch (_) {}
+  }
+
+  async function toggleMusic() {
+    if (!UI.backgroundMusic) return;
+    musicEnabled = UI.backgroundMusic.paused;
+    try { localStorage.setItem("tuteIaMusicEnabled", String(musicEnabled)); } catch (_) {}
+    if (musicEnabled) {
+      try { await UI.backgroundMusic.play(); } catch (_) { musicEnabled = false; }
+    } else UI.backgroundMusic.pause();
+    updateMusicUi();
+  }
+
+  function updateMusicUi() {
+    const playing = Boolean(UI.backgroundMusic && !UI.backgroundMusic.paused);
+    document.body.classList.toggle("music-playing", playing);
+    UI.musicIcon.textContent = playing ? "♫" : "♩";
+    UI.musicStatus.textContent = playing ? "Reproduciendo · bucle offline" : "Música pausada";
+    UI.homeMusicButton.textContent = playing ? "Pausar" : "Reproducir";
+    document.querySelectorAll(".music-live-dot").forEach(dot => dot.classList.toggle("paused", !playing));
+  }
+
+  function renderHomeStats() {
+    try {
+      const stats = JSON.parse(localStorage.getItem("tuteIaStats") || "{}");
+      const games = stats.matchesPlayed || 0;
+      const wins = stats.matchesWon || 0;
+      UI.statGames.textContent = games;
+      UI.statWins.textContent = wins;
+      UI.statWinRate.textContent = `${games ? Math.round(wins / games * 100) : 0} % de efectividad`;
+      const counts = stats.variantPlays || {};
+      const favoriteId = Object.keys(counts).sort((a, b) => (counts[b] || 0) - (counts[a] || 0))[0] || selectedVariantId;
+      UI.statFavorite.textContent = getVariant(favoriteId).shortName;
+    } catch (_) {}
+  }
+
   document.addEventListener("DOMContentLoaded", init);
 
   function init() {
     cacheUI();
+    loadPreferences();
     bindUI();
+    buildVariantSelectors();
     renderEmptyState();
     updateTutorialCompletionBadge();
+    renderHomeStats();
+    updateMusicUi();
     showHome();
   }
 
@@ -166,9 +596,15 @@
       "resultPlayerScore", "resultAiScore", "resultActionButton",
       "resultExitButton", "toastRegion", "brandButton",
       "aiCapturePile", "playerCapturePile", "aiCaptureCount", "playerCaptureCount", "manualOrderHint",
-      "homeScreen", "appShell", "classicModeButton", "tutorialModeButton", "tutorialCompletionBadge",
+      "homeScreen", "appShell", "classicModeButton", "tutorialModeButton", "customModeButton", "tutorialCompletionBadge",
       "tutorialCoach", "tutorialKicker", "tutorialProgress", "tutorialTitle", "tutorialText", "tutorialTip",
-      "tutorialNextButton", "tutorialExitButton"
+      "tutorialNextButton", "tutorialExitButton", "variantModal", "tutorialSelectModal", "customRulesModal",
+      "variantGrid", "tutorialVariantGrid", "closeVariantButton", "closeTutorialSelectButton", "customRulesForm",
+      "customStockDuty", "customMustBeat", "customMustTrump", "customMustOvertrump", "customSongs", "customSongsStockOnly",
+      "customExchange", "customTute", "customCapote", "setupEyebrow", "setupTitle", "setupCopy", "selectedVariantSummary",
+      "rulesModalTitle", "rulesModalCopy", "dynamicRulesGrid", "variantLiveBadge", "capoteButton",
+      "backgroundMusic", "musicButton", "musicIcon", "musicPopover", "musicStatus", "musicVolume", "homeMusicButton",
+      "statGames", "statWins", "statWinRate", "statFavorite", "closeSetupButton", "closeCustomRulesButton"
     ].forEach(id => UI[id] = document.getElementById(id));
   }
 
@@ -180,38 +616,86 @@
       });
     });
 
-    UI.classicModeButton.addEventListener("click", openClassicSetup);
-    UI.tutorialModeButton.addEventListener("click", startTutorial);
+    UI.classicModeButton.addEventListener("click", openVariantSelector);
+    UI.tutorialModeButton.addEventListener("click", openTutorialSelector);
+    UI.customModeButton.addEventListener("click", openCustomRules);
+    UI.closeVariantButton.addEventListener("click", () => UI.variantModal.close());
+    UI.closeTutorialSelectButton.addEventListener("click", () => UI.tutorialSelectModal.close());
+    UI.closeSetupButton.addEventListener("click", () => UI.setupModal.close());
+    UI.closeCustomRulesButton.addEventListener("click", () => UI.customRulesModal.close());
     UI.tutorialNextButton.addEventListener("click", handleTutorialNext);
     UI.tutorialExitButton.addEventListener("click", showHome);
+
+    UI.customRulesForm.addEventListener("submit", event => {
+      event.preventDefault();
+      saveCustomRulesFromForm();
+      saveSelectedVariant("custom");
+      UI.customRulesModal.close();
+      openSetupForVariant("custom");
+    });
 
     UI.setupForm.addEventListener("submit", event => {
       event.preventDefault();
       const difficulty = document.querySelector('input[name="difficulty"]:checked')?.value || "normal";
+      const variant = getVariant(selectedVariantId);
       state.settings.difficulty = difficulty;
-      state.settings.targetRounds = Number(UI.targetSelect.value);
-      state.settings.allowTute = UI.tuteToggle.checked;
+      state.settings.variantId = selectedVariantId;
+      state.settings.rules = cloneRules(variant.rules);
+      state.settings.allowTute = state.settings.rules.allowTute && UI.tuteToggle.checked;
+      state.settings.rules.allowTute = state.settings.allowTute;
+      if (state.settings.rules.matchMode === "points") {
+        state.settings.rules.targetPoints = Number(UI.targetSelect.value) || 121;
+        state.settings.targetRounds = 999;
+      } else {
+        state.settings.targetRounds = Number(UI.targetSelect.value) || 3;
+      }
       state.mode = "game";
       state.tutorial.active = false;
       document.body.classList.remove("tutorial-mode");
       UI.setupModal.close();
       showGameTable();
+      renderRulesModal();
+      ensureMusicStarted();
       startMatch();
     });
 
     UI.setupModal.addEventListener("close", () => {
-      if (state.mode === "home") showHome();
+      if (state.mode === "home") renderHomeStats();
     });
 
     UI.newMatchButton.addEventListener("click", () => {
       if (state.mode === "tutorial") showHome();
-      else openClassicSetup();
+      else openVariantSelector();
     });
     UI.brandButton.addEventListener("click", showHome);
-    UI.rulesButton.addEventListener("click", () => UI.rulesModal.showModal());
+    UI.rulesButton.addEventListener("click", () => {
+      renderRulesModal();
+      UI.rulesModal.showModal();
+    });
     UI.closeRulesButton.addEventListener("click", () => UI.rulesModal.close());
     UI.rulesUnderstoodButton.addEventListener("click", () => UI.rulesModal.close());
     UI.soundButton.addEventListener("click", toggleSound);
+
+    UI.musicButton.addEventListener("click", async event => {
+      event.stopPropagation();
+      const wasHidden = UI.musicPopover.classList.contains("hidden");
+      UI.musicPopover.classList.toggle("hidden");
+      if (wasHidden && UI.backgroundMusic.paused && musicEnabled) await ensureMusicStarted();
+    });
+    UI.homeMusicButton.addEventListener("click", toggleMusic);
+    UI.musicPopover.addEventListener("click", event => event.stopPropagation());
+    UI.musicPopover.querySelector("strong")?.addEventListener("click", toggleMusic);
+    UI.musicVolume.addEventListener("input", () => {
+      const volume = Number(UI.musicVolume.value) / 100;
+      UI.backgroundMusic.volume = volume;
+      try { localStorage.setItem("tuteIaMusicVolume", String(volume)); } catch (_) {}
+      if (volume > 0 && musicEnabled) ensureMusicStarted();
+    });
+    UI.backgroundMusic.addEventListener("play", updateMusicUi);
+    UI.backgroundMusic.addEventListener("pause", updateMusicUi);
+    document.addEventListener("click", () => UI.musicPopover.classList.add("hidden"));
+    UI.musicButton.addEventListener("dblclick", toggleMusic);
+
     UI.drawButton.addEventListener("click", manualPlayerDraw);
     UI.deckStack.addEventListener("click", manualPlayerDraw);
     UI.deckStack.addEventListener("keydown", event => {
@@ -221,6 +705,7 @@
       }
     });
     UI.exchangeButton.addEventListener("click", () => exchangeTrump("player"));
+    UI.capoteButton.addEventListener("click", announceCapote);
     UI.resultActionButton.addEventListener("click", handleResultAction);
     UI.resultExitButton.addEventListener("click", () => {
       UI.resultModal.close();
@@ -238,23 +723,13 @@
   }
 
   function openClassicSetup() {
-    clearTimers();
-    cleanupHandGesture();
-    safeCloseDialog(UI.resultModal);
-    state.tutorial.active = false;
-    document.body.classList.remove("tutorial-mode");
-    UI.tutorialCoach.classList.add("hidden");
-    UI.aiName.textContent = "Doña Virtud";
-    UI.newMatchButton.textContent = "Partida clásica";
-    if (!UI.setupModal.open) UI.setupModal.showModal();
+    openSetupForVariant(selectedVariantId || "house");
   }
 
   function showHome() {
     clearTimers();
     cleanupHandGesture();
-    safeCloseDialog(UI.setupModal);
-    safeCloseDialog(UI.rulesModal);
-    safeCloseDialog(UI.resultModal);
+    [UI.setupModal, UI.rulesModal, UI.resultModal, UI.variantModal, UI.tutorialSelectModal, UI.customRulesModal].forEach(safeCloseDialog);
     state.mode = "home";
     state.tutorial.active = false;
     state.tutorial.busy = false;
@@ -264,39 +739,53 @@
     UI.appShell.classList.add("hidden");
     UI.homeScreen.classList.remove("hidden");
     UI.aiName.textContent = "Doña Virtud";
-    UI.newMatchButton.textContent = "Partida clásica";
+    UI.newMatchButton.textContent = "Partida offline";
     clearTutorialFocus();
     renderEmptyState();
     updateTutorialCompletionBadge();
+    renderHomeStats();
+    updateMusicUi();
   }
 
   function updateTutorialCompletionBadge() {
-    let complete = false;
-    try { complete = localStorage.getItem("tuteTutorialClassicComplete") === "true"; } catch (_) {}
-    state.tutorial.completed = complete;
-    UI.tutorialCompletionBadge.textContent = complete ? "Tutorial completado" : `${TUTORIAL_STEPS.length} lecciones`;
-    UI.tutorialModeButton.classList.toggle("tutorial-complete", complete);
+    let completed = 0;
+    try {
+      ["house", "habanero", "fournier", "americano", "arrastrado3", "pairs4", "individual4", "custom"].forEach(id => {
+        if (localStorage.getItem(tutorialStorageKey(id)) === "true") completed += 1;
+      });
+    } catch (_) {}
+    state.tutorial.completed = completed > 0;
+    UI.tutorialCompletionBadge.textContent = completed ? `${completed} reglamento${completed === 1 ? "" : "s"} completado${completed === 1 ? "" : "s"}` : "8 tutoriales adaptados";
+    UI.tutorialModeButton.classList.toggle("tutorial-complete", completed > 0);
   }
 
-  function startTutorial() {
+  function startTutorial(variantId = "house") {
     clearTimers();
     cleanupHandGesture();
-    safeCloseDialog(UI.setupModal);
-    safeCloseDialog(UI.rulesModal);
-    safeCloseDialog(UI.resultModal);
+    [UI.setupModal, UI.rulesModal, UI.resultModal, UI.variantModal, UI.tutorialSelectModal].forEach(safeCloseDialog);
+    const variant = getVariant(variantId);
+    saveSelectedVariant(variantId);
+    state.settings.variantId = variantId;
+    state.settings.rules = cloneRules(variant.rules);
+    state.settings.allowTute = state.settings.rules.allowTute;
+    TUTORIAL_STEPS = buildTutorialSteps(variantId);
     state.mode = "tutorial";
     state.tutorial.active = true;
     state.tutorial.busy = false;
     state.match.playerRounds = 0;
     state.match.aiRounds = 0;
+    state.match.playerPoints = 0;
+    state.match.aiPoints = 0;
     state.match.round = 1;
     state.settings.targetRounds = 1;
-    state.settings.allowTute = true;
     document.body.classList.add("tutorial-mode");
     UI.aiName.textContent = "Maestra Virtud";
     UI.newMatchButton.textContent = "Salir";
+    UI.variantLiveBadge.textContent = variant.shortName.toUpperCase();
+    renderRulesModal();
     showGameTable();
     UI.tutorialCoach.classList.remove("hidden");
+    ensureMusicStarted();
     setTutorialStep(0);
   }
 
@@ -363,7 +852,8 @@
       lastDrawnId: null,
       busyFlight: false,
       collecting: false,
-      pendingHandFlip: null
+      pendingHandFlip: null,
+      capote: { active: false, actor: null, failed: false, announced: false }
     };
   }
 
@@ -404,16 +894,44 @@
           trumpCard: commonTrump,
           currentTurn: null
         });
-      case 4:
+      case 4: {
+        const duty = state.settings.rules.stockDuty;
+        if (duty === "free") {
+          return makeTutorialRound({
+            playerHand: [makeCard("copas", 1), makeCard("oros", 5), makeCard("espadas", 2), makeCard("bastos", 12)],
+            aiHand: [makeCard("copas", 7), makeCard("oros", 4), makeCard("espadas", 6), makeCard("bastos", 3)],
+            stock: stockOpen,
+            trumpCard: commonTrump,
+            currentTurn: "player",
+            leader: "player",
+            log: ["<strong>Baceta abierta.</strong> Puedes jugar cualquier carta."]
+          });
+        }
+        if (duty === "trumpOnly") {
+          const lead = makeCard("bastos", 7);
+          return makeTutorialRound({
+            playerHand: [makeCard("bastos", 3), makeCard("bastos", 5), makeCard("copas", 1), makeCard("oros", 2)],
+            aiHand: [makeCard("copas", 7), makeCard("oros", 4), makeCard("espadas", 6)],
+            stock: stockOpen,
+            trumpCard: commonTrump,
+            trick: [{ actor: "ai", card: lead, rotation: 4, offsetX: 0, offsetY: 0 }],
+            currentTurn: "player",
+            leader: "ai",
+            log: ["La IA abre con <strong>Siete de bastos</strong>.", "Con baceta, el triunfo sí obliga."]
+          });
+        }
+        const lead = makeCard("copas", 7);
         return makeTutorialRound({
-          playerHand: [makeCard("copas", 1), makeCard("oros", 5), makeCard("espadas", 2), makeCard("bastos", 12)],
-          aiHand: [makeCard("copas", 7), makeCard("oros", 4), makeCard("espadas", 6), makeCard("bastos", 3)],
+          playerHand: [makeCard("copas", 3), makeCard("copas", 5), makeCard("oros", 1), makeCard("bastos", 2)],
+          aiHand: [makeCard("oros", 4), makeCard("espadas", 6), makeCard("bastos", 3)],
           stock: stockOpen,
           trumpCard: commonTrump,
+          trick: [{ actor: "ai", card: lead, rotation: 4, offsetX: 0, offsetY: 0 }],
           currentTurn: "player",
-          leader: "player",
-          log: ["<strong>Baceta abierta.</strong> Puedes jugar cualquier carta."]
+          leader: "ai",
+          log: ["La IA abre con <strong>Siete de copas</strong>.", "Tu reglamento obliga desde la primera baza."]
         });
+      }
       case 5:
         return makeTutorialRound({
           playerHand: [makeCard("oros", 5), makeCard("espadas", 2), makeCard("bastos", 12)],
@@ -557,10 +1075,10 @@
   }
 
   function completeTutorial() {
-    try { localStorage.setItem("tuteTutorialClassicComplete", "true"); } catch (_) {}
+    try { localStorage.setItem(tutorialStorageKey(state.settings.variantId), "true"); } catch (_) {}
     state.tutorial.completed = true;
     playSound("victory");
-    showToast("<strong>Tutorial clásico completado.</strong> Ya puedes enfrentarte a la IA.");
+    showToast(`<strong>Tutorial de ${getVariant().name} completado.</strong> Ya puedes enfrentarte a la IA.`);
     showHome();
   }
 
@@ -617,13 +1135,23 @@
     cleanupHandGesture();
     await tutorialMoveCard("player", cardId);
 
-    if (step.id === "open-play") {
-      await sleep(300);
-      await tutorialMoveCard("ai", "copas-7");
-      state.round.cardPoints.player = 11;
+    if (step.id === "stock-rule") {
+      const duty = state.settings.rules.stockDuty;
+      if (duty === "free") {
+        await sleep(300);
+        await tutorialMoveCard("ai", "copas-7");
+        state.round.cardPoints.player = 11;
+        state.round.captured.player.push(makeCard("copas", 1), makeCard("copas", 7));
+        addLog("<strong>Ganas la baza</strong> con el as de copas y sumas 11 puntos.");
+      } else {
+        const gained = state.round.trick.reduce((total, play) => total + play.card.points, 0);
+        state.round.cardPoints.player += gained;
+        state.round.captured.player.push(...state.round.trick.map(play => play.card));
+        addLog(duty === "trumpOnly"
+          ? "<strong>Correcto.</strong> Has asistido y montado el triunfo durante la baceta."
+          : "<strong>Correcto.</strong> Has arrastrado y montado desde la primera baza.");
+      }
       state.round.tricksWon.player = 1;
-      state.round.captured.player.push(makeCard("copas", 1), makeCard("copas", 7));
-      addLog("<strong>Ganas la baza</strong> con el as de copas y sumas 11 puntos.");
       playSound("winTrick");
       await sleep(380);
       await animateCollectTrick("player");
@@ -706,7 +1234,10 @@
     clearTimers();
     state.match.playerRounds = 0;
     state.match.aiRounds = 0;
+    state.match.playerPoints = 0;
+    state.match.aiPoints = 0;
     state.match.round = 0;
+    UI.variantLiveBadge.textContent = getVariant().shortName.toUpperCase();
     startRound();
   }
 
@@ -989,8 +1520,17 @@
     return state.round.stock.length + (state.round.trumpCard ? 1 : 0);
   }
 
+  function currentDutyMode() {
+    const rules = state.settings.rules || VARIANTS.house.rules;
+    return drawPileCount() > 0 ? rules.stockDuty : rules.afterStockDuty;
+  }
+
   function isStrictPhase() {
-    return drawPileCount() === 0;
+    return currentDutyMode() === "full";
+  }
+
+  function isTrumpOnlyPhase() {
+    return currentDutyMode() === "trumpOnly";
   }
 
   function renderEmptyState() {
@@ -1337,15 +1877,27 @@
     if (!card) return "La carta ya no está en tu mano.";
     const legal = getLegalCards("player");
     if (legal.some(item => item.id === cardId)) return "Suelta la carta sobre el tapete para jugarla.";
-    if (round.trick.length === 1) {
-      const lead = round.trick[0].card;
-      if (legal.every(item => item.suit === lead.suit)) {
-        const canMount = legal.some(item => item.strength > lead.strength);
-        return canMount ? `Debes asistir a ${SUIT_LABELS[lead.suit]} y montar.` : `Debes asistir a ${SUIT_LABELS[lead.suit]}.`;
+    if (!round.trick.length) return "Las reglas de la baza obligan a jugar otra carta.";
+
+    const lead = round.trick[0].card;
+    const winner = currentWinningPlay(round.trick)?.card;
+    const hand = round.hands.player;
+    const leadCards = hand.filter(item => item.suit === lead.suit);
+    if (leadCards.length) {
+      const alreadyTrumped = winner?.suit === round.trumpSuit && lead.suit !== round.trumpSuit;
+      if (!alreadyTrumped && legal.every(item => item.suit === lead.suit)) {
+        const canMount = legal.some(item => item.strength > winner.strength);
+        return canMount ? `Debes asistir a ${SUIT_LABELS[lead.suit]} y superar la carta ganadora.` : `Debes asistir a ${SUIT_LABELS[lead.suit]}.`;
       }
-      if (legal.every(item => item.suit === round.trumpSuit)) return `No tienes ${SUIT_LABELS[lead.suit]}: debes jugar triunfo.`;
+      return `La baza está fallada, pero todavía debes asistir a ${SUIT_LABELS[lead.suit]}. No necesitas montar.`;
     }
-    return "Las reglas de la baza obligan a jugar otra carta.";
+
+    if (winner?.suit === round.trumpSuit) {
+      const higherTrump = hand.some(item => item.suit === round.trumpSuit && item.strength > winner.strength);
+      if (higherTrump) return `No tienes ${SUIT_LABELS[lead.suit]}: debes pisar el triunfo ganador.`;
+    }
+    if (legal.every(item => item.suit === round.trumpSuit)) return `No tienes ${SUIT_LABELS[lead.suit]}: debes fallar con triunfo.`;
+    return "No puedes asistir ni superar el triunfo: puedes descartarte con cualquiera de las cartas habilitadas.";
   }
 
   function cleanupHandGesture() {
@@ -1434,13 +1986,17 @@
 
   function renderStatus() {
     const round = state.round;
-    const strict = round.phase !== "dealing" && isStrictPhase();
+    const duty = round.phase === "dealing" ? "free" : currentDutyMode();
+    const strict = duty === "full";
+    const trumpOnly = duty === "trumpOnly";
+    const variant = getVariant();
+    UI.variantLiveBadge.textContent = variant.shortName.toUpperCase();
 
     if (round.phase === "dealing") {
       UI.phaseBadge.textContent = "REPARTIENDO";
       UI.phaseBadge.classList.remove("strict");
-      UI.ruleStateTitle.textContent = "Reparto manual";
-      UI.ruleStateText.textContent = "Las cartas salen de la baceta una a una y llegan físicamente a cada mano.";
+      UI.ruleStateTitle.textContent = variant.name;
+      UI.ruleStateText.textContent = "Las cartas salen de la baceta una a una. Tu mano conserva el orden de reparto.";
       UI.statusText.textContent = `Repartiendo… ${round.hands.player.length}/8 cartas para ti.`;
       UI.playerTurnPill.classList.remove("visible");
       UI.aiTurnPill.classList.remove("visible");
@@ -1449,32 +2005,34 @@
       UI.phaseBadge.textContent = "FASE DE ROBO";
       UI.phaseBadge.classList.remove("strict");
       UI.ruleStateTitle.textContent = "Robo por orden de baza";
-      UI.ruleStateText.textContent = "Quien gana la baza roba primero. Para tu carta debes tocar personalmente la baceta.";
+      UI.ruleStateText.textContent = "Quien gana roba primero. Tu carta debe recogerse tocando la baceta.";
       UI.statusText.textContent = round.drawing
         ? `${actor === "player" ? "Estás robando" : "La IA está robando"}…`
-        : actor === "player"
-          ? "Te toca robar. Pulsa la baceta."
-          : "La IA roba primero.";
+        : actor === "player" ? "Te toca robar. Pulsa la baceta." : "La IA roba primero.";
       UI.playerTurnPill.classList.toggle("visible", actor === "player" && !round.drawing);
       UI.aiTurnPill.classList.toggle("visible", actor === "ai");
     } else {
-      UI.phaseBadge.textContent = strict ? "JUEGO OBLIGADO" : "BACETA ABIERTA";
-      UI.phaseBadge.classList.toggle("strict", strict);
-      UI.ruleStateTitle.textContent = strict ? "Asistir y montar" : "Juego libre";
+      UI.phaseBadge.textContent = strict ? "ARRASTRE ACTIVO" : trumpOnly ? "TRIUNFO OBLIGA" : "BACETA LIBRE";
+      UI.phaseBadge.classList.toggle("strict", strict || trumpOnly);
+      UI.ruleStateTitle.textContent = strict ? "Asistir, montar y fallar" : trumpOnly ? "Obligación especial de triunfo" : "Juego libre";
       UI.ruleStateText.textContent = strict
-        ? "Sin baceta: debes asistir, montar si puedes y fallar con triunfo cuando no tengas el palo."
-        : "Mientras quede baceta puedes jugar cualquier carta.";
+        ? "Debes asistir. Si la baza sigue en el palo de salida, monta cuando puedas; sin palo, falla o pisa el triunfo ganador."
+        : trumpOnly
+          ? "Con baceta solo estás obligado cuando la carta de salida es triunfo."
+          : "Mientras quede baceta puedes jugar cualquier carta.";
 
       const isPlayerTurn = round.currentTurn === "player" && round.phase === "playing";
       const isAiTurn = round.currentTurn === "ai" && round.phase === "playing";
       UI.playerTurnPill.classList.toggle("visible", isPlayerTurn);
       UI.aiTurnPill.classList.toggle("visible", isAiTurn);
 
-      if (round.pendingCante?.actor === "player") {
+      if (round.capote?.active) {
+        UI.statusText.textContent = round.capote.actor === "player" ? "Capote anunciado: debes ganar todas las bazas restantes." : "La IA ha anunciado capote.";
+      } else if (round.pendingCante?.actor === "player") {
         UI.statusText.textContent = "Has ganado la baza. Puedes cantar.";
       } else if (round.pendingCante?.actor === "ai") {
         UI.statusText.textContent = "La IA está valorando un cante.";
-      } else if (round.trick.length === 1) {
+      } else if (round.trick.length >= 1) {
         const opener = round.trick[0].actor;
         UI.statusText.textContent = opener === "player" ? "La IA debe responder." : "Te toca responder.";
       } else if (isPlayerTurn) {
@@ -1488,39 +2046,36 @@
 
     if (state.tutorial.active) {
       const step = currentTutorialStep();
-      UI.phaseBadge.textContent = ["mount", "trump-fail"].includes(step.id) ? "JUEGO OBLIGADO" : "TUTORIAL CLÁSICO";
-      UI.phaseBadge.classList.toggle("strict", ["mount", "trump-fail"].includes(step.id));
+      const forcedStep = ["stock-rule", "mount", "trump-fail"].includes(step.id) && state.settings.rules.stockDuty !== "free";
+      UI.phaseBadge.textContent = forcedStep ? "OBLIGACIÓN GUIADA" : "TUTORIAL";
+      UI.phaseBadge.classList.toggle("strict", forcedStep || ["mount", "trump-fail"].includes(step.id));
       UI.ruleStateTitle.textContent = step.title;
       UI.ruleStateText.textContent = step.tip || "Sigue la indicación de la maestra.";
       UI.statusText.textContent = step.action === "reorder"
         ? "Reordena una carta de tu mano."
-        : step.action === "play"
-          ? "Juega la carta resaltada."
-          : step.action === "draw"
-            ? "Pulsa la baceta para robar."
-            : step.action === "song"
-              ? "Realiza el cante disponible."
-              : step.action === "finish"
-                ? "Tutorial terminado."
-                : "Lee la explicación y continúa.";
+        : step.action === "play" ? "Juega la carta resaltada."
+        : step.action === "draw" ? "Pulsa la baceta para robar."
+        : step.action === "song" ? "Realiza el cante disponible."
+        : step.action === "finish" ? "Tutorial terminado."
+        : "Lee la explicación y continúa.";
       UI.playerTurnPill.classList.toggle("visible", ["play", "draw", "reorder"].includes(step.action));
       UI.aiTurnPill.classList.remove("visible");
     }
 
-    const unseen = round.hands.ai.length + drawPileCount();
-    UI.unknownCards.textContent = unseen;
+    UI.unknownCards.textContent = round.hands.ai.length + drawPileCount();
   }
 
   function renderScores() {
     const round = state.round;
     const playerTotal = round.cardPoints.player + round.songPoints.player;
     const aiTotal = round.cardPoints.ai + round.songPoints.ai;
+    const pointMode = !state.tutorial.active && state.settings.rules.matchMode === "points";
 
     UI.roundNumber.textContent = state.tutorial.active
       ? `LECCIÓN ${state.tutorial.stepIndex + 1}`
       : `MANO ${state.match.round}`;
-    UI.playerRounds.textContent = state.match.playerRounds;
-    UI.aiRounds.textContent = state.match.aiRounds;
+    UI.playerRounds.textContent = pointMode ? state.match.playerPoints : state.match.playerRounds;
+    UI.aiRounds.textContent = pointMode ? state.match.aiPoints : state.match.aiRounds;
     UI.playerCardPoints.textContent = round.cardPoints.player;
     UI.aiCardPoints.textContent = round.cardPoints.ai;
     UI.playerSongPoints.textContent = round.songPoints.player;
@@ -1529,10 +2084,13 @@
     UI.aiTotal.textContent = aiTotal;
     UI.playerTricks.textContent = round.tricksWon.player;
     UI.aiTricks.textContent = round.tricksWon.ai;
-    const pipCount = state.tutorial.active ? TUTORIAL_STEPS.length : state.settings.targetRounds;
+
+    const pipCount = state.tutorial.active ? TUTORIAL_STEPS.length : pointMode ? 10 : state.settings.targetRounds;
     UI.targetRounds.textContent = state.tutorial.active
       ? `${state.tutorial.stepIndex + 1} de ${TUTORIAL_STEPS.length}`
-      : `${state.settings.targetRounds} ${state.settings.targetRounds === 1 ? "mano" : "manos"}`;
+      : pointMode
+        ? `${state.settings.rules.targetPoints} tantos acumulados`
+        : `${state.settings.targetRounds} ${state.settings.targetRounds === 1 ? "mano" : "manos"}`;
 
     UI.roundPips.style.setProperty("--pip-count", pipCount);
     UI.roundPips.innerHTML = "";
@@ -1542,6 +2100,11 @@
       if (state.tutorial.active) {
         if (i < state.tutorial.stepIndex) pip.classList.add("player");
         else if (i === state.tutorial.stepIndex) pip.classList.add("tutorial-current-pip");
+      } else if (pointMode) {
+        const playerProgress = Math.round(state.match.playerPoints / state.settings.rules.targetPoints * pipCount);
+        const aiProgress = Math.round(state.match.aiPoints / state.settings.rules.targetPoints * pipCount);
+        if (i < playerProgress) pip.classList.add("player");
+        else if (i >= pipCount - aiProgress) pip.classList.add("ai");
       } else if (i < state.match.playerRounds) pip.classList.add("player");
       else if (i < state.match.playerRounds + state.match.aiRounds) pip.classList.add("ai");
       UI.roundPips.appendChild(pip);
@@ -1604,6 +2167,17 @@
     if (canShowExchange) {
       UI.exchangeButton.textContent = `Cambiar ${RANK_MAP[exchange.requiredRank].label.toLowerCase()} por el pinte`;
     }
+
+    const canAnnounceCapote = state.settings.rules.capote &&
+      !round.capote?.announced &&
+      drawPileCount() === 0 &&
+      round.hands.player.length === 8 &&
+      round.currentTurn === "player" &&
+      round.leader === "player" &&
+      round.trick.length === 0 &&
+      round.phase === "playing" &&
+      !round.pendingCante;
+    UI.capoteButton.classList.toggle("hidden", !canAnnounceCapote);
   }
 
   function getHintText() {
@@ -1612,21 +2186,27 @@
     if (round.phase === "awaitingDraw") {
       const actor = round.drawQueue[round.drawIndex];
       if (round.drawing) return "La carta está viajando desde la baceta hasta la mano.";
-      return actor === "player"
-        ? "Toca la baceta o pulsa «Robar de la baceta»."
-        : "La IA debe robar antes que tú.";
+      return actor === "player" ? "Toca la baceta o pulsa «Robar de la baceta»." : "La IA debe robar antes que tú.";
     }
     if (round.phase !== "playing") return "La mano ha terminado.";
-    if (round.currentTurn === "ai") return "La IA solo conoce sus cartas y las jugadas visibles.";
-    if (!isStrictPhase()) return "Baceta abierta. Toca una carta para jugarla, arrástrala al tapete o muévela entre tus cartas.";
+    if (round.currentTurn === "ai") return "La IA calcula únicamente con sus cartas y la información visible.";
+    if (round.trick.length === 0) return "Abre la baza con cualquier carta. También puedes ordenar la mano arrastrando entre cartas.";
+
     const legal = getLegalCards("player");
     if (legal.length === round.hands.player.length) return "Puedes jugar cualquier carta.";
-    if (round.trick.length === 1) {
-      const lead = round.trick[0].card;
-      if (legal.every(c => c.suit === lead.suit)) return `Debes asistir a ${SUIT_LABELS[lead.suit]}.`;
-      if (legal.every(c => c.suit === round.trumpSuit)) return `No tienes ${SUIT_LABELS[lead.suit]}: debes fallar.`;
+    const lead = round.trick[0].card;
+    const winner = currentWinningPlay(round.trick)?.card;
+    const leadCards = round.hands.player.filter(card => card.suit === lead.suit);
+    if (leadCards.length) {
+      if (winner?.suit === round.trumpSuit && lead.suit !== round.trumpSuit) return `La baza está fallada: debes asistir a ${SUIT_LABELS[lead.suit]}, pero no necesitas montar.`;
+      const canMount = legal.some(card => card.suit === lead.suit && card.strength > winner.strength);
+      return canMount ? `Debes asistir a ${SUIT_LABELS[lead.suit]} y montar.` : `Debes asistir a ${SUIT_LABELS[lead.suit]}.`;
     }
-    return "La web ha marcado automáticamente tus jugadas legales.";
+    if (winner?.suit === round.trumpSuit && legal.some(card => card.suit === round.trumpSuit && card.strength > winner.strength)) {
+      return `No tienes ${SUIT_LABELS[lead.suit]}: debes pisar el triunfo.`;
+    }
+    if (legal.every(card => card.suit === round.trumpSuit)) return `No tienes ${SUIT_LABELS[lead.suit]}: debes fallar con triunfo.`;
+    return "No puedes asistir ni pisar: el descarte es libre.";
   }
 
   function createCardElement(card, options = {}) {
@@ -1705,6 +2285,13 @@
     later(resolveTrick, 560);
   }
 
+  function currentWinningPlay(trick = state.round?.trick || []) {
+    if (!trick.length) return null;
+    const leadSuit = trick[0].card.suit;
+    const trumpSuit = state.round.trumpSuit;
+    return trick.slice(1).reduce((winner, play) => beats(play.card, winner.card, leadSuit, trumpSuit) ? play : winner, trick[0]);
+  }
+
   function getLegalCards(actor) {
     const round = state.round;
     const hand = round.hands[actor];
@@ -1717,20 +2304,43 @@
       }
     }
 
-    if (!isStrictPhase() || round.trick.length === 0) return [...hand];
-
+    if (round.trick.length === 0) return [...hand];
+    const rules = state.settings.rules || VARIANTS.house.rules;
+    const duty = currentDutyMode();
     const leadCard = round.trick[0].card;
-    const leadSuitCards = hand.filter(card => card.suit === leadCard.suit);
+    const leadSuit = leadCard.suit;
+    const winnerPlay = currentWinningPlay(round.trick);
+    const winningCard = winnerPlay.card;
+    const trumpSuit = round.trumpSuit;
 
+    if (duty === "free") return [...hand];
+    if (duty === "trumpOnly" && leadSuit !== trumpSuit) return [...hand];
+
+    const leadSuitCards = hand.filter(card => card.suit === leadSuit);
     if (leadSuitCards.length > 0) {
-      const higher = leadSuitCards.filter(card => card.strength > leadCard.strength);
-      return higher.length > 0 ? higher : leadSuitCards;
+      // Si la baza ya está ganada por triunfo y el palo de salida no es triunfo,
+      // se debe asistir, pero no montar la carta inicial: regla exacta de la mesa del usuario.
+      const trickAlreadyTrumped = winningCard.suit === trumpSuit && leadSuit !== trumpSuit;
+      if (rules.mustBeat && !trickAlreadyTrumped) {
+        const higher = leadSuitCards.filter(card => card.strength > winningCard.strength);
+        if (higher.length > 0) return higher;
+      }
+      return leadSuitCards;
     }
 
-    const trumps = hand.filter(card => card.suit === round.trumpSuit);
-    if (trumps.length > 0) return trumps;
+    if (!rules.mustTrump) return [...hand];
+    const trumps = hand.filter(card => card.suit === trumpSuit);
+    if (winningCard.suit !== trumpSuit) {
+      return trumps.length > 0 ? trumps : [...hand];
+    }
 
-    return [...hand];
+    if (rules.mustOvertrump) {
+      const higherTrumps = trumps.filter(card => card.strength > winningCard.strength);
+      if (higherTrumps.length > 0) return higherTrumps;
+    }
+
+    if (rules.freeDiscardIfCannotOvertrump) return [...hand];
+    return trumps.length > 0 ? trumps : [...hand];
   }
 
   async function animateCollectTrick(winner) {
@@ -1793,8 +2403,17 @@
     round.collecting = false;
     render();
 
+    if (round.capote?.active && winner !== round.capote.actor) {
+      round.capote.failed = true;
+      const capoteWinner = other(round.capote.actor);
+      addLog(`<strong>Capote fallido.</strong> ${capoteWinner === "player" ? "Ganas tú" : "Gana la IA"}.`);
+      finishRound(capoteWinner, "capote fallido");
+      return;
+    }
+
     const options = getCanteOptions(winner);
-    if (options.length > 0 && drawPileCount() > 0) {
+    const canSingNow = state.settings.rules.songs && (!state.settings.rules.songsStockOnly || drawPileCount() > 0);
+    if (options.length > 0 && canSingNow) {
       round.pendingCante = { actor: winner, options };
       render();
       if (winner === "ai") later(() => resolveAiCante(options), 540);
@@ -1816,6 +2435,7 @@
     const round = state.round;
     const hand = round.hands[actor];
     const options = [];
+    if (!state.settings.rules.songs && !state.settings.allowTute) return options;
 
     if (state.settings.allowTute) {
       const kings = hand.filter(c => c.rank === 12);
@@ -1827,6 +2447,8 @@
         return [{ type: "tute", label: "tute de caballos", rank: 11 }];
       }
     }
+
+    if (!state.settings.rules.songs) return options;
 
     const possibleSuits = SUITS.filter(suit => {
       if (round.sungSuits[actor].has(suit)) return false;
@@ -1896,6 +2518,11 @@
     if (round.hands.player.length === 0 && round.hands.ai.length === 0 && drawPileCount() === 0) {
       round.cardPoints[round.lastTrickWinner] += 10;
       addLog(`<strong>Diez de últimas</strong> para ${round.lastTrickWinner === "player" ? "ti" : "la IA"}.`);
+      if (round.capote?.active && !round.capote.failed) {
+        addLog(`<strong>Capote completado</strong> por ${round.capote.actor === "player" ? "ti" : "la IA"}.`);
+        finishRound(round.capote.actor, "capote");
+        return;
+      }
       const playerTotal = totalPoints("player");
       const aiTotal = totalPoints("ai");
       const winner = playerTotal === aiTotal ? round.lastTrickWinner : (playerTotal > aiTotal ? "player" : "ai");
@@ -2002,12 +2629,40 @@
     beginNextTrick();
   }
 
+  function announceCapote() {
+    const round = state.round;
+    if (!round || !state.settings.rules.capote || round.capote?.announced) return;
+    if (drawPileCount() !== 0 || round.hands.player.length !== 8 || round.leader !== "player" || round.currentTurn !== "player" || round.trick.length) return;
+    round.capote = { active: true, actor: "player", failed: false, announced: true };
+    addLog("<strong>Anuncias capote.</strong> Debes ganar las ocho bazas finales.");
+    showToast("<strong>Capote anunciado.</strong> No puedes perder ninguna baza final.");
+    playSound("song");
+    render();
+  }
+
+  function maybeAiAnnounceCapote() {
+    const round = state.round;
+    if (!state.settings.rules.capote || round.capote?.announced || drawPileCount() !== 0 || round.hands.ai.length !== 8 || round.leader !== "ai" || round.trick.length) return false;
+    if (state.settings.difficulty !== "hard") return false;
+    const trumps = round.hands.ai.filter(card => card.suit === round.trumpSuit).length;
+    const dominant = round.hands.ai.filter(card => card.strength >= 8).length;
+    if (trumps < 4 || dominant < 4) return false;
+    round.capote = { active: true, actor: "ai", failed: false, announced: true };
+    addLog("<strong>La IA anuncia capote.</strong>");
+    showToast("<strong>Doña Virtud anuncia capote.</strong>");
+    playSound("song");
+    render();
+    later(scheduleAiTurn, 650);
+    return true;
+  }
+
   function beginNextTrick() {
     const round = state.round;
     round.currentTurn = round.leader;
     render();
 
     if (round.currentTurn === "ai") {
+      if (maybeAiAnnounceCapote()) return;
       const exchange = getExchangeOption("ai");
       if (exchange && state.settings.difficulty !== "easy") {
         later(() => {
@@ -2022,6 +2677,7 @@
 
   function getExchangeOption(actor) {
     const round = state.round;
+    if (!state.settings.rules.exchange) return null;
     if (!round || !round.trumpCard || !round.hasWonTrick[actor]) return null;
     if (round.leader !== actor || round.trick.length !== 0) return null;
 
@@ -2177,39 +2833,53 @@
     round.phase = "roundOver";
     round.currentTurn = null;
 
-    if (winner === "player") state.match.playerRounds += 1;
+    const playerScore = totalPoints("player");
+    const aiScore = totalPoints("ai");
+    const pointMode = state.settings.rules.matchMode === "points";
+
+    if (pointMode) {
+      state.match.playerPoints += playerScore;
+      state.match.aiPoints += aiScore;
+    } else if (winner === "player") state.match.playerRounds += 1;
     else state.match.aiRounds += 1;
 
-    const matchOver = state.match.playerRounds >= state.settings.targetRounds ||
-                      state.match.aiRounds >= state.settings.targetRounds;
-    const matchWinner = state.match.playerRounds > state.match.aiRounds ? "player" : "ai";
+    const matchOver = pointMode
+      ? state.match.playerPoints >= state.settings.rules.targetPoints || state.match.aiPoints >= state.settings.rules.targetPoints
+      : state.match.playerRounds >= state.settings.targetRounds || state.match.aiRounds >= state.settings.targetRounds;
+    const matchWinner = pointMode
+      ? (state.match.playerPoints === state.match.aiPoints ? winner : state.match.playerPoints > state.match.aiPoints ? "player" : "ai")
+      : state.match.playerRounds > state.match.aiRounds ? "player" : "ai";
 
     render();
     updatePersistentStats(winner, matchOver ? matchWinner : null);
 
-    const playerScore = totalPoints("player");
-    const aiScore = totalPoints("ai");
-
-    UI.resultPlayerScore.textContent = playerScore;
-    UI.resultAiScore.textContent = aiScore;
+    UI.resultPlayerScore.textContent = pointMode ? state.match.playerPoints : playerScore;
+    UI.resultAiScore.textContent = pointMode ? state.match.aiPoints : aiScore;
 
     if (matchOver) {
-      UI.resultKicker.textContent = "PARTIDA TERMINADA";
+      UI.resultKicker.textContent = pointMode ? `OBJETIVO ${state.settings.rules.targetPoints} ALCANZADO` : "PARTIDA TERMINADA";
       UI.resultEmblem.textContent = matchWinner === "player" ? "V" : "D";
       UI.resultTitle.textContent = matchWinner === "player" ? "Has conquistado la mesa" : "Doña Virtud gana la partida";
-      UI.resultSummary.textContent = matchWinner === "player"
-        ? `Victoria por ${state.match.playerRounds} a ${state.match.aiRounds}. La IA no ha visto tus cartas en ningún momento.`
-        : `Resultado final: ${state.match.playerRounds} a ${state.match.aiRounds}. Puedes bajar la dificultad o pedir la revancha.`;
+      UI.resultSummary.textContent = pointMode
+        ? `Marcador acumulado: ${state.match.playerPoints} a ${state.match.aiPoints} en ${getVariant().name}.`
+        : matchWinner === "player"
+          ? `Victoria por ${state.match.playerRounds} a ${state.match.aiRounds} con ${getVariant().name}.`
+          : `Resultado final: ${state.match.playerRounds} a ${state.match.aiRounds}. Puedes ajustar la dificultad o cambiar de reglamento.`;
       UI.resultActionButton.firstChild.textContent = " Revancha ";
       UI.resultActionButton.dataset.action = "rematch";
       playSound(matchWinner === "player" ? "victory" : "defeat");
     } else {
-      UI.resultKicker.textContent = reason.includes?.("tute") ? "VICTORIA POR TUTE" : "MANO TERMINADA";
+      UI.resultKicker.textContent = reason.includes?.("tute") ? "VICTORIA POR TUTE"
+        : reason.includes?.("capote") ? "RESOLUCIÓN DE CAPOTE" : "MANO TERMINADA";
       UI.resultEmblem.textContent = winner === "player" ? "V" : "D";
       UI.resultTitle.textContent = winner === "player" ? "Has ganado la mano" : "La IA se lleva la mano";
-      UI.resultSummary.textContent = reason === "puntos"
-        ? `${winner === "player" ? "Te impones" : "Doña Virtud se impone"} por ${Math.max(playerScore, aiScore)} a ${Math.min(playerScore, aiScore)} tantos.`
-        : `${winner === "player" ? "Has cantado" : "La IA ha cantado"} ${reason} y la mano termina de inmediato.`;
+      UI.resultSummary.textContent = pointMode
+        ? `Esta mano termina ${playerScore} a ${aiScore}. Acumulado: ${state.match.playerPoints} a ${state.match.aiPoints}.`
+        : reason === "puntos"
+          ? `${winner === "player" ? "Te impones" : "Doña Virtud se impone"} por ${Math.max(playerScore, aiScore)} a ${Math.min(playerScore, aiScore)} tantos.`
+          : reason.includes?.("capote")
+            ? `${winner === "player" ? "Has ganado" : "La IA gana"} por ${reason}.`
+            : `${winner === "player" ? "Has cantado" : "La IA ha cantado"} ${reason} y la mano termina de inmediato.`;
       UI.resultActionButton.firstChild.textContent = " Siguiente mano ";
       UI.resultActionButton.dataset.action = "next";
     }
@@ -2301,8 +2971,11 @@
       if (matchWinner) {
         current.matchesPlayed = (current.matchesPlayed || 0) + 1;
         if (matchWinner === "player") current.matchesWon = (current.matchesWon || 0) + 1;
+        current.variantPlays ||= {};
+        current.variantPlays[state.settings.variantId] = (current.variantPlays[state.settings.variantId] || 0) + 1;
       }
       localStorage.setItem("tuteIaStats", JSON.stringify(current));
+      renderHomeStats();
     } catch (_) {}
   }
 
