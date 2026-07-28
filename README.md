@@ -1,9 +1,28 @@
-# Tute IA — Mesa Cero · v15.1
+# Sala Cero · v16
 
-Versión corregida de la v15.
+Sala de juegos offline e instalable, preparada para móvil.
 
-- Cantes correctos en Arrastre total.
-- Cante disponible tras cualquier baza ganada mientras queda baceta.
-- Tras agotarse la baceta, una única oportunidad en la primera baza ganada de cada jugador.
-- Música continua, animaciones especiales de 20/40 y mano rival corregida.
-- PWA instalable y funcionamiento offline.
+## Juegos incluidos
+
+### Tute IA
+
+- Arrastre total contra IA.
+- Tutoriales y variantes existentes.
+- Multijugador local «pasa el móvil».
+- Cambio inicial del pinte permitido en Arrastre total cuando el jugador posee la carta de intercambio correspondiente.
+- Mesa móvil rediseñada para mostrar baceta, triunfo, baza y la mano completa.
+- Marcador y crónica accesibles desde un panel móvil desplegable.
+
+### Generala
+
+- Partida individual contra Doña Fortuna.
+- Dificultad casual, clásica o maestra.
+- Multijugador local para 2–6 personas.
+- Hasta tres tiradas, bloqueo de dados y anotación por categorías.
+- Escalera, Full, Póker, Generala y Doble Generala.
+- Opciones de Generala servida, bonificación por servido y Doble Generala.
+- Guardado automático y reanudación.
+
+## Instalación
+
+La aplicación funciona como PWA. Publica el contenido completo de esta carpeta y abre la web una vez con conexión para preparar los recursos offline.

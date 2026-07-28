@@ -1,8 +1,8 @@
 {
   "id": "./?source=pwa",
-  "name": "Tute IA — Club offline",
-  "short_name": "Tute IA",
-  "description": "Tute offline con IA, multijugador local, música continua y cantes animados.",
+  "name": "Sala Cero — Juegos offline",
+  "short_name": "Sala Cero",
+  "description": "Sala de juegos offline con Tute completo, Generala, IA, multijugador local, música y partidas guardadas.",
   "start_url": "./?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -50,9 +50,9 @@
   ],
   "shortcuts": [
     {
-      "name": "Partida contra IA",
-      "short_name": "Contra IA",
-      "description": "Abrir el selector de partidas offline",
+      "name": "Abrir Tute",
+      "short_name": "Tute",
+      "description": "Entrar al club de Tute",
       "url": "./?mode=solo",
       "icons": [
         {
@@ -62,10 +62,10 @@
       ]
     },
     {
-      "name": "Multijugador local",
-      "short_name": "Pasa el móvil",
-      "description": "Preparar una partida local para 2, 3 o 4 personas",
-      "url": "./local.html",
+      "name": "Jugar a la Generala",
+      "short_name": "Generala",
+      "description": "Abrir la mesa de Generala",
+      "url": "./generala.html",
       "icons": [
         {
           "src": "assets/icon-192.png",
@@ -74,10 +74,10 @@
       ]
     },
     {
-      "name": "Tutorial",
-      "short_name": "Aprender",
-      "description": "Abrir los tutoriales adaptativos",
-      "url": "./?mode=tutorial",
+      "name": "Tute local",
+      "short_name": "Pasa el móvil",
+      "description": "Partida local de Tute",
+      "url": "./local.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

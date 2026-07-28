@@ -44,3 +44,456 @@ dialog{overscroll-behavior:contain}.modal-card,.pwa-panel-card{scrollbar-width:t
 /* Touch drag support shared by multiplayer tables */
 .multi-card.gesture-source{opacity:.2!important}.multi-drag-ghost{position:fixed!important;z-index:3100!important;margin:0!important;pointer-events:none!important;transform:translate(-50%,-88%) rotate(-3deg) scale(1.06)!important;filter:drop-shadow(0 22px 22px rgba(0,0,0,.52));transition:none!important}.multi-drop-slot{width:var(--card-w);height:var(--card-h);flex:0 0 auto;margin-left:calc(var(--card-w)*-.16);display:grid;place-items:center;border:2px dashed rgba(240,207,131,.82);border-radius:12px;background:rgba(240,207,131,.08);box-shadow:inset 0 0 24px rgba(240,207,131,.06)}.multi-drop-slot b{font-size:7px;color:#f0cf83;letter-spacing:.11em}.trick-ring.play-drop-active .drop-core{transform:translate(-50%,-50%) scale(1);border-color:rgba(240,207,131,.42);background:rgba(217,182,111,.08);color:#f0cf83}.trick-ring.play-drop-valid .drop-core{border-color:rgba(240,207,131,.9);box-shadow:0 0 32px rgba(240,207,131,.18)}.trick-ring.play-drop-invalid .drop-core{border-color:rgba(225,94,80,.88);color:#ffd4cf;background:rgba(170,48,38,.12)}
 .player-hand .playing-card,.private-hand .local-card,.player-multi-hand .multi-card{touch-action:none}
+
+/* =========================================================
+   V16 · Mesa de Tute realmente mobile-first
+   ========================================================= */
+@media (max-width: 640px) {
+  body:has(.app-shell:not(.hidden)) {
+    height: 100dvh;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body:has(.app-shell:not(.hidden)) .topbar {
+    height: 56px;
+    min-height: 56px;
+    padding-top: max(4px, var(--safe-top));
+    padding-bottom: 4px;
+  }
+
+  body:has(.app-shell:not(.hidden)) .brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 23px;
+  }
+
+  body:has(.app-shell:not(.hidden)) .brand strong { font-size: 10px; }
+  body:has(.app-shell:not(.hidden)) .brand small { display: none; }
+  body:has(.app-shell:not(.hidden)) .topbar-actions .icon-button { width: 34px; height: 34px; }
+  body:has(.app-shell:not(.hidden)) .topbar-actions { margin-left: auto; }
+
+  .app-shell:not(.hidden) {
+    width: 100%;
+    height: calc(100dvh - 56px);
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .app-shell:not(.hidden) .table-panel {
+    width: 100%;
+    height: calc(100dvh - 56px);
+    min-height: 0;
+    grid-template-rows: 124px minmax(0, 1fr) 206px;
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+
+  .app-shell:not(.hidden) .table-panel::before {
+    inset: 7px;
+    border-radius: 14px;
+  }
+
+  .app-shell:not(.hidden) .opponent-zone {
+    padding-top: 5px;
+    min-height: 0;
+  }
+
+  .app-shell:not(.hidden) .opponent-zone .player-badge {
+    min-width: 205px;
+    min-height: 42px;
+    grid-template-columns: 34px 1fr auto;
+    gap: 7px;
+    padding: 4px 8px 4px 4px;
+    margin-bottom: 2px;
+    border-radius: 13px;
+  }
+
+  .app-shell:not(.hidden) .opponent-zone .avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+  }
+
+  .app-shell:not(.hidden) .opponent-zone .player-badge strong { font-size: 13px; }
+  .app-shell:not(.hidden) .opponent-zone .player-badge .eyebrow { font-size: 6px; }
+  .app-shell:not(.hidden) .opponent-zone .turn-pill { font-size: 6px; padding: 4px 6px; }
+
+  .app-shell:not(.hidden) .ai-hand-wrap {
+    width: 100%;
+    min-height: 76px;
+    display: grid;
+    place-items: start center;
+  }
+
+  .app-shell:not(.hidden) .opponent-hand {
+    --card-w: 49px;
+    width: min(96vw, 395px);
+    min-height: 82px;
+    transform: none;
+    transform-origin: top center;
+    overflow: visible;
+  }
+
+  .app-shell:not(.hidden) .opponent-hand .playing-card {
+    width: 49px;
+    height: calc(49px * 1.716);
+  }
+
+  .app-shell:not(.hidden) .ai-hand-count {
+    top: 69px;
+    font-size: 6px;
+    padding: 3px 7px;
+  }
+
+  .app-shell:not(.hidden) .table-center {
+    min-height: 0;
+    padding: 0 7px;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    align-items: stretch;
+  }
+
+  .app-shell:not(.hidden) .status-strip {
+    width: 100%;
+    min-height: 32px;
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    gap: 5px;
+    padding: 4px 6px;
+    border-radius: 11px;
+  }
+
+  .app-shell:not(.hidden) .status-strip span {
+    padding: 3px 5px;
+    font-size: 5.8px;
+    white-space: nowrap;
+  }
+
+  .app-shell:not(.hidden) .status-strip strong {
+    max-width: none;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 8.5px;
+  }
+
+  .app-shell:not(.hidden) .play-area {
+    position: relative;
+    width: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 86px minmax(0, 1fr) !important;
+    gap: 2px;
+    align-items: center;
+  }
+
+  .app-shell:not(.hidden) .deck-area {
+    width: 82px;
+    min-width: 82px;
+    display: grid;
+    grid-template-columns: 36px 39px;
+    align-items: center;
+    gap: 5px;
+    transform: none;
+    transform-origin: center;
+    padding-left: 2px;
+  }
+
+  .app-shell:not(.hidden) .deck-stack {
+    width: 36px;
+    height: calc(36px * 1.716);
+  }
+
+  .app-shell:not(.hidden) .deck-layer.layer-four { transform: translate(5px,-5px) rotate(.8deg); }
+  .app-shell:not(.hidden) .deck-layer.layer-three { transform: translate(4px,-4px) rotate(.55deg); }
+  .app-shell:not(.hidden) .deck-layer.layer-two { transform: translate(3px,-3px) rotate(.3deg); }
+  .app-shell:not(.hidden) .deck-layer.layer-one { transform: translate(2px,-2px) rotate(.12deg); }
+  .app-shell:not(.hidden) .deck-stack .mini-card { border-width: 2px; }
+
+  .app-shell:not(.hidden) .deck-count {
+    min-width: 24px;
+    height: 24px;
+    right: -9px;
+    bottom: -9px;
+    font-size: 9px;
+  }
+
+  .app-shell:not(.hidden) .trump-wrap { gap: 3px; }
+  .app-shell:not(.hidden) .trump-wrap > span { font-size: 5.6px; }
+  .app-shell:not(.hidden) .trump-wrap .playing-card {
+    width: 39px;
+    height: calc(39px * 1.716);
+  }
+
+  .app-shell:not(.hidden) .trick-area {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: 1fr 13px 1fr;
+    gap: 2px;
+  }
+
+  .app-shell:not(.hidden) .trick-slot {
+    width: 68px !important;
+    height: calc(68px * 1.716) !important;
+    border-radius: 12px;
+  }
+
+  .app-shell:not(.hidden) .trick-slot .playing-card { --card-w: 65px; }
+  .app-shell:not(.hidden) .versus-mark { font-size: 15px; }
+  .app-shell:not(.hidden) .slot-label { font-size: 7px; }
+
+  .app-shell:not(.hidden) .action-dock {
+    width: 100%;
+    min-height: 48px;
+    max-width: none;
+    padding: 3px 4px 5px;
+    gap: 4px;
+  }
+
+  .app-shell:not(.hidden) .action-dock p {
+    width: 100%;
+    max-width: none;
+    min-height: 15px;
+    margin: 0;
+    font-size: 7.5px;
+    line-height: 1.25;
+    text-align: center;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .app-shell:not(.hidden) .exchange-button,
+  .app-shell:not(.hidden) .draw-button,
+  .app-shell:not(.hidden) .cante-button,
+  .app-shell:not(.hidden) .pass-button,
+  .app-shell:not(.hidden) .capote-button {
+    min-height: 34px;
+    padding: 0 10px;
+    font-size: 7px;
+    border-radius: 10px;
+  }
+
+  .app-shell:not(.hidden) .player-zone {
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 0 5px max(4px, var(--safe-bottom));
+    overflow: visible;
+  }
+
+  .app-shell:not(.hidden) .player-zone .player-badge {
+    min-width: 218px;
+    min-height: 44px;
+    grid-template-columns: 36px 1fr auto;
+    gap: 7px;
+    margin: 0 auto 1px;
+    padding: 4px 8px 4px 4px;
+    border-radius: 13px;
+  }
+
+  .app-shell:not(.hidden) .player-zone .avatar { width: 36px; height: 36px; border-radius: 9px; }
+  .app-shell:not(.hidden) .player-zone .player-badge strong { font-size: 13px; }
+  .app-shell:not(.hidden) .player-zone .player-badge .eyebrow { font-size: 6px; }
+  .app-shell:not(.hidden) .player-zone .turn-pill { font-size: 6px; padding: 5px 7px; }
+
+  .app-shell:not(.hidden) .player-hand {
+    width: 100%;
+    min-height: 128px;
+    height: 128px;
+    padding: 4px 3px 0;
+    overflow: visible;
+    justify-content: center;
+    align-items: flex-start;
+    transform: none;
+  }
+
+  .app-shell:not(.hidden) .player-hand .playing-card {
+    width: var(--mobile-card-fit, 66px) !important;
+    height: calc(var(--mobile-card-fit, 66px) * 1.716) !important;
+    flex: 0 0 var(--mobile-card-fit, 66px);
+    margin-left: var(--mobile-card-overlap, -23px) !important;
+    transform-origin: 50% 122%;
+  }
+
+  .app-shell:not(.hidden) .player-hand .playing-card:first-child { margin-left: 0 !important; }
+
+  .app-shell:not(.hidden) .manual-order-hint,
+  .app-shell:not(.hidden) .manual-order-hint.visible {
+    position: absolute;
+    left: 50%;
+    bottom: max(2px, var(--safe-bottom));
+    transform: translateX(-50%);
+    min-height: 19px;
+    max-width: calc(100% - 20px);
+    margin: 0;
+    padding: 3px 8px;
+    font-size: 6.5px;
+    white-space: nowrap;
+  }
+
+  .app-shell:not(.hidden) .hand-drop-marker {
+    bottom: 14px;
+    height: 88px;
+  }
+
+  .app-shell:not(.hidden) .capture-pile { display: none; }
+}
+
+@media (max-width: 380px) {
+  .app-shell:not(.hidden) .table-panel {
+    grid-template-rows: 116px minmax(0, 1fr) 196px;
+  }
+  .app-shell:not(.hidden) .opponent-hand { --card-w: 45px; }
+  .app-shell:not(.hidden) .opponent-hand .playing-card { width: 45px; height: calc(45px * 1.716); }
+  .app-shell:not(.hidden) .trick-slot { width: 61px !important; height: calc(61px * 1.716) !important; }
+  .app-shell:not(.hidden) .trick-slot .playing-card { --card-w: 58px; }
+  .app-shell:not(.hidden) .player-hand { height: 119px; min-height: 119px; }
+}
+
+/* ─────────────────────────────────────────────
+   Sala Cero v16 · marcador móvil como bottom sheet
+   ───────────────────────────────────────────── */
+.mobile-table-info,
+.mobile-info-close,
+.mobile-info-backdrop { display: none; }
+
+@media (max-width: 640px) {
+  .app-shell:not(.hidden) .mobile-table-info {
+    display: grid;
+    position: fixed;
+    z-index: 2150;
+    right: max(8px, var(--safe-right, 0px));
+    top: calc(58px + var(--safe-top, 0px));
+    min-width: 72px;
+    min-height: 43px;
+    padding: 5px 9px;
+    border: 1px solid rgba(230,195,119,.42);
+    border-radius: 13px;
+    color: #f8edd2;
+    background: linear-gradient(150deg, rgba(10,39,31,.97), rgba(5,23,18,.98));
+    box-shadow: 0 10px 24px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.05);
+    text-align: center;
+    line-height: 1;
+    backdrop-filter: blur(12px);
+  }
+
+  .mobile-table-info span {
+    color: #ddbd74;
+    font-size: 5.5px;
+    font-weight: 950;
+    letter-spacing: .13em;
+  }
+
+  .mobile-table-info strong {
+    margin-top: 2px;
+    font-family: Georgia, serif;
+    font-size: 15px;
+  }
+
+  .mobile-table-info small {
+    margin-top: 2px;
+    color: rgba(255,255,255,.56);
+    font-size: 5.5px;
+  }
+
+  .mobile-info-backdrop:not(.hidden) {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 2600;
+    background: rgba(1,13,10,.68);
+    backdrop-filter: blur(4px);
+  }
+
+  .app-shell:not(.hidden) .side-panel.mobile-open {
+    display: flex !important;
+    position: fixed;
+    z-index: 2700;
+    left: max(6px, var(--safe-left, 0px));
+    right: max(6px, var(--safe-right, 0px));
+    bottom: max(6px, var(--safe-bottom, 0px));
+    top: auto;
+    width: auto;
+    max-height: min(74dvh, 630px);
+    padding: 38px 8px 8px;
+    gap: 8px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid rgba(230,195,119,.38);
+    border-radius: 23px;
+    background: linear-gradient(165deg, rgba(8,39,30,.995), rgba(3,20,15,.995));
+    box-shadow: 0 -18px 60px rgba(0,0,0,.55);
+    animation: mobileInfoEnter .26s cubic-bezier(.18,.82,.2,1) both;
+  }
+
+  .app-shell:not(.hidden) .side-panel.mobile-open .score-card,
+  .app-shell:not(.hidden) .side-panel.mobile-open .intel-card,
+  .app-shell:not(.hidden) .side-panel.mobile-open .log-card {
+    flex: 0 0 auto;
+    min-height: auto;
+    padding: 13px;
+    border-radius: 16px;
+  }
+
+  .app-shell:not(.hidden) .side-panel.mobile-open .log-card { min-height: 200px; }
+  .app-shell:not(.hidden) .side-panel.mobile-open .game-log { max-height: 210px; }
+
+  .mobile-info-close {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: 7px;
+    right: 9px;
+    width: 29px;
+    height: 29px;
+    padding: 0;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 50%;
+    color: #fff;
+    background: rgba(255,255,255,.08);
+    font-size: 19px;
+  }
+
+  body.mobile-info-open { overflow: hidden; }
+
+  @keyframes mobileInfoEnter {
+    from { transform: translateY(26px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+/* Acciones siempre visibles por encima de la mano en Tute móvil */
+@media (max-width: 640px) {
+  .app-shell:not(.hidden) { --mobile-player-zone-h: 206px; }
+
+  .app-shell:not(.hidden) .action-dock {
+    position: fixed;
+    z-index: 1850;
+    left: 7px;
+    right: 7px;
+    bottom: calc(var(--mobile-player-zone-h) + max(5px, var(--safe-bottom, 0px)));
+    width: auto;
+    min-height: 42px;
+    max-height: 88px;
+    padding: 4px 6px;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+    background: rgba(5,29,23,.94);
+    box-shadow: 0 12px 30px rgba(0,0,0,.34);
+    backdrop-filter: blur(15px);
+  }
+
+  .app-shell:not(.hidden) .action-dock:has(.exchange-button:not(.hidden), .draw-button:not(.hidden), .cante-button, .capote-button:not(.hidden)) p {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .app-shell:not(.hidden) { --mobile-player-zone-h: 196px; }
+}

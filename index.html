@@ -10,15 +10,15 @@
   <meta name="apple-mobile-web-app-title" content="Tute IA">
   <meta name="format-detection" content="telephone=no">
   <meta name="color-scheme" content="dark">
-  <meta name="description" content="Club offline de tute: partidas contra IA, multijugador local pasa el móvil, tutoriales, reglas de casa y música de mesa.">
-  <title>Tute IA — Club offline</title>
+  <meta name="description" content="Sala Cero: colección de juegos offline con Tute completo, Generala, multijugador local, IA, tutoriales y música de mesa.">
+  <title>Sala Cero — Juegos offline</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=15.1.0">
-  <link rel="stylesheet" href="pwa.css?v=15.1.0">
-  <link rel="stylesheet" href="mobile.css?v=15.1.0">
-  <link rel="stylesheet" href="cante-effects.css?v=15.1.0">
+  <link rel="stylesheet" href="styles.css?v=16.0.0">
+  <link rel="stylesheet" href="pwa.css?v=16.0.0">
+  <link rel="stylesheet" href="mobile.css?v=16.0.0">
+  <link rel="stylesheet" href="cante-effects.css?v=16.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -27,8 +27,8 @@
     <button class="brand" id="brandButton" aria-label="Volver al inicio">
       <span class="brand-mark">T</span>
       <span>
-        <strong>TUTE IA</strong>
-        <small>MESA CERO</small>
+        <strong>SALA CERO</strong>
+        <small>JUEGOS OFFLINE</small>
       </span>
     </button>
 
@@ -59,12 +59,12 @@
     <div class="home-hero">
       <div class="home-copy">
         <span class="home-kicker"><i></i> FUNCIONA SIN CONEXIÓN</span>
-        <h1 id="homeTitle">Tu club de tute,<br><em>completamente offline.</em></h1>
-        <p>Escoge el reglamento de tu mesa, aprende sus obligaciones con ejercicios reales y enfréntate a una IA que juega exactamente con esas normas.</p>
+        <h1 id="homeTitle">Tu sala de juegos,<br><em>completamente offline.</em></h1>
+        <p>Tute con tus reglas, Generala completa y futuras mesas reunidas en una aplicación instalable, sin cuentas y sin conexión.</p>
         <div class="home-features" aria-label="Características">
-          <span>8 mesas contra IA</span>
-          <span>Multijugador local para 2, 3 y 4</span><span>Reglas de casa configurables</span>
-          <span>Tutorial adaptado a la variante</span>
+          <span>Tute contra IA y local</span>
+          <span>Generala para 1 a 6</span><span>Partidas guardadas</span>
+          <span>Aplicación offline</span>
           <span>Casino Jazz de fondo</span>
         </div>
       </div>
@@ -77,13 +77,33 @@
       </div>
     </div>
 
+
+    <section class="game-library" aria-labelledby="gameLibraryTitle">
+      <div class="mode-heading game-library-heading">
+        <div><span class="eyebrow">SALA DE JUEGOS</span><h2 id="gameLibraryTitle">Escoge una mesa</h2></div>
+        <span class="mode-count">V16 · DOS JUEGOS COMPLETOS</span>
+      </div>
+      <div class="game-library-grid">
+        <button class="game-tile game-tile-tute" type="button" id="openTuteLibrary">
+          <span class="game-tile-index">01</span>
+          <div class="game-tile-art" aria-hidden="true"><img src="assets/cards/oros-1.webp" alt=""><img src="assets/cards/espadas-11.webp" alt=""><span>T</span></div>
+          <div class="game-tile-copy"><small>NAIPES ESPAÑOLES</small><strong>Tute</strong><p>Arrastre total perfeccionado, variantes, tutorial y multijugador local.</p><b>Entrar al club de Tute ↓</b></div>
+        </button>
+        <a class="game-tile game-tile-generala" href="generala.html">
+          <span class="game-tile-index">02</span>
+          <div class="game-dice-art" aria-hidden="true"><i>1</i><i>5</i><i>6</i><span>G</span></div>
+          <div class="game-tile-copy"><small>CINCO DADOS</small><strong>Generala</strong><p>Partida completa contra IA o pasa el móvil para hasta seis personas.</p><b>Abrir Generala →</b></div>
+        </a>
+      </div>
+    </section>
+
     <div class="mode-section">
       <div class="mode-heading">
         <div>
-          <span class="eyebrow">CLUB OFFLINE</span>
-          <h2>Elige qué quieres hacer</h2>
+          <span class="eyebrow">CLUB DE TUTE</span>
+          <h2>Elige el modo de Tute</h2>
         </div>
-        <span class="mode-count">V15 · CANTES + MÚSICA</span>
+        <span class="mode-count">V16 · MODO CERRADO Y OPTIMIZADO</span>
       </div>
 
       <div class="mode-grid mode-grid-four">
@@ -253,7 +273,13 @@
       </div>
     </section>
 
-    <aside class="side-panel">
+    <button class="mobile-table-info" id="mobileInfoButton" type="button" aria-controls="sidePanel" aria-expanded="false">
+      <span>MARCADOR</span><strong id="mobileScoreMini">0 · 0</strong><small>Detalles</small>
+    </button>
+    <div class="mobile-info-backdrop hidden" id="mobileInfoBackdrop" aria-hidden="true"></div>
+
+    <aside class="side-panel" id="sidePanel" aria-label="Marcador y crónica">
+      <button class="mobile-info-close" id="mobileInfoCloseButton" type="button" aria-label="Cerrar marcador">×</button>
       <section class="score-card">
         <div class="section-heading">
           <div>
@@ -468,9 +494,10 @@
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
   <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="pwa.js?v=15.1.0"></script>
-  <script src="music-continuity.js?v=15.1.0"></script>
-  <script src="cante-effects.js?v=15.1.0"></script>
-  <script src="app.js?v=15.1.0"></script>
+  <script src="pwa.js?v=16.0.0"></script>
+  <script src="music-continuity.js?v=16.0.0"></script>
+  <script src="cante-effects.js?v=16.0.0"></script>
+  <script src="app.js?v=16.0.0"></script>
+  <script>document.getElementById("openTuteLibrary")?.addEventListener("click",()=>document.querySelector(".mode-section")?.scrollIntoView({behavior:"smooth"}));</script>
 </body>
 </html>

@@ -674,7 +674,9 @@
   function getExchangeOption(playerId) {
     if (state.config.count !== 2 || !state.trumpCard || state.trick.length !== 0 || state.leader !== playerId) return null;
     const player = state.players[playerId];
-    if (!player || player.tricks < 1) return null;
+    if (!player) return null;
+    const openingExchange = state.trickNumber === 1 && state.trick.length === 0;
+    if (player.tricks < 1 && !openingExchange) return null;
     const highPinte = [1, 3, 10, 11, 12].includes(state.trumpCard.rank);
     const requiredRank = highPinte ? 7 : 2;
     if (state.trumpCard.rank === requiredRank) return null;

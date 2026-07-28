@@ -45,6 +45,7 @@
         songsAfterStockOnly: false,
         songsPostStockFirstWinOnly: true,
         exchange: true,
+        exchangeFromStart: true,
         allowTute: true,
         capote: false,
         matchMode: "rounds",
@@ -176,6 +177,7 @@
     songsAfterStockOnly: false,
     songsPostStockFirstWinOnly: false,
     exchange: true,
+    exchangeFromStart: false,
     allowTute: true,
     capote: false,
     matchMode: "rounds",
@@ -406,6 +408,7 @@
   function openVariantSelector() {
     clearTimers();
     cleanupHandGesture();
+    setMobileInfoOpen(false);
     buildVariantSelectors();
     safeCloseDialog(UI.resultModal);
     if (!UI.variantModal.open) UI.variantModal.showModal();
@@ -492,7 +495,7 @@
       ["03", "Baza ya fallada", overtrumpText, variant.id === "house"],
       ["04", "Sin baceta", afterText],
       ["05", "Cantes", rules.songs ? `${rules.songsPostStockFirstWinOnly ? "Mientras queda baceta puedes cantar después de cualquier baza ganada. Al agotarse, cada jugador conserva una única oportunidad: su primera baza ganada de la fase final. " : rules.songsAfterStockOnly ? "No se puede cantar mientras queda baceta. Cuando se agota, el cante puede declararse después de ganar una baza. " : rules.songsStockOnly ? "Solo mientras queda baceta. " : ""}Rey y caballo de triunfo valen 40; los de otro palo, 20.` : "Los cantes están desactivados en este reglamento."],
-      ["06", "Acciones especiales", `${rules.exchange ? "Cambio del pinte activado. " : "Sin cambio del pinte. "}${rules.allowTute ? "Tute de cuatro reyes o caballos permitido. " : "Sin victoria automática por tute. "}${rules.capote ? "Capote disponible al comenzar la fase final." : "Sin capote."}`]
+      ["06", "Acciones especiales", `${rules.exchange ? `Cambio del pinte activado${rules.exchangeFromStart ? " desde el reparto inicial" : ""}. ` : "Sin cambio del pinte. "}${rules.allowTute ? "Tute de cuatro reyes o caballos permitido. " : "Sin victoria automática por tute. "}${rules.capote ? "Capote disponible al comenzar la fase final." : "Sin capote."}`]
     ];
   }
 
@@ -596,6 +599,7 @@
     showHome();
     refreshSoloSaveCard();
     handleLaunchShortcut();
+    window.addEventListener("resize", () => state.round && renderHands(), { passive: true });
   }
 
   function cacheUI() {
@@ -623,7 +627,8 @@
       "rulesModalTitle", "rulesModalCopy", "dynamicRulesGrid", "variantLiveBadge", "capoteButton",
       "backgroundMusic", "musicButton", "musicIcon", "musicPopover", "musicStatus", "musicVolume", "homeMusicButton",
       "statGames", "statWins", "statWinRate", "statFavorite", "closeSetupButton", "closeCustomRulesButton",
-      "resumeGameCard", "resumeGameTitle", "resumeGameMeta", "resumeGameButton", "discardResumeButton", "openPwaPanelButton"
+      "resumeGameCard", "resumeGameTitle", "resumeGameMeta", "resumeGameButton", "discardResumeButton", "openPwaPanelButton",
+      "sidePanel", "mobileInfoButton", "mobileInfoCloseButton", "mobileInfoBackdrop", "mobileScoreMini"
     ].forEach(id => UI[id] = document.getElementById(id));
   }
 
@@ -705,6 +710,12 @@
       if (wasHidden && UI.backgroundMusic.paused && musicEnabled) await ensureMusicStarted();
     });
     UI.homeMusicButton.addEventListener("click", toggleMusic);
+    UI.mobileInfoButton?.addEventListener("click", () => {
+      const open = !UI.sidePanel.classList.contains("mobile-open");
+      setMobileInfoOpen(open);
+    });
+    UI.mobileInfoCloseButton?.addEventListener("click", () => setMobileInfoOpen(false));
+    UI.mobileInfoBackdrop?.addEventListener("click", () => setMobileInfoOpen(false));
     UI.musicPopover.addEventListener("click", event => event.stopPropagation());
     UI.musicPopover.querySelector("strong")?.addEventListener("click", toggleMusic);
     UI.musicVolume.addEventListener("input", () => {
@@ -748,9 +759,19 @@
     openSetupForVariant(selectedVariantId || "house");
   }
 
+  function setMobileInfoOpen(open) {
+    if (!UI.sidePanel || !UI.mobileInfoButton || !UI.mobileInfoBackdrop) return;
+    UI.sidePanel.classList.toggle("mobile-open", open);
+    UI.mobileInfoBackdrop.classList.toggle("hidden", !open);
+    UI.mobileInfoBackdrop.setAttribute("aria-hidden", open ? "false" : "true");
+    UI.mobileInfoButton.setAttribute("aria-expanded", open ? "true" : "false");
+    document.body.classList.toggle("mobile-info-open", open);
+  }
+
   function showHome() {
     clearTimers();
     cleanupHandGesture();
+    setMobileInfoOpen(false);
     [UI.setupModal, UI.rulesModal, UI.resultModal, UI.variantModal, UI.tutorialSelectModal, UI.customRulesModal].forEach(safeCloseDialog);
     state.mode = "home";
     state.tutorial.active = false;
@@ -1629,6 +1650,21 @@
       const current = [...UI.playerHand.children].filter(child => child.matches?.("[data-card-id]"))[index];
       if (current !== element) UI.playerHand.insertBefore(element, current || null);
     });
+    updateResponsiveHandMetrics(playerCount);
+  }
+
+  function updateResponsiveHandMetrics(playerCount) {
+    if (!UI.playerHand) return;
+    if (window.innerWidth > 760) {
+      UI.playerHand.style.removeProperty("--mobile-card-fit");
+      UI.playerHand.style.removeProperty("--mobile-card-overlap");
+      return;
+    }
+    const available = Math.max(280, Math.min(UI.playerHand.clientWidth || window.innerWidth, window.innerWidth) - 34);
+    const cardWidth = Math.max(52, Math.min(67, available * .176));
+    const step = playerCount > 1 ? Math.max(29, Math.min(cardWidth * .72, (available - cardWidth) / (playerCount - 1))) : cardWidth;
+    UI.playerHand.style.setProperty("--mobile-card-fit", `${cardWidth.toFixed(2)}px`);
+    UI.playerHand.style.setProperty("--mobile-card-overlap", `${(step - cardWidth).toFixed(2)}px`);
   }
 
   function createInteractivePlayerCard(card) {
@@ -1650,12 +1686,13 @@
 
   function updatePlayerCardElement(element, card, index, playerCount, canPlayNow, isPlayable, round) {
     const normalized = playerCount > 1 ? (index - (playerCount - 1) / 2) / ((playerCount - 1) / 2) : 0;
+    const compactHand = window.innerWidth <= 760;
     element.dataset.cardId = card.id;
     element.dataset.playable = isPlayable ? "true" : "false";
     element.style.zIndex = index + 1;
-    element.style.setProperty("--rest-rotate", `${normalized * 10.5}deg`);
-    element.style.setProperty("--rest-y", `${Math.abs(normalized) * 16}px`);
-    element.style.setProperty("--rest-x", `${normalized * 3}px`);
+    element.style.setProperty("--rest-rotate", `${normalized * (compactHand ? 4.2 : 10.5)}deg`);
+    element.style.setProperty("--rest-y", `${Math.abs(normalized) * (compactHand ? 6 : 16)}px`);
+    element.style.setProperty("--rest-x", `${normalized * (compactHand ? .55 : 3)}px`);
     element.classList.toggle("newly-drawn", round.lastDrawnId === card.id);
     element.classList.toggle("illegal", canPlayNow && !isPlayable);
     element.setAttribute("aria-disabled", isPlayable ? "false" : "true");
@@ -2138,6 +2175,11 @@
     UI.aiSongPoints.textContent = round.songPoints.ai;
     UI.playerTotal.textContent = playerTotal;
     UI.aiTotal.textContent = aiTotal;
+    if (UI.mobileScoreMini) {
+      const left = pointMode ? state.match.playerPoints : state.match.playerRounds;
+      const right = pointMode ? state.match.aiPoints : state.match.aiRounds;
+      UI.mobileScoreMini.textContent = `${left} · ${right}`;
+    }
     UI.playerTricks.textContent = round.tricksWon.player;
     UI.aiTricks.textContent = round.tricksWon.ai;
 
@@ -2762,7 +2804,9 @@
   function getExchangeOption(actor) {
     const round = state.round;
     if (!state.settings.rules.exchange) return null;
-    if (!round || !round.trumpCard || !round.hasWonTrick[actor]) return null;
+    if (!round || !round.trumpCard) return null;
+    const canExchangeNow = round.hasWonTrick[actor] || Boolean(state.settings.rules.exchangeFromStart && round.playedCards.length === 0);
+    if (!canExchangeNow) return null;
     if (round.leader !== actor || round.trick.length !== 0) return null;
 
     const pinte = round.trumpCard;

@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#161129">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Generala offline completa: juega contra la IA o en multijugador local con cinco dados, marcador automático y reglas configurables.">
+  <title>Generala — Sala Cero</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="generala.css?v=16.0.0">
+</head>
+<body>
+  <div class="g-noise" aria-hidden="true"></div>
+  <header class="g-topbar">
+    <a class="g-brand" href="index.html" aria-label="Volver a Sala Cero">
+      <span class="g-brand-mark">G</span>
+      <span><strong>GENERALA</strong><small>SALA CERO</small></span>
+    </a>
+    <div class="g-top-actions">
+      <button class="g-icon-button" id="gMusicButton" type="button" aria-label="Música">♫</button>
+      <button class="g-soft-button" id="gRulesButton" type="button">Reglas</button>
+      <a class="g-soft-button" href="index.html">Sala de juegos</a>
+    </div>
+  </header>
+
+  <main class="g-shell">
+    <section class="g-welcome" id="gWelcome">
+      <div class="g-hero-copy">
+        <span class="g-kicker">CINCO DADOS · TRES TIRADAS · ONCE CASILLAS</span>
+        <h1>La Generala,<br><em>con mesa propia.</em></h1>
+        <p>Reserva dados, persigue jugadas mayores y decide cuándo asegurar puntos. Funciona sin conexión, contra la IA o pasando el móvil.</p>
+      </div>
+      <div class="g-dice-showcase" aria-hidden="true">
+        <div class="g-show-die d1">1</div><div class="g-show-die d2">5</div><div class="g-show-die d3">6</div>
+        <div class="g-show-seal"><b>G</b><span>SALA CERO</span></div>
+      </div>
+      <div class="g-mode-grid">
+        <button class="g-mode-card featured" id="gSoloMode" type="button">
+          <span class="g-mode-no">01</span><span class="g-mode-symbol">◆</span>
+          <small>UN JUGADOR</small><strong>Contra Doña Fortuna</strong>
+          <p>IA estratégica con tres niveles. Guarda dados, valora riesgos y completa su planilla.</p><b>Configurar partida →</b>
+        </button>
+        <button class="g-mode-card" id="gLocalMode" type="button">
+          <span class="g-mode-no">02</span><span class="g-mode-symbol">⇄</span>
+          <small>MULTIJUGADOR LOCAL</small><strong>Pasa el móvil</strong>
+          <p>De 2 a 6 jugadores en el mismo dispositivo, con transición privada entre turnos.</p><b>Preparar jugadores →</b>
+        </button>
+        <button class="g-mode-card" id="gContinueMode" type="button" disabled>
+          <span class="g-mode-no">03</span><span class="g-mode-symbol">↻</span>
+          <small>PARTIDA GUARDADA</small><strong id="gContinueTitle">Sin partida pendiente</strong>
+          <p id="gContinueMeta">La partida se guarda automáticamente después de cada tirada y anotación.</p><b>Continuar →</b>
+        </button>
+      </div>
+    </section>
+
+    <section class="g-game hidden" id="gGame" aria-label="Mesa de Generala">
+      <section class="g-score-panel">
+        <div class="g-panel-heading">
+          <div><span>PLANILLA</span><h2>Marcador</h2></div>
+          <button id="gScoreCollapse" type="button" aria-label="Mostrar u ocultar marcador">−</button>
+        </div>
+        <div class="g-score-scroll"><table class="g-score-table" id="gScoreTable"></table></div>
+        <div class="g-score-footer"><span>Ronda</span><strong id="gRoundLabel">1 / 11</strong></div>
+      </section>
+
+      <section class="g-table">
+        <div class="g-table-inlay" aria-hidden="true"></div>
+        <div class="g-turn-banner">
+          <div class="g-avatar" id="gActiveAvatar">TÚ</div>
+          <div><span id="gTurnKicker">TU TURNO</span><strong id="gActiveName">Eduardo</strong></div>
+          <div class="g-roll-counter"><span>TIRADA</span><b id="gRollCounter">0 / 3</b></div>
+        </div>
+
+        <div class="g-dice-tray" id="gDiceTray" aria-label="Dados">
+          <button class="g-die" data-die="0" type="button" aria-label="Dado 1"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+          <button class="g-die" data-die="1" type="button" aria-label="Dado 2"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+          <button class="g-die" data-die="2" type="button" aria-label="Dado 3"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+          <button class="g-die" data-die="3" type="button" aria-label="Dado 4"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+          <button class="g-die" data-die="4" type="button" aria-label="Dado 5"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+        </div>
+
+        <div class="g-table-message" id="gTableMessage">Pulsa «Tirar los dados» para comenzar tu turno.</div>
+        <button class="g-roll-button" id="gRollButton" type="button"><span>⚄</span><b>Tirar los dados</b><small>Quedan 3 tiradas</small></button>
+
+        <section class="g-category-panel">
+          <div class="g-category-heading"><span>ANOTA TU JUGADA</span><small>También puedes tachar una categoría con 0 puntos.</small></div>
+          <div class="g-category-grid" id="gCategoryGrid"></div>
+        </section>
+      </section>
+
+      <aside class="g-side-panel">
+        <section class="g-intel-card"><span>LECTURA DE DADOS</span><h2 id="gBestPlay">Sin tirar</h2><p id="gAdvice">La estrategia empieza después de la primera tirada.</p></section>
+        <section class="g-log-card"><span>CRÓNICA</span><h2>Últimas jugadas</h2><div id="gLog"></div></section>
+        <button class="g-danger-button" id="gExitGame" type="button">Guardar y volver al menú</button>
+      </aside>
+    </section>
+  </main>
+
+  <div class="g-privacy hidden" id="gPrivacy" aria-live="polite">
+    <div class="g-privacy-card"><span id="gHandoffKicker">PASAD EL MÓVIL</span><div class="g-privacy-avatar" id="gHandoffAvatar">2</div><h1 id="gHandoffName">Jugador 2</h1><p>Los dados están ocultos hasta que confirme el siguiente jugador.</p><button id="gRevealTurn" type="button">Soy Jugador 2 · empezar turno</button></div>
+  </div>
+
+  <dialog class="g-modal" id="gSetupModal">
+    <form class="g-modal-card" id="gSetupForm" method="dialog">
+      <button class="g-close" id="gCloseSetup" type="button">×</button>
+      <span class="g-kicker" id="gSetupKicker">PARTIDA CONTRA IA</span><h1 id="gSetupTitle">Configura la mesa</h1>
+      <input type="hidden" id="gModeInput" value="solo">
+      <label class="g-field"><span>Tu nombre</span><input id="gPlayerName" value="Eduardo" maxlength="18"></label>
+      <div class="g-local-options hidden" id="gLocalOptions">
+        <label class="g-field"><span>Jugadores</span><select id="gPlayerCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label>
+        <div class="g-name-grid" id="gNameGrid"></div>
+      </div>
+      <fieldset class="g-choice-group" id="gDifficultyGroup"><legend>Dificultad de Doña Fortuna</legend><label><input type="radio" name="gDifficulty" value="easy"><span><b>Casual</b><small>Arriesga y se equivoca.</small></span></label><label><input type="radio" name="gDifficulty" value="normal" checked><span><b>Clásica</b><small>Equilibra puntos y riesgo.</small></span></label><label><input type="radio" name="gDifficulty" value="hard"><span><b>Maestra</b><small>Protege categorías clave.</small></span></label></fieldset>
+      <div class="g-toggle-list">
+        <label><span><b>Generala servida gana</b><small>Cinco dados iguales en la primera tirada terminan la partida.</small></span><input id="gServedWin" type="checkbox" checked></label>
+        <label><span><b>Bonificación por servido</b><small>Escalera, Full y Póker suman 5 puntos si salen en la primera tirada.</small></span><input id="gServedBonus" type="checkbox" checked></label>
+        <label><span><b>Doble Generala</b><small>La segunda Generala de la partida vale 100 puntos.</small></span><input id="gDoubleGenerala" type="checkbox" checked></label>
+      </div>
+      <button class="g-primary-button" type="submit">Sentarse y lanzar <span>→</span></button>
+    </form>
+  </dialog>
+
+  <dialog class="g-modal" id="gRulesModal">
+    <div class="g-modal-card g-rules-card"><button class="g-close" id="gCloseRules" type="button">×</button><span class="g-kicker">REGLAMENTO</span><h1>Cómo se juega a la Generala</h1><div class="g-rules-grid"><article><b>01</b><h3>Hasta tres tiradas</h3><p>Tira los cinco dados. Después de cada tirada puedes guardar los que quieras y volver a lanzar el resto.</p></article><article><b>02</b><h3>Una casilla por turno</h3><p>Al finalizar eliges una categoría libre. Si ninguna te conviene, puedes tacharla anotando cero.</p></article><article><b>03</b><h3>Números</h3><p>Del 1 al 6 se suma el valor de todos los dados que muestran ese número.</p></article><article><b>04</b><h3>Juegos mayores</h3><p>Escalera 20, Full 30, Póker 40, Generala 50 y Doble Generala 100. Los servidos pueden recibir bonificación.</p></article></div><button class="g-primary-button" id="gRulesOk" type="button">Entendido</button></div>
+  </dialog>
+
+  <dialog class="g-modal" id="gResultModal">
+    <div class="g-modal-card g-result-card"><span class="g-kicker">PARTIDA TERMINADA</span><div class="g-result-seal" id="gResultSeal">G</div><h1 id="gResultTitle">Victoria</h1><p id="gResultText"></p><div class="g-final-ranking" id="gFinalRanking"></div><button class="g-primary-button" id="gRematch" type="button">Jugar otra partida</button><button class="g-text-button" id="gResultHome" type="button">Volver a Sala Cero</button></div>
+  </dialog>
+
+  <div class="g-toast" id="gToast" aria-live="assertive"></div>
+  <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
+  <script src="music-continuity.js?v=16.0.0"></script>
+  <script src="generala.js?v=16.0.0"></script>
+</body>
+</html>
