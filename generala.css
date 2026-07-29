@@ -12,3 +12,18 @@
   .g-dice-tray{flex-basis:190px;min-height:190px;padding-top:24px}
   .g-category-panel{max-height:178px}
 }
+
+/* v17: cubilete realzado y entrada propia */
+.g-roll-stage{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:min(920px,100%);margin-top:8px}
+.g-cup-launcher{position:relative;width:196px;height:230px;margin:12px 0 4px;border:0;background:transparent;filter:drop-shadow(0 24px 28px rgba(0,0,0,.38));cursor:pointer;transition:transform .22s ease,filter .22s ease}
+.g-cup-launcher::before{content:"";position:absolute;left:50%;top:20px;transform:translateX(-50%);width:132px;height:170px;border-radius:26px 26px 48px 48px/18px 18px 62px 62px;background:linear-gradient(165deg,#9b643d 0,#57311b 38%,#2a1409 100%);border:1px solid rgba(255,227,180,.18);box-shadow:inset 0 14px 18px rgba(255,255,255,.08),inset 0 -18px 22px rgba(0,0,0,.28)}
+.g-cup-rim{position:absolute;left:50%;top:0;transform:translateX(-50%);width:148px;height:30px;border-radius:999px;background:linear-gradient(180deg,#b67d50,#7f4f2c);border:1px solid rgba(255,227,180,.22);box-shadow:inset 0 2px rgba(255,255,255,.12)}
+.g-cup-mark{position:absolute;left:50%;top:83px;transform:translateX(-50%);width:74px;height:74px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,233,195,.16);background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.08),transparent 55%),rgba(18,10,6,.24);color:#e3bb73;font:900 38px Georgia,serif;letter-spacing:.04em}
+.g-cup-label{position:absolute;left:50%;bottom:0;transform:translateX(-50%);padding:8px 12px;border-radius:999px;border:1px solid rgba(232,189,104,.18);background:rgba(9,7,18,.78);color:var(--g-gold2);font-size:7px;font-weight:950;letter-spacing:.14em;white-space:nowrap}
+.g-cup-launcher:hover:not(.disabled):not(:disabled){transform:translateY(-2px) rotate(-3deg);filter:drop-shadow(0 30px 36px rgba(0,0,0,.44))}
+.g-cup-launcher.disabled,.g-cup-launcher:disabled{opacity:.66;cursor:default;filter:grayscale(.1) drop-shadow(0 18px 22px rgba(0,0,0,.28))}
+.g-roll-stage.rolling .g-cup-launcher{animation:gCupShake .72s cubic-bezier(.36,.07,.19,.97)}
+.g-roll-stage.rolling .g-dice-tray{animation:gDiceReveal .72s cubic-bezier(.22,.61,.36,1)}
+@keyframes gCupShake{0%{transform:translate(0,0) rotate(0)}12%{transform:translate(-6px,-4px) rotate(-11deg)}24%{transform:translate(6px,-10px) rotate(10deg)}36%{transform:translate(-10px,-1px) rotate(-15deg)}48%{transform:translate(10px,-8px) rotate(12deg)}60%{transform:translate(-8px,0) rotate(-10deg)}72%{transform:translate(7px,-6px) rotate(8deg)}84%{transform:translate(-4px,0) rotate(-5deg)}100%{transform:translate(0,0) rotate(0)}}
+@keyframes gDiceReveal{0%{transform:translateY(-18px) scale(.96);opacity:.28}45%{transform:translateY(-8px) scale(.98);opacity:.8}100%{transform:translateY(0) scale(1);opacity:1}}
+@media(max-width:720px){.g-roll-stage{width:100%}.g-cup-launcher{width:138px;height:164px;margin:8px 0 2px}.g-cup-launcher::before{top:14px;width:92px;height:118px;border-radius:18px 18px 34px 34px/14px 14px 44px 44px}.g-cup-rim{width:104px;height:20px}.g-cup-mark{top:58px;width:50px;height:50px;font-size:24px}.g-cup-label{padding:6px 9px;font-size:5px}.g-dice-tray{padding-top:16px}}

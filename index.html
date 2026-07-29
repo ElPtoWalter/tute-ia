@@ -7,497 +7,55 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Tute IA">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="color-scheme" content="dark">
-  <meta name="description" content="Sala Cero: colección de juegos offline con Tute completo, Generala, multijugador local, IA, tutoriales y música de mesa.">
-  <title>Sala Cero — Juegos offline</title>
+  <meta name="description" content="Sala Cero: portada principal con Tute y Generala, cada uno con su propio menú y su propia ambientación.">
+  <title>Sala Cero — Portada</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=16.0.0">
-  <link rel="stylesheet" href="pwa.css?v=16.0.0">
-  <link rel="stylesheet" href="mobile.css?v=16.0.0">
-  <link rel="stylesheet" href="cante-effects.css?v=16.0.0">
+  <style>
+  :root{--bg:#071611;--text:#f5ecd9;--muted:#96a79f;--gold:#f0cf83;--gold2:#ffe0a4;--line:rgba(255,255,255,.1)}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 20% 0,rgba(240,207,131,.07),transparent 32%),radial-gradient(circle at 80% 5%,rgba(165,96,29,.11),transparent 25%),linear-gradient(180deg,#071611,#020806);color:var(--text);font-family:Inter,system-ui,sans-serif}body{overflow-x:hidden}.noise{position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:radial-gradient(circle at 25% 30%,rgba(255,255,255,.05) 0 1px,transparent 1.4px);background-size:6px 6px}.wrap{width:min(1440px,100%);margin:0 auto;padding:22px clamp(14px,2vw,28px) 34px}.top{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand{display:flex;gap:12px;align-items:center;text-decoration:none;color:inherit}.mark{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(145deg,var(--gold2),#bc8336);color:#22170f;font:900 28px Georgia,serif;box-shadow:0 16px 32px rgba(240,207,131,.14)}.brand strong{display:block;font-size:13px;letter-spacing:.14em}.brand small{display:block;color:var(--gold);font-size:7px;letter-spacing:.25em}.top-links{display:flex;gap:10px}.top-links a{padding:11px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);color:var(--text);text-decoration:none;font-size:12px}.hero{text-align:center;padding:18px 0 30px}.badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.04);color:var(--gold);font-size:11px;font-weight:800;letter-spacing:.12em}.hero h1{margin:18px 0 10px;font:700 clamp(56px,8vw,118px)/.92 Georgia,serif;letter-spacing:-.05em;color:#f8dca0}.hero p{max-width:830px;margin:0 auto;color:var(--muted);font-size:17px;line-height:1.75}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.card{position:relative;display:grid;grid-template-rows:minmax(310px,1fr) auto;overflow:hidden;border-radius:32px;border:1px solid var(--line);background:linear-gradient(155deg,rgba(18,48,40,.95),rgba(4,18,14,.98));box-shadow:0 30px 80px rgba(0,0,0,.36),inset 0 1px rgba(255,255,255,.04);text-decoration:none;color:inherit;transition:transform .22s ease,box-shadow .22s ease}.card:hover{transform:translateY(-3px);box-shadow:0 36px 96px rgba(0,0,0,.42),inset 0 1px rgba(255,255,255,.05)}.card.generala{background:linear-gradient(155deg,rgba(46,26,12,.98),rgba(14,8,4,.99))}.visual{position:relative;min-height:370px;padding:34px}.visual-tute img{position:absolute;width:172px;border-radius:17px;box-shadow:0 24px 50px rgba(0,0,0,.4)}.visual-tute img:nth-of-type(1){left:10%;bottom:12%;transform:rotate(-13deg)}.visual-tute img:nth-of-type(2){left:35%;top:11%;transform:rotate(-3deg)}.visual-tute img:nth-of-type(3){right:15%;bottom:18%;transform:rotate(11deg)}.visual-tute img:nth-of-type(4){right:7%;top:17%;transform:rotate(15deg)}.deck-stack{position:absolute;left:14%;top:12%;width:170px;height:112px;border-radius:18px;background:linear-gradient(165deg,#112b24,#061510);border:1px solid rgba(240,207,131,.24);box-shadow:0 18px 34px rgba(0,0,0,.35)}.deck-stack::before,.deck-stack::after{content:"";position:absolute;inset:0;border-radius:18px;border:1px solid rgba(240,207,131,.16)}.deck-stack::before{transform:translate(-6px,6px)}.deck-stack::after{transform:translate(-12px,12px)}.seal{position:absolute;left:24px;top:24px;width:64px;height:64px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(240,207,131,.3);background:rgba(4,15,12,.78);color:var(--gold);font:900 28px Georgia,serif;box-shadow:0 10px 30px rgba(0,0,0,.28)}.visual-generala{background:radial-gradient(circle at 45% 60%,rgba(126,72,34,.2),transparent 42%)}.cup{position:absolute;right:8%;top:16%;width:250px;height:290px;filter:drop-shadow(0 30px 40px rgba(0,0,0,.45));transform:rotate(15deg)}.cup::before{content:"";position:absolute;left:50%;top:24px;transform:translateX(-50%);width:160px;height:204px;border-radius:30px 30px 54px 54px/22px 22px 74px 74px;background:linear-gradient(165deg,#75492a,#29160a 72%);border:1px solid rgba(255,227,180,.18);box-shadow:inset 0 -16px 24px rgba(0,0,0,.2),inset 0 1px rgba(255,255,255,.12)}.cup::after{content:"";position:absolute;left:50%;top:0;transform:translateX(-50%);width:176px;height:38px;border-radius:999px;background:linear-gradient(180deg,#9f6c41,#6d4224);border:1px solid rgba(255,227,180,.18);box-shadow:inset 0 2px rgba(255,255,255,.12)}.cup-mark{position:absolute;left:50%;top:106px;transform:translateX(-50%);width:78px;height:78px;display:grid;place-items:center;border-radius:50%;border:1px solid rgba(255,231,187,.16);font:900 40px Georgia,serif;color:#dcb06c;z-index:3}.die{position:absolute;width:78px;height:78px;border-radius:18px;background:linear-gradient(145deg,#fff7e8,#d4c39e);box-shadow:0 16px 30px rgba(0,0,0,.34);display:grid;place-items:center;color:#2a190e;font:900 34px Georgia,serif}.d1{left:11%;bottom:18%;transform:rotate(-11deg)}.d2{left:31%;bottom:10%;transform:rotate(8deg)}.d3{left:52%;bottom:21%;transform:rotate(-9deg)}.d4{right:15%;bottom:12%;transform:rotate(9deg)}.d5{left:40%;top:24%;transform:rotate(14deg)}.copy{padding:26px 28px 30px;border-top:1px solid var(--line);background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.28))}.copy small{display:block;color:var(--gold);font-size:11px;font-weight:900;letter-spacing:.18em}.copy strong{display:block;margin:10px 0 12px;font:650 clamp(42px,5vw,74px) Georgia,serif}.copy p{margin:0;color:var(--muted);font-size:16px;line-height:1.75}.copy b{display:inline-flex;gap:10px;margin-top:20px;color:var(--gold2);font-size:14px}.footer{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:18px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}.foot-pill{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.03)}.foot-pill strong{display:block;font:600 18px Georgia,serif}.foot-pill small{display:block;color:var(--muted);font-size:12px}.foot-center{text-align:center;color:var(--gold);font-size:14px;letter-spacing:.18em}.foot-center b{display:block;font:600 26px Georgia,serif;letter-spacing:0}@media(max-width:980px){.grid{grid-template-columns:1fr}.visual{min-height:300px}.hero p{font-size:15px}}@media(max-width:640px){.wrap{padding:14px 12px 24px}.top{margin-bottom:6px}.top-links{display:none}.hero h1{font-size:54px}.hero p{font-size:13px}.card{border-radius:24px}.visual{min-height:220px;padding:18px}.visual-tute img{width:116px;border-radius:12px}.deck-stack{width:130px;height:84px}.cup{width:142px;height:178px}.cup::before{width:92px;height:112px;border-radius:18px 18px 34px 34px/14px 14px 46px 46px}.cup::after{width:102px;height:22px}.cup-mark{top:64px;width:46px;height:46px;font-size:24px}.die{width:50px;height:50px;border-radius:12px;font-size:23px}.copy{padding:18px}.copy p{font-size:13px}.footer{grid-template-columns:1fr}.foot-center{order:-1}}</style>
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
-
-  <header class="topbar">
-    <button class="brand" id="brandButton" aria-label="Volver al inicio">
-      <span class="brand-mark">T</span>
-      <span>
-        <strong>SALA CERO</strong>
-        <small>JUEGOS OFFLINE</small>
-      </span>
-    </button>
-
-    <div class="topbar-actions">
-      <div class="music-control-wrap">
-        <button class="icon-button" id="musicButton" title="Música de fondo" aria-label="Música de fondo">
-          <span id="musicIcon">♫</span>
-        </button>
-        <div class="music-popover hidden" id="musicPopover">
-          <div><span class="music-live-dot"></span><strong>Casino Jazz</strong></div>
-          <small id="musicStatus">Música pausada</small>
-          <label><span>Volumen</span><input id="musicVolume" type="range" min="0" max="100" value="28"></label>
-        </div>
-      </div>
-      <button class="icon-button" id="soundButton" title="Efectos de sonido" aria-label="Efectos de sonido">
-        <span id="soundIcon">♪</span>
-      </button>
-      <button class="soft-button" id="rulesButton">Reglas</button>
-      <button class="primary-button compact" id="newMatchButton">Partida clásica</button>
-    </div>
-  </header>
-
-
-  <section class="home-screen" id="homeScreen" aria-labelledby="homeTitle">
-    <div class="home-ambient home-ambient-one" aria-hidden="true"></div>
-    <div class="home-ambient home-ambient-two" aria-hidden="true"></div>
-
-    <div class="home-hero">
-      <div class="home-copy">
-        <span class="home-kicker"><i></i> FUNCIONA SIN CONEXIÓN</span>
-        <h1 id="homeTitle">Tu sala de juegos,<br><em>completamente offline.</em></h1>
-        <p>Tute con tus reglas, Generala completa y futuras mesas reunidas en una aplicación instalable, sin cuentas y sin conexión.</p>
-        <div class="home-features" aria-label="Características">
-          <span>Tute contra IA y local</span>
-          <span>Generala para 1 a 6</span><span>Partidas guardadas</span>
-          <span>Aplicación offline</span>
-          <span>Casino Jazz de fondo</span>
-        </div>
-      </div>
-
-      <div class="home-deck-showcase" aria-hidden="true">
-        <img class="showcase-card card-one" src="assets/cards/oros-1.webp" alt="">
-        <img class="showcase-card card-two" src="assets/cards/copas-12.webp" alt="">
-        <img class="showcase-card card-three" src="assets/cards/espadas-11.webp" alt="">
-        <div class="showcase-seal"><strong>T</strong><span>MESA CERO</span></div>
-      </div>
-    </div>
-
-
-    <section class="game-library" aria-labelledby="gameLibraryTitle">
-      <div class="mode-heading game-library-heading">
-        <div><span class="eyebrow">SALA DE JUEGOS</span><h2 id="gameLibraryTitle">Escoge una mesa</h2></div>
-        <span class="mode-count">V16 · DOS JUEGOS COMPLETOS</span>
-      </div>
-      <div class="game-library-grid">
-        <button class="game-tile game-tile-tute" type="button" id="openTuteLibrary">
-          <span class="game-tile-index">01</span>
-          <div class="game-tile-art" aria-hidden="true"><img src="assets/cards/oros-1.webp" alt=""><img src="assets/cards/espadas-11.webp" alt=""><span>T</span></div>
-          <div class="game-tile-copy"><small>NAIPES ESPAÑOLES</small><strong>Tute</strong><p>Arrastre total perfeccionado, variantes, tutorial y multijugador local.</p><b>Entrar al club de Tute ↓</b></div>
-        </button>
-        <a class="game-tile game-tile-generala" href="generala.html">
-          <span class="game-tile-index">02</span>
-          <div class="game-dice-art" aria-hidden="true"><i>1</i><i>5</i><i>6</i><span>G</span></div>
-          <div class="game-tile-copy"><small>CINCO DADOS</small><strong>Generala</strong><p>Partida completa contra IA o pasa el móvil para hasta seis personas.</p><b>Abrir Generala →</b></div>
-        </a>
-      </div>
+  <div class="wrap">
+    <header class="top">
+      <a class="brand" href="index.html" aria-label="Sala Cero">
+        <span class="mark">0</span>
+        <span><strong>SALA CERO</strong><small>ENTRADA PRINCIPAL</small></span>
+      </a>
+      <div class="top-links"><a href="tute.html">Ir al Tute</a><a href="generala.html">Ir a Generala</a></div>
+    </header>
+    <section class="hero">
+      <span class="badge">DOS JUEGOS · DOS AMBIENTES · MENÚS SEPARADOS</span>
+      <h1>Sala Cero</h1>
+      <p>Esta es la puerta de entrada. Aquí solo eliges entre <strong>Tute</strong> y <strong>Generala</strong>. Una vez dentro, cada juego tiene su propio menú, su propia ambientación y su propia mesa.</p>
     </section>
-
-    <div class="mode-section">
-      <div class="mode-heading">
-        <div>
-          <span class="eyebrow">CLUB DE TUTE</span>
-          <h2>Elige el modo de Tute</h2>
+    <section class="grid" aria-label="Juegos disponibles">
+      <a class="card" href="tute.html">
+        <div class="visual visual-tute">
+          <span class="seal">T</span>
+          <div class="deck-stack"></div>
+          <img src="assets/cards/oros-1.webp" alt="Carta de oros">
+          <img src="assets/cards/copas-12.webp" alt="Carta de copas">
+          <img src="assets/cards/espadas-11.webp" alt="Carta de espadas">
+          <img src="assets/cards/bastos-10.webp" alt="Carta de bastos">
         </div>
-        <span class="mode-count">V16 · MODO CERRADO Y OPTIMIZADO</span>
-      </div>
-
-      <div class="mode-grid mode-grid-four">
-        <button class="mode-card mode-card-primary" id="classicModeButton" type="button">
-          <span class="mode-number">01</span>
-          <span class="mode-icon mode-icon-play">▶</span>
-          <span class="mode-card-copy">
-            <small>JUGAR</small>
-            <strong>Partida offline</strong>
-            <span>Elige reglas a dos o entra en mesas completas de tres y cuatro jugadores contra varias IA.</span>
-          </span>
-          <span class="mode-meta"><b>8 mesas jugables</b><i>Elegir variante →</i></span>
-        </button>
-
-        <a class="mode-card mode-card-local" id="localModeButton" href="local.html">
-          <span class="mode-number">02</span>
-          <span class="mode-icon">⇄</span>
-          <span class="mode-card-copy">
-            <small>PASA EL MÓVIL</small>
-            <strong>Multijugador local</strong>
-            <span>Juega entre dos, tres o cuatro personas en el mismo dispositivo. Cada mano se oculta automáticamente antes de entregar el móvil.</span>
-          </span>
-          <span class="mode-meta"><b>Sin cuentas ni conexión</b><i>Preparar mesa →</i></span>
-        </a>
-
-        <button class="mode-card mode-card-tutorial" id="tutorialModeButton" type="button">
-          <span class="mode-number">03</span>
-          <span class="mode-icon">✦</span>
-          <span class="mode-card-copy">
-            <small>ACADEMIA</small>
-            <strong>Tutorial adaptativo</strong>
-            <span>Las lecciones cambian según las obligaciones de la variante seleccionada: asistir, montar, fallar y pisar.</span>
-          </span>
-          <span class="mode-meta"><b id="tutorialCompletionBadge">Elige reglamento</b><i>Aprender →</i></span>
-        </button>
-
-        <button class="mode-card mode-card-custom" id="customModeButton" type="button">
-          <span class="mode-number">04</span>
-          <span class="mode-icon">⚙</span>
-          <span class="mode-card-copy">
-            <small>MESA A MEDIDA</small>
-            <strong>Configura tus normas</strong>
-            <span>Decide cuándo se arrastra, si hay que montar, cuándo se canta, cambio del pinte, tute, capote y objetivo.</span>
-          </span>
-          <span class="mode-meta"><b>Motor parametrizable</b><i>Personalizar →</i></span>
-        </button>
-      </div>
-
-      <section class="resume-card hidden" id="resumeGameCard" aria-live="polite">
-        <div class="resume-card-copy"><span>PARTIDA GUARDADA</span><strong id="resumeGameTitle">Continúa donde lo dejaste</strong><small id="resumeGameMeta">Guardado automáticamente en este dispositivo</small></div>
-        <div class="resume-card-actions"><button id="discardResumeButton" type="button">Descartar</button><button class="resume-primary" id="resumeGameButton" type="button">Continuar partida</button></div>
-      </section>
-
-      <section class="offline-ready-card">
-        <div><span>APP INSTALABLE</span><strong>Preparada para móvil y sin conexión</strong><small>Cartas, reglas, tutoriales y partidas guardadas funcionan offline. La música completa se descarga de forma opcional.</small></div>
-        <button id="openPwaPanelButton" type="button">Instalar y gestionar</button>
-      </section>
-
-      <div class="club-dashboard">
-        <article class="club-stat"><span>PARTIDAS</span><strong id="statGames">0</strong><small>jugadas en este dispositivo</small></article>
-        <article class="club-stat"><span>VICTORIAS</span><strong id="statWins">0</strong><small id="statWinRate">0 % de efectividad</small></article>
-        <article class="club-stat"><span>REGLAMENTO FAVORITO</span><strong id="statFavorite">Arrastre total</strong><small>se actualiza automáticamente</small></article>
-        <article class="club-now-playing"><span class="music-live-dot"></span><div><span>AMBIENTE DE MESA</span><strong>Casino Jazz · pista optimizada offline</strong></div><button id="homeMusicButton" type="button">Reproducir</button></article>
-      </div>
-
-      <div class="future-modes">
-        <article><span>YA DISPONIBLE</span><strong>Mesas humanas en un solo dispositivo</strong><p>Uno contra uno, tres jugadores con primer cante y cuatro individual o por parejas, con pantalla privada entre turnos.</p></article>
-        <article><span>SIGUIENTE GRAN PASO</span><strong>Multijugador online</strong><p>Salas privadas y partidas a distancia llegarán después; el modo pasa el móvil permite jugar juntos sin servidor ni cuentas.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <main class="app-shell hidden" id="appShell">
-    <section class="table-panel" aria-label="Mesa de juego">
-      <div class="table-glow" aria-hidden="true"></div>
-
-      <aside class="tutorial-coach hidden" id="tutorialCoach" aria-live="polite">
-        <div class="tutorial-coach-top">
-          <span class="tutorial-kicker" id="tutorialKicker">LECCIÓN 1</span>
-          <button class="tutorial-exit" id="tutorialExitButton" type="button">Salir al menú</button>
+        <div class="copy"><small>NAIPES ESPAÑOLES</small><strong>Tute</strong><p>Partida clásica, tutorial, multijugador local y reglamentos personalizados en un club propio, separado de la portada general.</p><b>Entrar al club del Tute →</b></div>
+      </a>
+      <a class="card generala" href="generala.html">
+        <div class="visual visual-generala">
+          <span class="seal">G</span>
+          <div class="cup"><span class="cup-mark">0</span></div>
+          <span class="die d1">4</span><span class="die d2">2</span><span class="die d3">5</span><span class="die d4">6</span><span class="die d5">3</span>
         </div>
-        <div class="tutorial-progress" id="tutorialProgress" aria-label="Progreso del tutorial"></div>
-        <h2 id="tutorialTitle">Bienvenido al tute</h2>
-        <p id="tutorialText"></p>
-        <div class="tutorial-tip hidden" id="tutorialTip"></div>
-        <button class="primary-button tutorial-next" id="tutorialNextButton" type="button">Continuar <span>→</span></button>
-      </aside>
-
-      <div class="capture-pile ai-capture" id="aiCapturePile" aria-label="Bazas capturadas por la IA">
-        <span class="capture-card one"></span><span class="capture-card two"></span>
-        <strong id="aiCaptureCount">0</strong>
-      </div>
-      <div class="capture-pile player-capture" id="playerCapturePile" aria-label="Tus bazas capturadas">
-        <span class="capture-card one"></span><span class="capture-card two"></span>
-        <strong id="playerCaptureCount">0</strong>
-      </div>
-
-      <div class="opponent-zone">
-        <div class="player-badge opponent">
-          <div class="avatar ai-avatar">IA</div>
-          <div>
-            <span class="eyebrow">RIVAL</span>
-            <strong id="aiName">Doña Virtud</strong>
-          </div>
-          <div class="turn-pill" id="aiTurnPill">PENSANDO</div>
-        </div>
-        <div class="ai-hand-wrap"><div class="hand opponent-hand" id="aiHand" aria-label="Cartas de la inteligencia artificial"></div><span class="ai-hand-count" id="aiHandCount">0 CARTAS</span></div>
-      </div>
-
-      <div class="table-center">
-        <div class="status-strip">
-          <span id="phaseBadge">BACETA ABIERTA</span><span class="variant-live-badge" id="variantLiveBadge">ARRASTRE TOTAL</span>
-          <strong id="statusText">Preparando la mesa…</strong>
-        </div>
-
-        <div class="play-area">
-          <div class="deck-area">
-            <div class="deck-stack" id="deckStack" role="button" tabindex="0" aria-label="Baceta" aria-disabled="true">
-              <span class="deck-layer layer-four"></span>
-              <span class="deck-layer layer-three"></span>
-              <span class="deck-layer layer-two"></span>
-              <span class="deck-layer layer-one"></span>
-              <div class="mini-card back"><img src="assets/cards/back.svg" alt="" draggable="false"></div>
-              <span class="deck-count" id="deckCount">24</span>
-            </div>
-            <div class="trump-wrap">
-              <span>TRIUNFO</span>
-              <div id="trumpCard"></div>
-            </div>
-          </div>
-
-          <div class="trick-area" id="trickArea">
-            <div class="play-drop-indicator" id="playDropIndicator" aria-hidden="true"><span>SUELTA PARA JUGAR</span></div>
-            <div class="trick-slot opponent-slot" id="aiTrickSlot">
-              <span class="slot-label">IA</span>
-            </div>
-            <div class="versus-mark">×</div>
-            <div class="trick-slot player-slot" id="playerTrickSlot">
-              <span class="slot-label">TÚ</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="action-dock" id="actionDock">
-          <div id="canteActions" class="cante-actions"></div>
-          <button class="draw-button hidden" id="drawButton" type="button">
-            <span class="draw-button-card" aria-hidden="true"></span>
-            Robar de la baceta
-          </button>
-          <button class="exchange-button hidden" id="exchangeButton"></button>
-          <button class="capote-button hidden" id="capoteButton" type="button">Anunciar capote</button>
-          <p id="hintText">Pulsa «Repartir cartas» para comenzar.</p>
-        </div>
-      </div>
-
-      <div class="player-zone">
-        <div class="player-badge">
-          <div class="avatar human-avatar">TÚ</div>
-          <div>
-            <span class="eyebrow">JUGADOR</span>
-            <strong>Eduardo</strong>
-          </div>
-          <div class="turn-pill" id="playerTurnPill">TU TURNO</div>
-        </div>
-        <div class="hand player-hand" id="playerHand" aria-label="Tus cartas"></div>
-        <div class="manual-order-hint" id="manualOrderHint"><span>↔</span> Arrastra cualquier carta para ordenar tu mano</div>
-      </div>
+        <div class="copy"><small>CUBILETE Y CINCO DADOS</small><strong>Generala</strong><p>Abre su propio menú y juega con cubilete visual, tiradas animadas y una mesa más cuidada para móvil y escritorio.</p><b>Ir a la mesa de Generala →</b></div>
+      </a>
     </section>
-
-    <button class="mobile-table-info" id="mobileInfoButton" type="button" aria-controls="sidePanel" aria-expanded="false">
-      <span>MARCADOR</span><strong id="mobileScoreMini">0 · 0</strong><small>Detalles</small>
-    </button>
-    <div class="mobile-info-backdrop hidden" id="mobileInfoBackdrop" aria-hidden="true"></div>
-
-    <aside class="side-panel" id="sidePanel" aria-label="Marcador y crónica">
-      <button class="mobile-info-close" id="mobileInfoCloseButton" type="button" aria-label="Cerrar marcador">×</button>
-      <section class="score-card">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">MARCADOR</span>
-            <h2>Partida</h2>
-          </div>
-          <span class="round-number" id="roundNumber">MANO 1</span>
-        </div>
-
-        <div class="match-score">
-          <div>
-            <span>TÚ</span>
-            <strong id="playerRounds">0</strong>
-          </div>
-          <div class="score-divider">—</div>
-          <div>
-            <span>IA</span>
-            <strong id="aiRounds">0</strong>
-          </div>
-        </div>
-
-        <div class="score-detail">
-          <div class="score-row">
-            <span>Cartas</span>
-            <strong><b id="playerCardPoints">0</b> · <b id="aiCardPoints">0</b></strong>
-          </div>
-          <div class="score-row">
-            <span>Cantes</span>
-            <strong><b id="playerSongPoints">0</b> · <b id="aiSongPoints">0</b></strong>
-          </div>
-          <div class="score-row total">
-            <span>Total mano</span>
-            <strong><b id="playerTotal">0</b> · <b id="aiTotal">0</b></strong>
-          </div>
-        </div>
-
-        <div class="progress-labels">
-          <span>Primero en llegar a</span>
-          <strong id="targetRounds">3 manos</strong>
-        </div>
-        <div class="round-pips" id="roundPips"></div>
-      </section>
-
-      <section class="intel-card">
-        <div class="section-heading small">
-          <div>
-            <span class="eyebrow">LECTURA DE MESA</span>
-            <h2 id="ruleStateTitle">Juego libre</h2>
-          </div>
-          <span class="live-dot"></span>
-        </div>
-        <p id="ruleStateText">Mientras quede baceta puedes jugar cualquier carta.</p>
-
-        <div class="mini-stats">
-          <div><span>Bazas tú</span><strong id="playerTricks">0</strong></div>
-          <div><span>Bazas IA</span><strong id="aiTricks">0</strong></div>
-          <div><span>Sin ver</span><strong id="unknownCards">40</strong></div>
-        </div>
-      </section>
-
-      <section class="log-card">
-        <div class="section-heading small">
-          <div>
-            <span class="eyebrow">CRÓNICA</span>
-            <h2>Últimas jugadas</h2>
-          </div>
-        </div>
-        <div class="game-log" id="gameLog" aria-live="polite"></div>
-      </section>
-    </aside>
-  </main>
-
-  <dialog class="modal variant-modal" id="variantModal">
-    <div class="modal-card wide-modal-card">
-      <button class="close-modal" id="closeVariantButton" aria-label="Cerrar">×</button>
-      <span class="eyebrow">PARTIDA OFFLINE · DOS JUGADORES</span>
-      <h1>Escoge el reglamento</h1>
-      <p class="modal-copy">Cada tarjeta modifica de verdad las cartas legales, la IA, los avisos, los cantes y la forma de resolver la partida.</p>
-      <div class="variant-grid" id="variantGrid"></div>
-    </div>
-  </dialog>
-
-  <dialog class="modal variant-modal" id="tutorialSelectModal">
-    <div class="modal-card wide-modal-card">
-      <button class="close-modal" id="closeTutorialSelectButton" aria-label="Cerrar">×</button>
-      <span class="eyebrow">ACADEMIA MESA CERO</span>
-      <h1>¿Qué reglamento quieres aprender?</h1>
-      <p class="modal-copy">El tutorial prepara manos controladas y cambia sus ejercicios para enseñarte las obligaciones exactas de cada variante.</p>
-      <div class="variant-grid tutorial-variant-grid" id="tutorialVariantGrid"></div>
-    </div>
-  </dialog>
-
-  <dialog class="modal custom-rules-modal" id="customRulesModal">
-    <form method="dialog" class="modal-card wide-modal-card" id="customRulesForm">
-      <button class="close-modal" id="closeCustomRulesButton" type="button" aria-label="Cerrar">×</button>
-      <span class="eyebrow">MESA A MEDIDA</span>
-      <h1>Crea tu reglamento</h1>
-      <p class="modal-copy">Guárdalo como «Mi mesa» y úsalo tanto para jugar como para consultar un resumen de obligaciones.</p>
-      <div class="custom-rules-layout">
-        <section>
-          <h3>Mientras queda baceta</h3>
-          <label class="rule-select"><span>Obligaciones</span><select id="customStockDuty"><option value="free">Juego libre</option><option value="trumpOnly">Asistir si salen de triunfo</option><option value="full" selected>Obligaciones completas</option></select></label>
-          <h3>Obligaciones</h3>
-          <label class="custom-toggle"><span><strong>Montar</strong><small>Superar dentro del palo cuando sea necesario.</small></span><input id="customMustBeat" type="checkbox" checked></label>
-          <label class="custom-toggle"><span><strong>Fallar</strong><small>Jugar triunfo al no tener el palo de salida.</small></span><input id="customMustTrump" type="checkbox" checked></label>
-          <label class="custom-toggle"><span><strong>Pisar</strong><small>Superar el triunfo ganador cuando no puedes asistir.</small></span><input id="customMustOvertrump" type="checkbox" checked></label>
-        </section>
-        <section>
-          <h3>Premios y acciones</h3>
-          <label class="custom-toggle"><span><strong>Cantes de 20 y 40</strong><small>Rey y caballo después de ganar baza.</small></span><input id="customSongs" type="checkbox" checked></label>
-          <label class="custom-toggle"><span><strong>Cantar solo con baceta</strong><small>Bloquea nuevos cantes cuando se agota el robo.</small></span><input id="customSongsStockOnly" type="checkbox"></label>
-          <label class="custom-toggle"><span><strong>Cambio del pinte</strong><small>Intercambio con el siete o el dos de triunfo.</small></span><input id="customExchange" type="checkbox" checked></label>
-          <label class="custom-toggle"><span><strong>Tute</strong><small>Cuatro reyes o cuatro caballos ganan directamente.</small></span><input id="customTute" type="checkbox" checked></label>
-          <label class="custom-toggle"><span><strong>Capote</strong><small>Permite anunciar todas las bazas finales.</small></span><input id="customCapote" type="checkbox"></label>
-        </section>
-      </div>
-      <button class="primary-button start-button" value="default">Guardar y configurar partida <span>→</span></button>
-    </form>
-  </dialog>
-
-  <dialog class="modal setup-modal" id="setupModal">
-    <form method="dialog" class="modal-card" id="setupForm">
-      <button class="close-modal" id="closeSetupButton" type="button" aria-label="Cerrar">×</button>
-      <span class="eyebrow" id="setupEyebrow">PARTIDA OFFLINE</span>
-      <h1 id="setupTitle">Configura la partida</h1>
-      <p class="modal-copy" id="setupCopy">Selecciona un reglamento para preparar la mesa.</p>
-      <div class="selected-variant-summary" id="selectedVariantSummary"></div>
-
-      <fieldset class="choice-group">
-        <legend>Dificultad</legend>
-        <label class="choice-card">
-          <input type="radio" name="difficulty" value="easy">
-          <span class="choice-icon">01</span>
-          <span><strong>Principiante</strong><small>Juega legal, pero arriesga mal.</small></span>
-        </label>
-        <label class="choice-card selected">
-          <input type="radio" name="difficulty" value="normal" checked>
-          <span class="choice-icon">02</span>
-          <span><strong>Competitiva</strong><small>Protege tantos y administra triunfos.</small></span>
-        </label>
-        <label class="choice-card">
-          <input type="radio" name="difficulty" value="hard">
-          <span class="choice-icon">03</span>
-          <span><strong>Maestra</strong><small>Memoria de cartas y cálculo de riesgo.</small></span>
-        </label>
-      </fieldset>
-
-      <div class="setup-grid">
-        <label>
-          <span>Duración</span>
-          <select id="targetSelect">
-            <option value="1">Una mano</option>
-            <option value="3" selected>Al mejor de 5</option>
-            <option value="5">Al mejor de 9</option>
-          </select>
-        </label>
-        <label class="toggle-row">
-          <span>
-            <strong>Tute de reyes/caballos</strong>
-            <small>Victoria directa al cantarlo.</small>
-          </span>
-          <input type="checkbox" id="tuteToggle" checked>
-        </label>
-      </div>
-
-      <button class="primary-button start-button" id="startButton" value="default">
-        Sentarse y repartir
-        <span>→</span>
-      </button>
-    </form>
-  </dialog>
-
-  <dialog class="modal" id="rulesModal">
-    <div class="modal-card rules-content">
-      <button class="close-modal" id="closeRulesButton" aria-label="Cerrar">×</button>
-      <span class="eyebrow">REGLAMENTO ACTIVO</span>
-      <h1 id="rulesModalTitle">Arrastre total</h1>
-      <p class="modal-copy" id="rulesModalCopy"></p>
-
-      <div class="rules-grid" id="dynamicRulesGrid"></div>
-
-
-      <p class="art-credit">
-        Mazo personalizado de Tute IA: 40 cartas corregidas e integradas individualmente, con reverso exclusivo y carga optimizada para jugar offline.
-      </p>
-
-      <button class="primary-button" id="rulesUnderstoodButton">Entendido</button>
-    </div>
-  </dialog>
-
-  <dialog class="modal result-modal" id="resultModal">
-    <div class="modal-card result-card">
-      <span class="result-kicker" id="resultKicker">MANO TERMINADA</span>
-      <div class="result-emblem" id="resultEmblem">V</div>
-      <h1 id="resultTitle">Has ganado la mano</h1>
-      <p id="resultSummary"></p>
-
-      <div class="result-score">
-        <div><span>TÚ</span><strong id="resultPlayerScore">0</strong></div>
-        <div class="result-score-separator">:</div>
-        <div><span>IA</span><strong id="resultAiScore">0</strong></div>
-      </div>
-
-      <button class="primary-button start-button" id="resultActionButton">
-        Siguiente mano
-        <span>→</span>
-      </button>
-      <button class="text-button" id="resultExitButton">Volver al menú</button>
-    </div>
-  </dialog>
-
-  <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
-
-  <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="pwa.js?v=16.0.0"></script>
-  <script src="music-continuity.js?v=16.0.0"></script>
-  <script src="cante-effects.js?v=16.0.0"></script>
-  <script src="app.js?v=16.0.0"></script>
-  <script>document.getElementById("openTuteLibrary")?.addEventListener("click",()=>document.querySelector(".mode-section")?.scrollIntoView({behavior:"smooth"}));</script>
+    <footer class="footer">
+      <div class="foot-pill"><span class="mark" style="width:42px;height:42px;font-size:22px">T</span><div><strong>Club de Tute</strong><small>Cartas, tutorial, IA y multijugador local</small></div></div>
+      <div class="foot-center">SALA<br><b>CERO</b></div>
+      <div class="foot-pill"><span class="mark" style="width:42px;height:42px;font-size:22px">G</span><div><strong>Generala</strong><small>Dados, cubilete y planilla optimizada</small></div></div>
+    </footer>
+  </div>
 </body>
 </html>

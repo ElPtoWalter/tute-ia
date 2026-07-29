@@ -15,8 +15,8 @@
     { key: "double", label: "Doble Generala", short: "DG" }
   ];
   const NUMBER_KEYS = ["ones", "twos", "threes", "fours", "fives", "sixes"];
-  const SAVE_KEY = "salaCeroGeneralaSaveV16";
-  const PREF_KEY = "salaCeroGeneralaPrefsV16";
+  const SAVE_KEY = "salaCeroGeneralaSaveV17";
+  const PREF_KEY = "salaCeroGeneralaPrefsV17";
   const UI = {};
   let rollTimer = null;
   let toastTimer = null;
@@ -49,7 +49,7 @@
   }
 
   function cacheUI() {
-    ["gWelcome","gGame","gSoloMode","gLocalMode","gContinueMode","gContinueTitle","gContinueMeta","gMusicButton","gRulesButton","gScoreCollapse","gScorePanel","gScoreTable","gRoundLabel","gActiveAvatar","gTurnKicker","gActiveName","gRollCounter","gDiceTray","gTableMessage","gRollButton","gCategoryGrid","gBestPlay","gAdvice","gLog","gExitGame","gPrivacy","gHandoffKicker","gHandoffAvatar","gHandoffName","gRevealTurn","gSetupModal","gSetupForm","gCloseSetup","gSetupKicker","gSetupTitle","gModeInput","gPlayerName","gLocalOptions","gPlayerCount","gNameGrid","gDifficultyGroup","gServedWin","gServedBonus","gDoubleGenerala","gRulesModal","gCloseRules","gRulesOk","gResultModal","gResultSeal","gResultTitle","gResultText","gFinalRanking","gRematch","gResultHome","gToast","backgroundMusic"].forEach(id => UI[id] = document.getElementById(id));
+    ["gWelcome","gGame","gSoloMode","gLocalMode","gContinueMode","gContinueTitle","gContinueMeta","gMusicButton","gRulesButton","gScoreCollapse","gScorePanel","gScoreTable","gRoundLabel","gActiveAvatar","gTurnKicker","gActiveName","gRollCounter","gRollStage","gCupButton","gDiceTray","gTableMessage","gRollButton","gCategoryGrid","gBestPlay","gAdvice","gLog","gExitGame","gPrivacy","gHandoffKicker","gHandoffAvatar","gHandoffName","gRevealTurn","gSetupModal","gSetupForm","gCloseSetup","gSetupKicker","gSetupTitle","gModeInput","gPlayerName","gLocalOptions","gPlayerCount","gNameGrid","gDifficultyGroup","gServedWin","gServedBonus","gDoubleGenerala","gRulesModal","gCloseRules","gRulesOk","gResultModal","gResultSeal","gResultTitle","gResultText","gFinalRanking","gRematch","gResultHome","gToast","backgroundMusic"].forEach(id => UI[id] = document.getElementById(id));
     UI.dice = [...document.querySelectorAll(".g-die")];
   }
 
@@ -65,6 +65,7 @@
     UI.gPlayerCount.addEventListener("change", renderSetupNames);
     UI.gSetupForm.addEventListener("submit", event => { event.preventDefault(); startFromSetup(); });
     UI.gRollButton.addEventListener("click", rollDice);
+    UI.gCupButton.addEventListener("click", rollDice);
     UI.dice.forEach((die, index) => die.addEventListener("click", () => toggleHold(index)));
     UI.gScoreCollapse.addEventListener("click", () => {
       UI.gScorePanel.classList.toggle("expanded");
@@ -162,6 +163,8 @@
   async function performRoll() {
     state.rolling = true;
     state.rollCount += 1;
+    UI.gRollStage?.classList.add("rolling");
+    UI.gCupButton?.classList.add("disabled");
     UI.dice.forEach((die, index) => { if (!state.held[index]) die.classList.add("rolling"); });
     playDiceSound();
     const start = performance.now();
@@ -178,6 +181,8 @@
       }, 72);
     });
     UI.dice.forEach(die => die.classList.remove("rolling"));
+    UI.gRollStage?.classList.remove("rolling");
+    UI.gCupButton?.classList.remove("disabled");
     state.rolling = false;
     addLog(`<strong>${currentPlayer().name}</strong> realiza la tirada ${state.rollCount}: ${state.dice.join(" · ")}.`);
   }
@@ -332,9 +337,14 @@
     UI.gRollCounter.textContent = `${state.rollCount} / 3`;
     const categoryTotal = state.options.doubleGenerala ? 11 : 10;
     UI.gRoundLabel.textContent = `${Math.min(categoryTotal, Math.floor(totalFilled() / state.players.length) + 1)} / ${categoryTotal}`;
-    UI.gRollButton.disabled = state.rolling || state.rollCount >= 3 || player.isAI || !state.revealed;
+    const canRoll = !(state.rolling || state.rollCount >= 3 || player.isAI || !state.revealed);
+    UI.gRollButton.disabled = !canRoll;
+    UI.gCupButton.disabled = !canRoll;
+    UI.gCupButton.classList.toggle("disabled", !canRoll);
     UI.gRollButton.querySelector("b").textContent = state.rollCount === 0 ? "Tirar los dados" : "Volver a tirar";
     UI.gRollButton.querySelector("small").textContent = state.rollCount >= 3 ? "Elige una categoría" : `Quedan ${3-state.rollCount} tiradas`;
+    const cupLabel = UI.gCupButton?.querySelector('.g-cup-label');
+    if (cupLabel) cupLabel.textContent = canRoll ? (state.rollCount === 0 ? 'Agitar cubilete' : 'Sacudir y revelar') : (player.isAI ? 'Turno de la IA' : state.rollCount >= 3 ? 'Tirada completa' : 'Turno oculto');
     UI.gTableMessage.textContent = tableMessage();
     renderDice();
     renderCategories();

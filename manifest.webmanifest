@@ -53,7 +53,7 @@
       "name": "Abrir Tute",
       "short_name": "Tute",
       "description": "Entrar al club de Tute",
-      "url": "./?mode=solo",
+      "url": "./tute.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

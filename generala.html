@@ -11,7 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="generala.css?v=16.0.0">
+  <link rel="stylesheet" href="generala.css?v=17.0.0">
 </head>
 <body>
   <div class="g-noise" aria-hidden="true"></div>
@@ -75,16 +75,24 @@
           <div class="g-roll-counter"><span>TIRADA</span><b id="gRollCounter">0 / 3</b></div>
         </div>
 
-        <div class="g-dice-tray" id="gDiceTray" aria-label="Dados">
-          <button class="g-die" data-die="0" type="button" aria-label="Dado 1"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
-          <button class="g-die" data-die="1" type="button" aria-label="Dado 2"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
-          <button class="g-die" data-die="2" type="button" aria-label="Dado 3"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
-          <button class="g-die" data-die="3" type="button" aria-label="Dado 4"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
-          <button class="g-die" data-die="4" type="button" aria-label="Dado 5"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
-        </div>
+        <div class="g-roll-stage" id="gRollStage">
+          <button class="g-cup-launcher" id="gCupButton" type="button" aria-label="Agitar cubilete">
+            <span class="g-cup-rim"></span>
+            <span class="g-cup-mark">G</span>
+            <span class="g-cup-label">Agitar cubilete</span>
+          </button>
 
-        <div class="g-table-message" id="gTableMessage">Pulsa «Tirar los dados» para comenzar tu turno.</div>
-        <button class="g-roll-button" id="gRollButton" type="button"><span>⚄</span><b>Tirar los dados</b><small>Quedan 3 tiradas</small></button>
+          <div class="g-dice-tray" id="gDiceTray" aria-label="Dados">
+            <button class="g-die" data-die="0" type="button" aria-label="Dado 1"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+            <button class="g-die" data-die="1" type="button" aria-label="Dado 2"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+            <button class="g-die" data-die="2" type="button" aria-label="Dado 3"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+            <button class="g-die" data-die="3" type="button" aria-label="Dado 4"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+            <button class="g-die" data-die="4" type="button" aria-label="Dado 5"><span class="pip p1"></span><span class="pip p2"></span><span class="pip p3"></span><span class="pip p4"></span><span class="pip p5"></span><span class="pip p6"></span><span class="pip p7"></span><span class="pip p8"></span><span class="pip p9"></span><i>GUARDADO</i></button>
+          </div>
+
+          <div class="g-table-message" id="gTableMessage">Pulsa «Tirar los dados» para comenzar tu turno.</div>
+          <button class="g-roll-button" id="gRollButton" type="button"><span>⚄</span><b>Tirar los dados</b><small>Quedan 3 tiradas</small></button>
+        </div>
 
         <section class="g-category-panel">
           <div class="g-category-heading"><span>ANOTA TU JUGADA</span><small>También puedes tachar una categoría con 0 puntos.</small></div>
@@ -134,7 +142,7 @@
 
   <div class="g-toast" id="gToast" aria-live="assertive"></div>
   <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="music-continuity.js?v=16.0.0"></script>
-  <script src="generala.js?v=16.0.0"></script>
+  <script src="music-continuity.js?v=17.0.0"></script>
+  <script src="generala.js?v=17.0.0"></script>
 </body>
 </html>
