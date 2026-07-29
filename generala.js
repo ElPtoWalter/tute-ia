@@ -141,6 +141,7 @@
     UI.gSetupModal.close();
     UI.gWelcome.classList.add("hidden");
     UI.gGame.classList.remove("hidden");
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     addLog(`<strong>${players[0].name}</strong> abre la partida.`);
     render();
     saveGame();
@@ -161,9 +162,12 @@
   }
 
   async function performRoll() {
+    const firstRoll = state.rollCount === 0;
     state.rolling = true;
     state.rollCount += 1;
-    UI.gRollStage?.classList.add("rolling");
+    UI.gRollStage?.classList.remove("waiting", "first-roll", "reroll");
+    UI.gRollStage?.classList.add("rolling", firstRoll ? "first-roll" : "reroll");
+    UI.gRollStage?.setAttribute("aria-busy", "true");
     UI.gCupButton?.classList.add("disabled");
     UI.dice.forEach((die, index) => { if (!state.held[index]) die.classList.add("rolling"); });
     playDiceSound();
@@ -172,16 +176,17 @@
       rollTimer = setInterval(() => {
         state.dice = state.dice.map((value, index) => state.held[index] ? value : randomDie());
         paintDice();
-        if (performance.now() - start > 620) {
+        if (performance.now() - start > 860) {
           clearInterval(rollTimer);
           rollTimer = null;
           state.dice = state.dice.map((value, index) => state.held[index] ? value : randomDie());
           resolve();
         }
-      }, 72);
+      }, 76);
     });
     UI.dice.forEach(die => die.classList.remove("rolling"));
-    UI.gRollStage?.classList.remove("rolling");
+    UI.gRollStage?.classList.remove("rolling", "first-roll", "reroll");
+    UI.gRollStage?.setAttribute("aria-busy", "false");
     UI.gCupButton?.classList.remove("disabled");
     state.rolling = false;
     addLog(`<strong>${currentPlayer().name}</strong> realiza la tirada ${state.rollCount}: ${state.dice.join(" · ")}.`);
@@ -338,6 +343,7 @@
     const categoryTotal = state.options.doubleGenerala ? 11 : 10;
     UI.gRoundLabel.textContent = `${Math.min(categoryTotal, Math.floor(totalFilled() / state.players.length) + 1)} / ${categoryTotal}`;
     const canRoll = !(state.rolling || state.rollCount >= 3 || player.isAI || !state.revealed);
+    UI.gRollStage?.classList.toggle("waiting", !state.rolling && state.rollCount === 0 && state.revealed);
     UI.gRollButton.disabled = !canRoll;
     UI.gCupButton.disabled = !canRoll;
     UI.gCupButton.classList.toggle("disabled", !canRoll);
@@ -460,6 +466,7 @@
 
   function rematch() {
     UI.gResultModal.close();
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
     const players = state.players.map(player => createPlayer(player.name, player.isAI));
     Object.assign(state,{active:true,players,current:0,dice:[1,2,3,4,5],held:[false,false,false,false,false],rollCount:0,rolling:false,revealed:state.mode!=="local",log:[],instantWinner:null});
     addLog(`<strong>${players[0].name}</strong> abre la revancha.`);
@@ -488,6 +495,7 @@
       Object.assign(state,saved,{rolling:false,revealed:saved.mode!=="local"});
       UI.gWelcome.classList.add("hidden");
       UI.gGame.classList.remove("hidden");
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
       render();
       if (state.mode === "local") showHandoff();
       else if (currentPlayer().isAI) setTimeout(playAiTurn,700);
@@ -528,11 +536,47 @@
 
   function playDiceSound() {
     try {
-      const ctx = new (window.AudioContext||window.webkitAudioContext)();
-      const now=ctx.currentTime;
-      for(let i=0;i<5;i+=1){const osc=ctx.createOscillator();const gain=ctx.createGain();osc.type="triangle";osc.frequency.value=180+Math.random()*120;gain.gain.setValueAtTime(.0001,now+i*.045);gain.gain.exponentialRampToValueAtTime(.04,now+i*.045+.006);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.045+.08);osc.connect(gain).connect(ctx.destination);osc.start(now+i*.045);osc.stop(now+i*.045+.09);}
-      setTimeout(()=>ctx.close(),500);
-    }catch(_){}
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.value = 0.42;
+      master.connect(ctx.destination);
+
+      // Roce corto del cubilete.
+      const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * .5), ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < data.length; i += 1) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length);
+      const noise = ctx.createBufferSource();
+      const filter = ctx.createBiquadFilter();
+      const noiseGain = ctx.createGain();
+      noise.buffer = buffer;
+      filter.type = "bandpass";
+      filter.frequency.value = 720;
+      filter.Q.value = .8;
+      noiseGain.gain.setValueAtTime(.0001, now);
+      noiseGain.gain.exponentialRampToValueAtTime(.055, now + .025);
+      noiseGain.gain.exponentialRampToValueAtTime(.0001, now + .46);
+      noise.connect(filter).connect(noiseGain).connect(master);
+      noise.start(now);
+
+      // Golpes irregulares de los dados dentro y al caer.
+      const impacts = [0.03,0.10,0.17,0.25,0.34,0.48,0.58,0.69,0.78];
+      impacts.forEach((offset,index) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = index < 5 ? "triangle" : "sine";
+        osc.frequency.setValueAtTime(145 + Math.random() * 210, now + offset);
+        osc.frequency.exponentialRampToValueAtTime(80 + Math.random() * 70, now + offset + .055);
+        gain.gain.setValueAtTime(.0001, now + offset);
+        gain.gain.exponentialRampToValueAtTime(index < 5 ? .045 : .075, now + offset + .004);
+        gain.gain.exponentialRampToValueAtTime(.0001, now + offset + .075);
+        osc.connect(gain).connect(master);
+        osc.start(now + offset);
+        osc.stop(now + offset + .09);
+      });
+      setTimeout(() => ctx.close(), 1200);
+    } catch (_) {}
   }
 
   function celebrateGenerala() {
