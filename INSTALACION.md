@@ -1,4 +1,4 @@
-# Sala Cero v20.1 — Instalación
+# Sala Cero v20.3 — Instalación
 
 ## Publicar en GitHub Pages
 
@@ -24,6 +24,11 @@
 
 Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute, Generala, Chinchón, Escoba y Culo se incluyen en la preparación básica offline.
 
-## Primera entrada en la v20.2
+## Primera entrada en la v20.3
 
 La primera vez aparecerá el selector de usuarios. Si existía progreso de la v20.1, se migrará a un perfil heredado y se pedirá seleccionarlo. No borres los datos del navegador antes de abrir la nueva versión si quieres conservar el progreso anterior.
+
+
+## Actualización de la caché móvil
+
+Después de sustituir los archivos en GitHub Pages, abre la web una vez con conexión. Si el móvil mantiene el diseño anterior, cierra la PWA o la pestaña completamente y vuelve a abrirla. El service worker 20.3.0 eliminará la caché antigua durante la activación.
