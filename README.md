@@ -1,32 +1,33 @@
-# Sala Cero · v16
+# Sala Cero · v19
 
-Sala de juegos offline e instalable, preparada para móvil.
+Sala de juegos offline e instalable con Tute, Generala y una carrera compartida.
 
-## Juegos incluidos
+## Juegos
 
-### Tute IA
+### Tute
 
-- Arrastre total contra IA.
-- Tutoriales y variantes existentes.
-- Multijugador local «pasa el móvil».
-- Cambio inicial del pinte permitido en Arrastre total cuando el jugador posee la carta de intercambio correspondiente.
-- Mesa móvil rediseñada para mostrar baceta, triunfo, baza y la mano completa.
-- Marcador y crónica accesibles desde un panel móvil desplegable.
+- Partida contra IA con variantes y reglas configurables.
+- Tutorial adaptativo.
+- Multijugador local para dos, tres o cuatro personas.
+- Cartas personalizadas, cantes, cambio del pinte y mesa optimizada para móvil.
 
 ### Generala
 
-- Partida individual contra Doña Fortuna.
-- Dificultad casual, clásica o maestra.
-- Multijugador local para 2–6 personas.
-- Hasta tres tiradas, bloqueo de dados y anotación por categorías.
-- Escalera, Full, Póker, Generala y Doble Generala.
-- Opciones de Generala servida, bonificación por servido y Doble Generala.
-- Guardado automático y reanudación.
+- Partida contra IA o multijugador local de dos a seis personas.
+- Cubilete personalizado y tirada animada.
+- Planilla automática, guardado y tres niveles de dificultad.
+
+## Carrera v19
+
+- Circuito de Iniciación.
+- Liga de Generala.
+- Copa de Maestros del Tute.
+- Campeonato de Sala Cero.
+- Seis rivales con personalidades diferentes.
+- Trofeos, clasificación, resumen de partidas y recompensas equipables.
 
 ## Instalación
 
-La aplicación funciona como PWA. Publica el contenido completo de esta carpeta y abre la web una vez con conexión para preparar los recursos offline.
+Descomprime el ZIP y sube todo su contenido a la raíz del repositorio de GitHub Pages. No subas el ZIP como un único archivo. La PWA prepara los recursos offline después de abrir la web publicada al menos una vez con conexión.
 
-## Versión 18
-
-La v18 añade el sistema común de Sala Cero: perfil local, experiencia, niveles, estadísticas, retos diarios, logros, historial y ambientes desbloqueables. Consulta `CAMBIOS-v18.md` y `QA-v18.md`.
+Consulta `CAMBIOS-v19.md` y `QA-v19.md` para ver el detalle de la versión y las comprobaciones realizadas.

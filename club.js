@@ -13,7 +13,9 @@
     { id: "streak3", icon: "♛", title: "En racha", text: "Consigue tres victorias consecutivas.", test: data => data.stats.bestStreak >= 3 },
     { id: "veteran10", icon: "10", title: "Habitual de Sala Cero", text: "Termina diez partidas.", test: data => data.stats.games >= 10 },
     { id: "two_tables", icon: "∞", title: "Jugador completo", text: "Juega al Tute y a la Generala.", test: data => data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 },
-    { id: "served", icon: "✦", title: "Golpe de fortuna", text: "Consigue una Generala servida.", test: data => data.stats.generalaServed >= 1 }
+    { id: "served", icon: "✦", title: "Golpe de fortuna", text: "Consigue una Generala servida.", test: data => data.stats.generalaServed >= 1 },
+    { id: "career_match", icon: "◆", title: "Competidor", text: "Disputa tu primer encuentro de carrera.", test: () => Boolean(window.SalaCeroCareer?.getData?.().history?.length) },
+    { id: "career_trophy", icon: "♛", title: "Sala de trofeos", text: "Consigue tu primer trofeo de carrera.", test: () => Object.values(window.SalaCeroCareer?.getData?.().trophies || {}).some(Boolean) }
   ];
 
   const THEMES = [
@@ -27,7 +29,7 @@
 
   function defaultData() {
     return {
-      version: 18,
+      version: 19,
       profile: { name: "Eduardo", avatar: "♠" },
       xp: 0,
       theme: "emerald",
@@ -67,6 +69,7 @@
     output.daily.counters = { ...(incoming.daily?.counters || {}) };
     output.daily.claimed = { ...(incoming.daily?.claimed || {}) };
     output.history = Array.isArray(incoming.history) ? incoming.history : [];
+    output.version = 19;
     return output;
   }
 
@@ -158,8 +161,9 @@
     applyTheme(data.theme);
     renderAll();
     showClubToast(`+${xp} XP · ${game === "tute" ? "Tute" : "Generala"}`, unlocked);
-    window.dispatchEvent(new CustomEvent("sala-cero:updated", { detail: { data, unlocked } }));
-    return { data, xp, unlocked };
+    window.dispatchEvent(new CustomEvent("sala-cero:updated", { detail: { data, unlocked, event } }));
+    const careerSummary = window.SalaCeroCareer?.consumeMatch?.(event) || null;
+    return { data, xp, unlocked, careerSummary };
   }
 
   function unlockAchievements(data, notify) {
@@ -184,6 +188,18 @@
     renderAll();
     showClubToast(`Reto cobrado · +${challenge.reward} XP`, unlocked);
     return true;
+  }
+
+  function addXp(amount, reason = "") {
+    const value = Math.max(0, Number(amount) || 0);
+    if (!value) return read();
+    const data = read();
+    data.xp += value;
+    const unlocked = unlockAchievements(data, true);
+    write(data);
+    renderAll();
+    if (reason) showClubToast(`+${value} XP · ${reason}`, unlocked);
+    return data;
   }
 
   function updateProfile(profile = {}) {
@@ -346,6 +362,7 @@
     getData: read,
     recordMatch,
     updateProfile,
+    addXp,
     claimDaily,
     setTheme,
     render: renderAll,

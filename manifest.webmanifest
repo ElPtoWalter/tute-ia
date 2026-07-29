@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v18 — Club de juegos offline",
+  "name": "Sala Cero v19 — Club y campeonatos offline",
   "short_name": "Sala Cero",
-  "description": "Tute y Generala offline con perfil local, experiencia, logros, retos, personalización, IA y multijugador local.",
+  "description": "Tute y Generala offline con carrera, campeonatos, rivales, trofeos, perfil local, personalización, IA y multijugador local.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -66,6 +66,18 @@
       "short_name": "Generala",
       "description": "Abrir la mesa de Generala",
       "url": "./generala.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Carrera de Sala Cero",
+      "short_name": "Carrera",
+      "description": "Abrir campeonatos, liga y vitrina de trofeos",
+      "url": "./career.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

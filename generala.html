@@ -11,9 +11,10 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="generala.css?v=18.0.0">
-  <link rel="stylesheet" href="generala-classic.css?v=18.0.0">
-  <link rel="stylesheet" href="club.css?v=18.0.0">
+  <link rel="stylesheet" href="generala.css?v=19.0.0">
+  <link rel="stylesheet" href="generala-classic.css?v=19.0.0">
+  <link rel="stylesheet" href="club.css?v=19.0.0">
+  <link rel="stylesheet" href="career.css?v=19.0.0">
 </head>
 <body>
   <div class="g-noise" aria-hidden="true"></div>
@@ -26,6 +27,7 @@
       <a class="club-profile-chip" href="index.html#perfil" data-club-chip aria-label="Abrir perfil de Sala Cero"></a>
       <button class="g-icon-button" id="gMusicButton" type="button" aria-label="Música">♫</button>
       <button class="g-soft-button" id="gRulesButton" type="button">Reglas</button>
+      <a class="g-soft-button" href="career.html">Carrera</a>
       <a class="g-soft-button" href="index.html">Sala de juegos</a>
     </div>
   </header>
@@ -59,6 +61,11 @@
           <small>PARTIDA GUARDADA</small><strong id="gContinueTitle">Sin partida pendiente</strong>
           <p id="gContinueMeta">La partida se guarda automáticamente después de cada tirada y anotación.</p><b>Continuar →</b>
         </button>
+        <a class="g-mode-card g-mode-card-career" href="career.html">
+          <span class="g-mode-no">04</span><span class="g-mode-symbol">♛</span>
+          <small>LIGA Y CAMPEONATOS</small><strong>Carrera de Sala Cero</strong>
+          <p>Compite por jornadas, escala en la clasificación y desbloquea dados y cubiletes de campeonato.</p><b>Entrar en competición →</b>
+        </a>
       </div>
     </section>
 
@@ -148,8 +155,9 @@
 
   <div class="g-toast" id="gToast" aria-live="assertive"></div>
   <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="club.js?v=18.0.0"></script>
-  <script src="music-continuity.js?v=18.0.0"></script>
-  <script src="generala.js?v=18.0.0"></script>
+  <script src="club.js?v=19.0.0"></script>
+  <script src="career.js?v=19.0.0"></script>
+  <script src="music-continuity.js?v=19.0.0"></script>
+  <script src="generala.js?v=19.0.0"></script>
 </body>
 </html>

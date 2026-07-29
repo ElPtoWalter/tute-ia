@@ -221,6 +221,18 @@
     round: null
   };
 
+  function careerAiConfig() {
+    return window.SalaCeroCareer?.getAiConfig?.("tute") || null;
+  }
+
+  function aiDisplayName() {
+    return careerAiConfig()?.name || "Doña Virtud";
+  }
+
+  function aiPersonality() {
+    return careerAiConfig()?.personality || "calculating";
+  }
+
   const BASE_TUTORIAL_STEPS = [
     {
       id: "welcome",
@@ -472,7 +484,7 @@
     state.tutorial.active = false;
     document.body.classList.remove("tutorial-mode");
     UI.tutorialCoach.classList.add("hidden");
-    UI.aiName.textContent = "Doña Virtud";
+    UI.aiName.textContent = aiDisplayName();
     UI.newMatchButton.textContent = variant.shortName;
     renderRulesModal();
     if (!UI.setupModal.open) UI.setupModal.showModal();
@@ -599,6 +611,7 @@
     showHome();
     refreshSoloSaveCard();
     handleLaunchShortcut();
+    applyCareerLaunch();
     window.addEventListener("resize", () => state.round && renderHands(), { passive: true });
   }
 
@@ -759,6 +772,26 @@
     openSetupForVariant(selectedVariantId || "house");
   }
 
+  function applyCareerLaunch() {
+    const config = careerAiConfig();
+    if (!config || !new URLSearchParams(location.search).has("career")) return;
+    const variantId = VARIANTS[config.variant] ? config.variant : "house";
+    selectedVariantId = variantId;
+    saveSelectedVariant(variantId);
+    const radio = document.querySelector(`input[name="difficulty"][value="${config.difficulty || "normal"}"]`);
+    if (radio) {
+      radio.checked = true;
+      document.querySelectorAll(".choice-card").forEach(card => card.classList.toggle("selected", card.contains(radio)));
+    }
+    UI.aiName.textContent = aiDisplayName();
+    setTimeout(() => {
+      openSetupForVariant(variantId);
+      UI.setupEyebrow.textContent = config.competitionTitle?.toUpperCase() || UI.setupEyebrow.textContent;
+      UI.setupTitle.textContent = `${config.matchLabel} · ${config.name}`;
+      UI.setupCopy.textContent = `${config.label || "Rival de carrera"}. ${config.motto || "Encuentro oficial de Sala Cero."}`;
+    }, 180);
+  }
+
   function setMobileInfoOpen(open) {
     if (!UI.sidePanel || !UI.mobileInfoButton || !UI.mobileInfoBackdrop) return;
     UI.sidePanel.classList.toggle("mobile-open", open);
@@ -781,7 +814,7 @@
     UI.tutorialCoach.classList.add("hidden");
     UI.appShell.classList.add("hidden");
     UI.homeScreen.classList.remove("hidden");
-    UI.aiName.textContent = "Doña Virtud";
+    UI.aiName.textContent = aiDisplayName();
     UI.newMatchButton.textContent = "Partida offline";
     clearTutorialFocus();
     renderEmptyState();
@@ -2133,7 +2166,7 @@
       } else if (round.phase === "roundOver") {
         UI.statusText.textContent = "La mano ha terminado.";
       } else {
-        UI.statusText.textContent = "Doña Virtud está calculando.";
+        UI.statusText.textContent = `${aiDisplayName()} está calculando.`;
       }
     }
 
@@ -2632,7 +2665,7 @@
     playSound(option.points === 40 ? "song40" : "song");
     render();
     if (window.TuteCanteFX) {
-      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Eduardo") : "Doña Virtud" });
+      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Eduardo") : aiDisplayName() });
     }
     continueAfterTrick();
   }
@@ -2775,7 +2808,7 @@
     if (trumps < 4 || dominant < 4) return false;
     round.capote = { active: true, actor: "ai", failed: false, announced: true };
     addLog("<strong>La IA anuncia capote.</strong>");
-    showToast("<strong>Doña Virtud anuncia capote.</strong>");
+    showToast(`<strong>${aiDisplayName()} anuncia capote.</strong>`);
     playSound("song");
     render();
     later(scheduleAiTurn, 650);
@@ -2842,7 +2875,7 @@
     if (!round || round.currentTurn !== "ai" || round.phase !== "playing" || round.pendingCante) return;
 
     render();
-    const delay = state.settings.difficulty === "hard" ? 760 : 620;
+    const delay = aiPersonality() === "aggressive" ? 520 : state.settings.difficulty === "hard" ? 760 : 620;
     later(() => {
       const current = state.round;
       if (!current || current.currentTurn !== "ai" || current.phase !== "playing") return;
@@ -2860,7 +2893,8 @@
     const legal = getLegalCards("ai");
     if (legal.length === 1) return legal[0];
 
-    if (state.settings.difficulty === "easy") {
+    const personality = aiPersonality();
+    if (state.settings.difficulty === "easy" && (personality === "unpredictable" || Math.random() < 0.34)) {
       return legal[Math.floor(Math.random() * legal.length)];
     }
 
@@ -2900,16 +2934,41 @@
 
       if (songPairs.has(card.id)) score -= 20;
 
+      score += careerPersonalityAdjustment(card, opponentCard, wins, trickValue, personality);
+
       if (state.settings.difficulty === "hard") {
         score += expertAdjustment(card, opponentCard, wins);
       }
 
-      score += Math.random() * 1.8;
+      score += Math.random() * (personality === "unpredictable" ? 18 : personality === "aggressive" ? 4.5 : 1.8);
       return { card, score };
     });
 
     scored.sort((a, b) => b.score - a.score);
     return scored[0].card;
+  }
+
+  function careerPersonalityAdjustment(card, opponentCard, wins, trickValue, personality) {
+    const round = state.round;
+    let score = 0;
+    if (personality === "conservative") {
+      score -= card.points * (wins ? 0.4 : 1.7);
+      if (!opponentCard && card.points === 0) score += 7;
+      if (card.suit === round.trumpSuit) score -= wins ? 3 : 8;
+      if (wins && trickValue < 10) score -= 4;
+    } else if (personality === "aggressive") {
+      if (wins) score += 10 + trickValue * 0.55;
+      if (!opponentCard && card.strength >= 8) score += 8;
+      if (card.suit === round.trumpSuit && wins) score += 5;
+      if (card.points >= 10 && !wins) score -= 5;
+    } else if (personality === "unpredictable") {
+      score += (Math.random() - 0.5) * 22;
+    } else if (personality === "master") {
+      score += expertAdjustment(card, opponentCard, wins) * 0.7;
+      if (wins && trickValue >= 15) score += 8;
+      if (!opponentCard && countUnknownHigher(card) === 0) score += 10;
+    }
+    return score;
   }
 
   function getProtectedSongCards(actor) {
@@ -2963,6 +3022,7 @@
 
     const playerScore = totalPoints("player");
     const aiScore = totalPoints("ai");
+    const opponentName = aiDisplayName();
     const pointMode = state.settings.rules.matchMode === "points";
 
     if (pointMode) {
@@ -2990,7 +3050,7 @@
       window.TutePWA?.setPlaying(false);
       UI.resultKicker.textContent = pointMode ? `OBJETIVO ${state.settings.rules.targetPoints} ALCANZADO` : "PARTIDA TERMINADA";
       UI.resultEmblem.textContent = matchWinner === "player" ? "V" : "D";
-      UI.resultTitle.textContent = matchWinner === "player" ? "Has conquistado la mesa" : "Doña Virtud gana la partida";
+      UI.resultTitle.textContent = matchWinner === "player" ? "Has conquistado la mesa" : `${opponentName} gana la partida`;
       UI.resultSummary.textContent = pointMode
         ? `Marcador acumulado: ${state.match.playerPoints} a ${state.match.aiPoints} en ${getVariant().name}.`
         : matchWinner === "player"
@@ -3007,7 +3067,7 @@
       UI.resultSummary.textContent = pointMode
         ? `Esta mano termina ${playerScore} a ${aiScore}. Acumulado: ${state.match.playerPoints} a ${state.match.aiPoints}.`
         : reason === "puntos"
-          ? `${winner === "player" ? "Te impones" : "Doña Virtud se impone"} por ${Math.max(playerScore, aiScore)} a ${Math.min(playerScore, aiScore)} tantos.`
+          ? `${winner === "player" ? "Te impones" : `${opponentName} se impone`} por ${Math.max(playerScore, aiScore)} a ${Math.min(playerScore, aiScore)} tantos.`
           : reason.includes?.("capote")
             ? `${winner === "player" ? "Has ganado" : "La IA gana"} por ${reason}.`
             : `${winner === "player" ? "Has cantado" : "La IA ha cantado"} ${reason} y la mano termina de inmediato.`;

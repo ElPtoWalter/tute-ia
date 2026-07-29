@@ -37,6 +37,18 @@
     instantWinner: null
   };
 
+  function careerAiConfig() {
+    return window.SalaCeroCareer?.getAiConfig?.("generala") || null;
+  }
+
+  function aiDisplayName() {
+    return careerAiConfig()?.name || "Doña Fortuna";
+  }
+
+  function aiPersonality() {
+    return careerAiConfig()?.personality || "balanced";
+  }
+
   document.addEventListener("DOMContentLoaded", init);
 
   function init() {
@@ -48,6 +60,7 @@
     refreshContinue();
     renderSetupNames();
     window.TuteMusicContinuity?.sync();
+    applyCareerLaunch();
   }
 
   function cacheUI() {
@@ -85,11 +98,25 @@
   function openSetup(mode) {
     UI.gModeInput.value = mode;
     UI.gSetupKicker.textContent = mode === "solo" ? "PARTIDA CONTRA IA" : "MULTIJUGADOR LOCAL";
-    UI.gSetupTitle.textContent = mode === "solo" ? "Configura a Doña Fortuna" : "Prepara la mesa";
+    UI.gSetupTitle.textContent = mode === "solo" ? `Configura a ${aiDisplayName()}` : "Prepara la mesa";
     UI.gLocalOptions.classList.toggle("hidden", mode !== "local");
     UI.gDifficultyGroup.classList.toggle("hidden", mode !== "solo");
     renderSetupNames();
     UI.gSetupModal.showModal();
+  }
+
+  function applyCareerLaunch() {
+    const config = careerAiConfig();
+    if (!config || !new URLSearchParams(location.search).has("career")) return;
+    const radio = document.querySelector(`input[name="gDifficulty"][value="${config.difficulty || "normal"}"]`);
+    if (radio) radio.checked = true;
+    const soloTitle = UI.gSoloMode?.querySelector("strong");
+    if (soloTitle) soloTitle.textContent = `Contra ${config.name}`;
+    setTimeout(() => {
+      openSetup("solo");
+      UI.gSetupKicker.textContent = config.competitionTitle?.toUpperCase() || "ENCUENTRO DE CARRERA";
+      UI.gSetupTitle.textContent = `${config.matchLabel} · ${config.name}`;
+    }, 180);
   }
 
   function renderSetupNames() {
@@ -117,7 +144,7 @@
       const difficulty = document.querySelector('input[name="gDifficulty"]:checked')?.value || "normal";
       players = [
         createPlayer(UI.gPlayerName.value.trim() || "Eduardo", false),
-        createPlayer("Doña Fortuna", true)
+        createPlayer(aiDisplayName(), true)
       ];
       state.difficulty = difficulty;
     } else {
@@ -297,18 +324,33 @@
   function chooseAiHolds() {
     const player = currentPlayer();
     const open = openCategories(player);
+    const personality = aiPersonality();
     const unique = [...new Set(state.dice)].sort((a, b) => a - b);
     const straightOpen = open.includes("straight");
     const straightSet = bestStraightSubset(unique);
-    if (straightOpen && straightSet.length >= 4) {
+
+    if (personality === "unpredictable" && Math.random() < .35) {
+      return state.dice.map(() => Math.random() < .48);
+    }
+
+    if (straightOpen && straightSet.length >= (personality === "aggressive" ? 3 : 4)) {
       const used = new Set();
       return state.dice.map(value => {
         if (!straightSet.includes(value) || used.has(value)) return false;
         used.add(value); return true;
       });
     }
+
     const counts = countDice(state.dice);
-    const target = [1,2,3,4,5,6].sort((a,b) => counts[b]-counts[a] || b-a)[0];
+    const values = [1,2,3,4,5,6].sort((a,b) => counts[b]-counts[a] || b-a);
+    let target = values[0];
+    if (personality === "conservative" && counts[target] < 2) {
+      const bestNumber = values.find(value => open.includes(NUMBER_KEYS[value-1]));
+      target = bestNumber || target;
+    }
+    if (personality === "aggressive" || personality === "master") {
+      target = values.sort((a,b) => counts[b]-counts[a] || b-a)[0];
+    }
     return state.dice.map(value => value === target);
   }
 
@@ -324,6 +366,18 @@
         utility = score - (face >= 4 ? face * 1.2 : face * .4);
       } else if (score === 0) utility = -weights[key];
       if (key === "double" && !state.options.doubleGenerala) utility = -999;
+      const personality = aiPersonality();
+      if (personality === "conservative") {
+        if (NUMBER_KEYS.includes(key) && score > 0) utility += 7;
+        if (["poker","generala","double"].includes(key) && score === 0) utility -= 8;
+      } else if (personality === "aggressive") {
+        if (["poker","generala","double"].includes(key)) utility += score > 0 ? 18 : 7;
+        if (NUMBER_KEYS.includes(key) && score < 15) utility -= 5;
+      } else if (personality === "unpredictable") {
+        utility += Math.random() * 34 - 17;
+      } else if (personality === "master") {
+        utility += score > 0 ? weights[key] * .14 : -weights[key] * .34;
+      }
       if (state.difficulty === "easy") utility += Math.random() * 18 - 9;
       if (state.difficulty === "hard") utility += score > 0 ? weights[key] * .08 : -weights[key] * .25;
       return { key, score, utility };
@@ -334,9 +388,13 @@
 
   function shouldAiStop(choice) {
     if (!choice) return false;
+    const personality = aiPersonality();
     if (["generala","double"].includes(choice.key) && choice.score > 0) return true;
+    if (personality === "conservative" && state.rollCount >= 2 && choice.score >= 14) return true;
+    if (personality === "aggressive" && state.rollCount < 3 && choice.score < 35) return false;
+    if (personality === "unpredictable" && Math.random() < .22) return true;
     if (["poker","full","straight"].includes(choice.key) && choice.score > 0 && state.rollCount >= 2) return true;
-    return state.rollCount >= 2 && choice.score >= 24;
+    return state.rollCount >= 2 && choice.score >= (personality === "master" ? 26 : 24);
   }
 
   function detectServedGeneralaWin() {
@@ -420,7 +478,7 @@
   function renderAdvice() {
     if (state.rollCount === 0) {
       UI.gBestPlay.textContent = "Sin tirar";
-      UI.gAdvice.textContent = currentPlayer().isAI ? "Doña Fortuna prepara su cubilete." : "La estrategia empieza después de la primera tirada.";
+      UI.gAdvice.textContent = currentPlayer().isAI ? `${aiDisplayName()} prepara su cubilete.` : "La estrategia empieza después de la primera tirada.";
       return;
     }
     const player = currentPlayer();
@@ -439,7 +497,7 @@
 
   function tableMessage() {
     if (!state.revealed) return "Turno oculto.";
-    if (currentPlayer().isAI) return "Doña Fortuna está valorando sus dados.";
+    if (currentPlayer().isAI) return `${aiDisplayName()} está valorando sus dados.`;
     if (state.rollCount === 0) return "Tira los cinco dados para comenzar el turno.";
     if (state.rollCount < 3) return "Pulsa los dados que quieras guardar. Después vuelve a tirar o anota una categoría.";
     return "Has utilizado las tres tiradas. Elige una categoría, incluso con cero puntos.";
@@ -481,6 +539,7 @@
       local: state.mode === "local",
       won: state.mode === "solo" && winnerIndex === 0,
       score: profileScore,
+      opponentScore: state.mode === "solo" ? totalScore(state.players[1]) : 0,
       servedGenerala: state.instantWinner === 0
     });
     UI.gResultSeal.textContent = initials(winner.name);

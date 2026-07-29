@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#071611">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Carrera de Sala Cero: campeonatos offline de Tute y Generala, rivales, trofeos, clasificación y recompensas.">
+  <title>Carrera — Sala Cero v19</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="club.css?v=19.0.0">
+  <link rel="stylesheet" href="career.css?v=19.0.0">
+</head>
+<body class="career-body">
+  <div class="career-noise" aria-hidden="true"></div>
+  <div class="career-wrap">
+    <header class="career-top">
+      <a class="career-brand" href="index.html" aria-label="Volver a Sala Cero">
+        <span class="career-mark">♛</span>
+        <span><strong>CARRERA DE SALA CERO</strong><small>CAMPEONATOS OFFLINE · V19</small></span>
+      </a>
+      <nav class="career-nav" aria-label="Navegación de carrera">
+        <a href="index.html">Sala Cero</a>
+        <a href="tute.html">Tute</a>
+        <a href="generala.html">Generala</a>
+        <a href="#vitrina">Vitrina</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="career-hero">
+        <div class="career-hero-copy">
+          <span class="career-kicker">TEMPORADA 1 · CARTAS Y DADOS · SIN CONEXIÓN</span>
+          <h1>Compite.<br><em>Conquista la sala.</em></h1>
+          <p>Disputa un circuito mixto, una liga completa de Generala, la Copa de Maestros del Tute y el campeonato definitivo. Cada rival juega con una personalidad distinta y cada trofeo desbloquea nuevas piezas para tu mesa.</p>
+        </div>
+        <aside class="career-rank-card" aria-label="Estado de carrera">
+          <small>RANGO ACTUAL</small>
+          <div class="career-rank-seal" data-club-avatar>♠</div>
+          <h2 data-career-rank>Aspirante</h2>
+          <div class="career-rank-stats">
+            <div><span>PROGRESO DE CARRERA</span><strong data-career-xp>0 PX</strong></div>
+            <div><span>TROFEOS</span><strong data-career-trophies-count>0</strong></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="career-section">
+        <div class="career-section-head">
+          <div><small>RUTA DE CAMPEONATO</small><h2>Competiciones</h2></div>
+          <p>Las mesas se abren por orden. En la copa de Tute una derrota elimina; las demás competiciones pueden completarse y repetirse para mejorar el resultado.</p>
+        </div>
+        <div class="career-competitions" data-career-competitions></div>
+      </section>
+
+      <section class="career-section career-grid-two">
+        <article class="career-panel">
+          <h3>Clasificación de Generala</h3>
+          <p>La liga se actualiza después de cada jornada. Los encuentros entre rivales se simulan de forma local.</p>
+          <div data-career-league></div>
+        </article>
+        <article class="career-panel">
+          <h3>Últimos encuentros</h3>
+          <p>Resumen de los resultados más recientes dentro de la carrera.</p>
+          <div data-career-history></div>
+        </article>
+      </section>
+
+      <section class="career-section">
+        <div class="career-section-head">
+          <div><small>SEIS FORMAS DE JUGAR</small><h2>Rivales del club</h2></div>
+          <p>No son únicamente niveles de dificultad. Cada rival modifica la forma en la que la IA asume riesgos, protege puntos o cambia de plan.</p>
+        </div>
+        <div class="career-rivals" data-career-rivals></div>
+      </section>
+
+      <section class="career-section career-grid-two" id="vitrina">
+        <article class="career-panel">
+          <h3>Vitrina de trofeos</h3>
+          <p>Cuatro piezas marcan el recorrido completo hasta la Corona de Sala Cero.</p>
+          <div class="career-trophies" data-career-trophies></div>
+        </article>
+        <article class="career-panel">
+          <h3>Vestuario de la sala</h3>
+          <p>Equipa tapetes, dados, cubiletes y reversos. Los cambios se aplican a los juegos compatibles.</p>
+          <div data-career-cosmetics></div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="career-footer">Sala Cero guarda la carrera únicamente en este dispositivo. No necesita cuentas, servidores ni conexión.</footer>
+  </div>
+
+  <script src="club.js?v=19.0.0"></script>
+  <script src="career.js?v=19.0.0"></script>
+</body>
+</html>

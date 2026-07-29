@@ -7,13 +7,14 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Sala Cero v18: Tute y Generala offline con perfil local, estadísticas, logros, retos y personalización.">
-  <title>Sala Cero v18 — Club de juegos</title>
+  <meta name="description" content="Sala Cero v19: Tute y Generala offline con carrera, campeonatos, rivales, trofeos, estadísticas y personalización.">
+  <title>Sala Cero v19 — Club y campeonatos</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="club.css?v=18.0.0">
-  <link rel="stylesheet" href="hub.css?v=18.0.0">
+  <link rel="stylesheet" href="club.css?v=19.0.0">
+  <link rel="stylesheet" href="hub.css?v=19.0.0">
+  <link rel="stylesheet" href="career.css?v=19.0.0">
 </head>
 <body>
   <div class="hub-noise" aria-hidden="true"></div>
@@ -21,11 +22,12 @@
     <header class="hub-top">
       <a class="hub-brand" href="index.html" aria-label="Sala Cero">
         <span class="hub-mark">0</span>
-        <span><strong>SALA CERO</strong><small>CLUB OFFLINE · V18</small></span>
+        <span><strong>SALA CERO</strong><small>CLUB Y CAMPEONATOS · V19</small></span>
       </a>
       <nav class="hub-nav" aria-label="Navegación principal">
         <a href="tute.html">Tute</a>
         <a href="generala.html">Generala</a>
+        <a href="career.html">Carrera</a>
         <button class="club-profile-chip" type="button" data-club-open data-club-chip aria-label="Abrir perfil"></button>
       </nav>
     </header>
@@ -33,9 +35,9 @@
     <main>
       <section class="hub-hero">
         <div>
-          <span class="hub-kicker">PERFIL LOCAL · LOGROS · RETOS · PERSONALIZACIÓN</span>
+          <span class="hub-kicker">CARRERA · TROFEOS · RIVALES · PERSONALIZACIÓN</span>
           <h1>Sala Cero</h1>
-          <p>Los dos juegos siguen teniendo su propio menú, pero ahora comparten un club común. Cada partida suma experiencia, estadísticas y logros sin cuentas, sin pagos y sin conexión.</p>
+          <p>Tute y Generala conservan sus propios menús, pero ahora forman una carrera común: campeonatos, rivales con personalidad, trofeos, recompensas y una temporada completamente offline.</p>
         </div>
         <aside class="hub-profile-card" aria-label="Perfil de Sala Cero">
           <div class="hub-profile-head">
@@ -68,6 +70,13 @@
           </div>
           <div class="hub-game-copy"><small>CUBILETE Y CINCO DADOS</small><strong>Generala</strong><p>Mesa clásica, tirada fluida, planilla automática, IA y multijugador local para hasta seis personas.</p><b>Ir a la mesa de Generala →</b></div>
         </a>
+      </section>
+
+
+      <section class="hub-career-callout" aria-labelledby="careerTitle">
+        <div class="hub-career-emblem">♛</div>
+        <div class="hub-career-copy"><small>NOVEDAD V19</small><h2 id="careerTitle">Carrera de Sala Cero</h2><p>Disputa el Circuito de Iniciación, la Liga de Generala, la Copa de Maestros del Tute y el campeonato definitivo. Tus rivales cambian de estrategia según su personalidad.</p></div>
+        <div class="hub-career-status" data-career-next><strong>Circuito de iniciación</strong><small>La primera mesa está preparada.</small><a href="career.html">Abrir carrera →</a></div>
       </section>
 
       <section class="hub-section">
@@ -120,6 +129,7 @@
       <button class="club-save-button" type="submit">Guardar perfil</button>
     </form>
   </dialog>
-  <script src="club.js?v=18.0.0"></script>
+  <script src="club.js?v=19.0.0"></script>
+  <script src="career.js?v=19.0.0"></script>
 </body>
 </html>
