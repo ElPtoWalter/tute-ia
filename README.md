@@ -1,33 +1,20 @@
-# Sala Cero · v19
+# Sala Cero · v20
 
-Sala de juegos offline e instalable con Tute, Generala y una carrera compartida.
+Aplicación web offline con cuatro juegos completos:
 
-## Juegos
+- Tute
+- Generala
+- Chinchón
+- Escoba de 15
 
-### Tute
+Incluye IA, multijugador local, perfil, experiencia, logros, retos, personalización, carrera y campeonatos.
 
-- Partida contra IA con variantes y reglas configurables.
-- Tutorial adaptativo.
-- Multijugador local para dos, tres o cuatro personas.
-- Cartas personalizadas, cantes, cambio del pinte y mesa optimizada para móvil.
+## Entrada
 
-### Generala
+Abre `index.html`. Cada juego dispone de su propio menú y pantalla de juego.
 
-- Partida contra IA o multijugador local de dos a seis personas.
-- Cubilete personalizado y tirada animada.
-- Planilla automática, guardado y tres niveles de dificultad.
+## Publicación
 
-## Carrera v19
+Sube todos los archivos y carpetas descomprimidos a la raíz del repositorio de GitHub Pages. No subas únicamente el ZIP.
 
-- Circuito de Iniciación.
-- Liga de Generala.
-- Copa de Maestros del Tute.
-- Campeonato de Sala Cero.
-- Seis rivales con personalidades diferentes.
-- Trofeos, clasificación, resumen de partidas y recompensas equipables.
-
-## Instalación
-
-Descomprime el ZIP y sube todo su contenido a la raíz del repositorio de GitHub Pages. No subas el ZIP como un único archivo. La PWA prepara los recursos offline después de abrir la web publicada al menos una vez con conexión.
-
-Consulta `CAMBIOS-v19.md` y `QA-v19.md` para ver el detalle de la versión y las comprobaciones realizadas.
+Consulta `CAMBIOS-v20.md` y `QA-v20.md` para conocer el detalle de esta edición.

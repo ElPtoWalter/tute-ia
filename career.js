@@ -47,7 +47,7 @@
     initiation: {
       id: "initiation", order: 1, type: "series", icon: "◆", title: "Circuito de iniciación",
       subtitle: "Cuatro mesas para entrar en la competición", unlock: () => true,
-      description: "Un recorrido mixto por Tute y Generala. Terminarlo abre las competiciones especializadas.",
+      description: "Un recorrido inicial por Tute y Generala. Al completarlo se abren también las competiciones de Chinchón y Escoba.",
       reward: { trophy: "bronze", xp: 250, unlocks: ["felt_burgundy"] },
       matches: [
         { game: "generala", rival: "prudencio", difficulty: "easy", label: "Mesa 1 · Primeros dados" },
@@ -82,17 +82,30 @@
         { game: "tute", rival: "maestro", difficulty: "hard", variant: "americano", label: "Final" }
       ]
     },
+    salonCup: {
+      id: "salonCup", order: 4, type: "series", icon: "15", title: "Copa de Juegos de Salón",
+      subtitle: "Chinchón y Escoba frente a los rivales del club",
+      unlock: data => data.competitions.initiation.status === "completed",
+      description: "Cuatro encuentros alternando combinaciones y capturas. Tres victorias conceden el Trofeo del Salón.",
+      reward: { trophy: "salon", xp: 500, unlocks: [] },
+      matches: [
+        { game: "escoba", rival: "prudencio", difficulty: "easy", label: "Mesa 1 · Suma exacta" },
+        { game: "chinchon", rival: "lola", difficulty: "normal", label: "Mesa 2 · Cierre agresivo" },
+        { game: "escoba", rival: "tahur", difficulty: "normal", label: "Mesa 3 · Barrido imprevisible" },
+        { game: "chinchon", rival: "virtud", difficulty: "hard", label: "Final · Mano calculada" }
+      ]
+    },
     grandFinal: {
-      id: "grandFinal", order: 4, type: "series", icon: "♛", title: "Campeonato de Sala Cero",
-      subtitle: "La prueba definitiva de cartas y dados",
-      unlock: data => data.competitions.diceLeague.trophy && data.competitions.tuteCup.trophy,
-      description: "Cinco encuentros mixtos. Cuatro victorias conceden la Corona de Sala Cero.",
+      id: "grandFinal", order: 5, type: "series", icon: "♛", title: "Campeonato de Sala Cero",
+      subtitle: "La prueba definitiva de las cuatro mesas",
+      unlock: data => data.trophies.crown || (data.competitions.diceLeague.trophy && data.competitions.tuteCup.trophy && data.competitions.salonCup.trophy),
+      description: "Cinco encuentros entre Tute, Generala, Chinchón y Escoba. Cuatro victorias conceden la Corona de Sala Cero.",
       reward: { trophy: "crown", xp: 750, unlocks: ["dice_gold", "felt_royal", "cup_champion"] },
       matches: [
         { game: "tute", rival: "virtud", difficulty: "hard", variant: "house", label: "Ronda 1 · Dominio del tapete" },
         { game: "generala", rival: "fortuna", difficulty: "hard", label: "Ronda 2 · Planilla maestra" },
-        { game: "tute", rival: "tahur", difficulty: "hard", variant: "habanero", label: "Ronda 3 · Juego incierto" },
-        { game: "generala", rival: "maestro", difficulty: "hard", label: "Ronda 4 · Dados de campeón" },
+        { game: "chinchon", rival: "tahur", difficulty: "hard", label: "Ronda 3 · Mano incierta" },
+        { game: "escoba", rival: "fortuna", difficulty: "hard", label: "Ronda 4 · Suma de campeón" },
         { game: "tute", rival: "maestro", difficulty: "hard", variant: "americano", label: "Gran final" }
       ]
     }
@@ -102,6 +115,7 @@
     bronze: { id: "bronze", icon: "◆", title: "Copa de Iniciación", text: "Terminaste el primer circuito con al menos dos victorias." },
     dice: { id: "dice", icon: "⚄", title: "Trofeo de los Cinco Dados", text: "Ganaste la Liga de Generala." },
     cards: { id: "cards", icon: "T", title: "Copa de Maestros", text: "Conquistaste el torneo de Tute sin caer eliminado." },
+    salon: { id: "salon", icon: "15", title: "Trofeo del Salón", text: "Superaste la copa combinada de Chinchón y Escoba." },
     crown: { id: "crown", icon: "♛", title: "Corona de Sala Cero", text: "Superaste el campeonato definitivo con cuatro victorias." }
   };
 
@@ -138,7 +152,7 @@
 
   function defaultData() {
     return {
-      version: 19,
+      version: 20,
       season: 1,
       rank: "Aspirante",
       careerXp: 0,
@@ -256,7 +270,8 @@
       consumed: false
     };
     try { localStorage.setItem(PENDING_KEY, JSON.stringify(pending)); } catch (_) { return false; }
-    location.href = `${match.game === "tute" ? "tute.html" : "generala.html"}?career=1`;
+    const routes = { tute:"tute.html", generala:"generala.html", chinchon:"chinchon.html", escoba:"escoba.html" };
+    location.href = `${routes[match.game] || "index.html"}?career=1`;
     return true;
   }
 
@@ -328,7 +343,7 @@
         competitionFinished = true;
         state.status = "completed";
         state.best = state.best === null ? state.wins : Math.max(state.best, state.wins);
-        const required = comp.id === "grandFinal" ? 4 : 2;
+        const required = comp.id === "grandFinal" ? 4 : comp.id === "salonCup" ? 3 : 2;
         if (state.wins >= required) trophy = awardCompetitionReward(data, comp);
       } else {
         standingText = `${state.wins} victorias en ${state.stage} encuentros.`;
@@ -397,6 +412,8 @@
 
   function simulatedOpponentScore(game, rival, playerScore) {
     if (game === "generala") return 115 + rival.strength * 18 + ((playerScore + rival.strength * 13) % 31);
+    if (game === "escoba") return 7 + rival.strength * 2 + ((playerScore + rival.strength) % 4);
+    if (game === "chinchon") return 35 + rival.strength * 8 + ((playerScore + rival.strength * 5) % 21);
     return Math.max(0, rival.strength >= 3 ? 3 : 2);
   }
 
@@ -429,6 +446,8 @@
     if (result.special === "tute") decisive = "Un tute directo decidió el encuentro.";
     else if (result.special === "capote") decisive = "El capote fue el momento decisivo de la mesa.";
     else if (result.game === "generala" && result.score >= 180) decisive = `Planilla sobresaliente: ${result.score} puntos.`;
+    else if (result.game === "chinchon" && result.special === "chinchon") decisive = "Un Chinchón perfecto cerró el encuentro de inmediato.";
+    else if (result.game === "escoba" && result.special === "escobas") decisive = "Las escobas consecutivas inclinaron el marcador.";
     else if (difference <= 5) decisive = "La partida se resolvió por un margen mínimo.";
     else decisive = result.won ? "Controlaste el tramo final y aseguraste la victoria." : "El rival aprovechó mejor las últimas decisiones.";
 
@@ -533,7 +552,7 @@
       <p class="career-comp-description">${escapeHtml(comp.description)}</p>
       <div class="career-comp-progress"><i style="width:${progress}%"></i></div>
       <div class="career-comp-stats"><span><b>${state.wins}</b> victorias</span><span><b>${state.losses}</b> derrotas</span><span><b>${comp.matches.length}</b> encuentros</span></div>
-      ${match ? `<div class="career-next-match"><span>${match.game === "tute" ? "T" : "⚄"}</span><div><small>${escapeHtml(match.label)}</small><strong>${escapeHtml(rival.name)}</strong><p>${escapeHtml(rival.label)} · ${difficultyLabel(match.difficulty)}</p></div></div>` : ""}
+      ${match ? `<div class="career-next-match"><span>${({tute:"T",generala:"⚄",chinchon:"C",escoba:"15"}[match.game]||"◆")}</span><div><small>${escapeHtml(match.label)}</small><strong>${escapeHtml(rival.name)}</strong><p>${escapeHtml(rival.label)} · ${difficultyLabel(match.difficulty)}</p></div></div>` : ""}
       <div class="career-comp-actions">
         ${locked ? `<button disabled>Completa la competición anterior</button>` : eliminated ? `<button data-career-restart="${comp.id}">Reiniciar copa</button>` : match ? `<button data-career-start="${comp.id}">Jugar siguiente encuentro</button>` : `<button data-career-restart="${comp.id}">Repetir competición</button>`}
         ${state.trophy ? `<span class="career-earned-trophy">${TROPHIES[comp.reward.trophy].icon} ${escapeHtml(TROPHIES[comp.reward.trophy].title)}</span>` : ""}
@@ -573,7 +592,7 @@
   function renderCareerHistory(data) {
     document.querySelectorAll("[data-career-history]").forEach(container => {
       if (!data.history.length) { container.innerHTML = `<div class="career-empty">Aún no has disputado encuentros de carrera.</div>`; return; }
-      container.innerHTML = data.history.slice(0,12).map(item => `<div class="career-history-row"><span>${item.game === "tute" ? "T" : "⚄"}</span><div><strong>${item.won ? "Victoria" : "Derrota"} ante ${escapeHtml(item.rivalName)}</strong><small>${escapeHtml(item.label)} · ${item.score}–${item.opponentScore}</small></div><time>${formatDate(item.at)}</time></div>`).join("");
+      container.innerHTML = data.history.slice(0,12).map(item => `<div class="career-history-row"><span>${({tute:"T",generala:"⚄",chinchon:"C",escoba:"15"}[item.game]||"◆")}</span><div><strong>${item.won ? "Victoria" : "Derrota"} ante ${escapeHtml(item.rivalName)}</strong><small>${escapeHtml(item.label)} · ${item.score}–${item.opponentScore}</small></div><time>${formatDate(item.at)}</time></div>`).join("");
     });
   }
 
@@ -609,7 +628,12 @@
   }
 
   function renderActiveBanner() {
-    const game = location.pathname.toLowerCase().includes("generala") ? "generala" : location.pathname.toLowerCase().includes("tute") ? "tute" : null;
+    const pathname = location.pathname.toLowerCase();
+    const game = pathname.includes("generala") ? "generala"
+      : pathname.includes("tute") ? "tute"
+      : pathname.includes("chinchon") ? "chinchon"
+      : pathname.includes("escoba") ? "escoba"
+      : null;
     const pending = game ? getPending(game) : null;
     if (!pending || document.querySelector(".career-active-banner")) return;
     const rival = RIVALS[pending.rivalId];

@@ -4,7 +4,7 @@
 
 1. Descomprime el ZIP.
 2. Sustituye todo el contenido del repositorio por el contenido de la carpeta.
-3. Confirma que también se han subido `generala.html`, `generala.css`, `generala.js`, `mobile.css`, `sw.js` y todas las carpetas de `assets`.
+3. Confirma que también se han subido `tute.html`, `generala.html`, `chinchon.html`, `escoba.html`, sus archivos JavaScript y CSS, `sw.js` y todas las carpetas de `assets`.
 4. Espera a que GitHub Pages complete el despliegue.
 5. Abre la web y fuerza una recarga con `Ctrl + Shift + R` en ordenador.
 
@@ -22,4 +22,4 @@
 
 ## Funcionamiento offline
 
-Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute y Generala se incluyen en la preparación básica offline.
+Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute, Generala, Chinchón y Escoba se incluyen en la preparación básica offline.

@@ -3205,7 +3205,7 @@
         soloSaveRecord = await window.TuteDB.save("solo-current", snapshot, {
           title: `${snapshot.variantName} contra IA`,
           detail: `Mano ${snapshot.match.round} · ${snapshot.round.hands.player.length} cartas en tu mano`,
-          href: "index.html"
+          href: "tute.html"
         });
         refreshSoloSaveCard();
       } catch (_) {}
