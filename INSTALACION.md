@@ -23,3 +23,7 @@
 ## Funcionamiento offline
 
 Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute, Generala, Chinchón, Escoba y Culo se incluyen en la preparación básica offline.
+
+## Primera entrada en la v20.2
+
+La primera vez aparecerá el selector de usuarios. Si existía progreso de la v20.1, se migrará a un perfil heredado y se pedirá seleccionarlo. No borres los datos del navegador antes de abrir la nueva versión si quieres conservar el progreso anterior.

@@ -36,8 +36,8 @@
 
   function defaultData() {
     return {
-      version: 20.1,
-      profile: { name: "Eduardo", avatar: "♠" },
+      version: 20.2,
+      profile: { name: "Jugador", avatar: "♠" },
       xp: 0,
       theme: "emerald",
       stats: {
@@ -79,7 +79,7 @@
     output.daily.counters = { ...(incoming.daily?.counters || {}) };
     output.daily.claimed = { ...(incoming.daily?.claimed || {}) };
     output.history = Array.isArray(incoming.history) ? incoming.history : [];
-    output.version = 20.1;
+    output.version = 20.2;
     return output;
   }
 
@@ -95,7 +95,7 @@
     } catch (_) {}
     try {
       const prefs = JSON.parse(localStorage.getItem("salaCeroGeneralaPrefsV17") || localStorage.getItem("salaCeroGeneralaPrefsV16") || "{}");
-      if (prefs.name && data.profile.name === "Eduardo") data.profile.name = String(prefs.name).slice(0, 18);
+      if (prefs.name && ["Eduardo", "Jugador"].includes(data.profile.name)) data.profile.name = String(prefs.name).slice(0, 18);
     } catch (_) {}
     data.legacyImported = true;
   }
@@ -241,6 +241,7 @@
     const avatar = AVATARS.includes(profile.avatar) ? profile.avatar : data.profile.avatar;
     data.profile = { name: name || "Jugador", avatar };
     write(data);
+    window.SalaCeroAuth?.updateAccountProfile?.(data.profile);
     renderAll();
     return data;
   }

@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v20.1 — Cinco juegos offline",
+  "name": "Sala Cero v20.2 — Perfiles y cinco juegos offline",
   "short_name": "Sala Cero",
-  "description": "Tute, Generala, Chinchón, Escoba de 15 y Culo / Presidente offline con perfil local, IA y multijugador en el mismo dispositivo.",
+  "description": "Tute, Generala, Chinchón, Escoba de 15 y Culo / Presidente con perfiles locales separados, IA, carrera y multijugador en el mismo dispositivo.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",

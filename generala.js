@@ -127,7 +127,7 @@
       input.id = `gLocalName${index}`;
       input.maxLength = 18;
       input.placeholder = `Jugador ${index + 1}`;
-      input.value = index === 0 ? (UI.gPlayerName?.value || "Eduardo") : `Jugador ${index + 1}`;
+      input.value = index === 0 ? (UI.gPlayerName?.value || "Jugador") : `Jugador ${index + 1}`;
       UI.gNameGrid.appendChild(input);
     }
   }
@@ -143,7 +143,7 @@
     if (mode === "solo") {
       const difficulty = document.querySelector('input[name="gDifficulty"]:checked')?.value || "normal";
       players = [
-        createPlayer(UI.gPlayerName.value.trim() || "Eduardo", false),
+        createPlayer(UI.gPlayerName.value.trim() || "Jugador", false),
         createPlayer(aiDisplayName(), true)
       ];
       state.difficulty = difficulty;

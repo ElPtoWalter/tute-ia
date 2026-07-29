@@ -154,7 +154,7 @@
 
   function defaultData() {
     return {
-      version: 20.1,
+      version: 20.2,
       season: 1,
       rank: "Aspirante",
       careerXp: 0,

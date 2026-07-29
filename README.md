@@ -13,3 +13,7 @@ Incluye IA, multijugador local, perfil, estadísticas, logros, retos, personaliz
 ## Publicación
 
 Descomprime el ZIP y sube todos los archivos y carpetas a la raíz del repositorio de GitHub Pages. No subas el ZIP directamente.
+
+## Perfiles locales (v20.2)
+
+Al abrir Sala Cero se elige o crea un usuario. Cada perfil conserva de manera independiente partidas guardadas, carrera, estadísticas, logros, retos, música y personalización. El PIN de cuatro cifras es opcional. Los datos permanecen en el navegador; no se sincronizan con otros dispositivos.

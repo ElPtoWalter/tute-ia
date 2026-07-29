@@ -25,7 +25,7 @@
       players: 3,
       handSize: 13,
       teams: false,
-      names: ["Eduardo", "Don Cálculo", "Doña Virtud"],
+      names: ["Jugador", "Don Cálculo", "Doña Virtud"],
       facts: ["13 cartas por jugador", "Sin triunfo inicial", "El primer cante fija el pinte", "Obligaciones completas", "Puntuación individual"],
       rules: [
         ["01", "Asistir", "Siempre debes jugar el palo de salida cuando lo conserves."],
@@ -44,7 +44,7 @@
       players: 4,
       handSize: 10,
       teams: true,
-      names: ["Eduardo", "Don Cálculo", "Doña Virtud", "El Notario"],
+      names: ["Jugador", "Don Cálculo", "Doña Virtud", "El Notario"],
       facts: ["10 cartas por jugador", "Tú + Doña Virtud", "Juego obligado", "Marcador por parejas", "Sin información oculta"],
       rules: [
         ["01", "Parejas", "Tú y el jugador situado enfrente formáis equipo. Los puntos y cantes se suman."],
@@ -63,7 +63,7 @@
       players: 4,
       handSize: 10,
       teams: false,
-      names: ["Eduardo", "Don Cálculo", "Doña Virtud", "El Notario"],
+      names: ["Jugador", "Don Cálculo", "Doña Virtud", "El Notario"],
       facts: ["10 cartas por jugador", "Todos contra todos", "Juego obligado", "Lectura de 4 cartas", "Cantes individuales"],
       rules: [
         ["01", "Palo de salida", "Debes asistir siempre que puedas, aunque la baza haya sido fallada."],

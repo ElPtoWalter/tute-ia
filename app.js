@@ -2665,7 +2665,7 @@
     playSound(option.points === 40 ? "song40" : "song");
     render();
     if (window.TuteCanteFX) {
-      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Eduardo") : aiDisplayName() });
+      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Jugador") : aiDisplayName() });
     }
     continueAfterTrick();
   }
