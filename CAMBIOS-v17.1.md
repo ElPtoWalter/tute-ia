@@ -1,4 +1,4 @@
-# Sala Cero v17.1 — estabilización y rediseño clásico de Generala
+# Sala Cero v17.2 — estabilización y rediseño clásico de Generala
 
 ## Generala
 
@@ -29,4 +29,4 @@
 - Turno completo de la IA comprobado hasta devolver el control al jugador.
 - Multijugador local y pantalla privada comprobados.
 - Tute no ha sido modificado: motor, reglas, cartas, modo local y estilos conservan exactamente los archivos de la v17.
-- Caché PWA actualizada a `17.1.0` con el nuevo cubilete y la nueva hoja visual.
+- Caché PWA actualizada a `17.2.0` con el nuevo cubilete y la nueva hoja visual.

@@ -1,4 +1,4 @@
-# QA — Sala Cero v17.1
+# QA — Sala Cero v17.2
 
 ## Pruebas funcionales realizadas
 

@@ -163,28 +163,43 @@
 
   async function performRoll() {
     const firstRoll = state.rollCount === 0;
+    const movingIndexes = state.dice.map((_, index) => index).filter(index => !state.held[index]);
     state.rolling = true;
     state.rollCount += 1;
     UI.gRollStage?.classList.remove("waiting", "first-roll", "reroll");
     UI.gRollStage?.classList.add("rolling", firstRoll ? "first-roll" : "reroll");
     UI.gRollStage?.setAttribute("aria-busy", "true");
     UI.gCupButton?.classList.add("disabled");
-    UI.dice.forEach((die, index) => { if (!state.held[index]) die.classList.add("rolling"); });
-    playDiceSound();
-    const start = performance.now();
-    await new Promise(resolve => {
-      rollTimer = setInterval(() => {
-        state.dice = state.dice.map((value, index) => state.held[index] ? value : randomDie());
-        paintDice();
-        if (performance.now() - start > 860) {
-          clearInterval(rollTimer);
-          rollTimer = null;
-          state.dice = state.dice.map((value, index) => state.held[index] ? value : randomDie());
-          resolve();
-        }
-      }, 76);
+
+    movingIndexes.forEach((index, order) => {
+      const die = UI.dice[index];
+      die.classList.remove("revealing", "rolling", "to-cup");
+      die.style.setProperty("--cup-tilt", `${-14 + order * 7}deg`);
+      die.style.setProperty("--reveal-delay", `${order * 42}ms`);
     });
-    UI.dice.forEach(die => die.classList.remove("rolling"));
+
+    playDiceSound();
+    await wait(40);
+    movingIndexes.forEach(index => UI.dice[index].classList.add("to-cup"));
+    await wait(190);
+
+    state.dice = state.dice.map((value, index) => state.held[index] ? value : randomDie());
+    paintDice();
+
+    movingIndexes.forEach(index => {
+      const die = UI.dice[index];
+      die.classList.remove("to-cup");
+      void die.offsetWidth;
+      die.classList.add("revealing");
+    });
+
+    await wait(740 + Math.max(0, movingIndexes.length - 1) * 42);
+
+    UI.dice.forEach(die => {
+      die.classList.remove("rolling", "revealing", "to-cup");
+      die.style.removeProperty("--cup-tilt");
+      die.style.removeProperty("--reveal-delay");
+    });
     UI.gRollStage?.classList.remove("rolling", "first-roll", "reroll");
     UI.gRollStage?.setAttribute("aria-busy", "false");
     UI.gCupButton?.classList.remove("disabled");
@@ -595,6 +610,7 @@
   function totalFilled(source=state){return source.players.reduce((sum,player)=>sum+Object.values(player.scores).filter(value=>value!==null).length,0);}
   function allScoresComplete(){return state.players.every(player=>CATEGORIES.every(category=>category.key==="double"&&!state.options.doubleGenerala?true:player.scores[category.key]!==null));}
   function randomDie(){return Math.floor(Math.random()*6)+1;}
+  function wait(ms){return new Promise(resolve => setTimeout(resolve, ms));}
   function countDice(dice){const counts=Array(7).fill(0);dice.forEach(value=>counts[value]+=1);return counts;}
   function bestStraightSubset(unique){const a=[1,2,3,4,5].filter(v=>unique.includes(v));const b=[2,3,4,5,6].filter(v=>unique.includes(v));return a.length>=b.length?a:b;}
   function initials(name){return name.split(/\s+/).map(part=>part[0]).join("").slice(0,2).toUpperCase();}
