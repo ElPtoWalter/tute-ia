@@ -26,3 +26,7 @@ Sala de juegos offline e instalable, preparada para móvil.
 ## Instalación
 
 La aplicación funciona como PWA. Publica el contenido completo de esta carpeta y abre la web una vez con conexión para preparar los recursos offline.
+
+## Versión 18
+
+La v18 añade el sistema común de Sala Cero: perfil local, experiencia, niveles, estadísticas, retos diarios, logros, historial y ambientes desbloqueables. Consulta `CAMBIOS-v18.md` y `QA-v18.md`.

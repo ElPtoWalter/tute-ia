@@ -2632,7 +2632,7 @@
     playSound(option.points === 40 ? "song40" : "song");
     render();
     if (window.TuteCanteFX) {
-      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? "Eduardo" : "Doña Virtud" });
+      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Eduardo") : "Doña Virtud" });
     }
     continueAfterTrick();
   }
@@ -2979,7 +2979,7 @@
       : state.match.playerRounds > state.match.aiRounds ? "player" : "ai";
 
     render();
-    updatePersistentStats(winner, matchOver ? matchWinner : null);
+    updatePersistentStats(winner, matchOver ? matchWinner : null, reason);
 
     UI.resultPlayerScore.textContent = pointMode ? state.match.playerPoints : playerScore;
     UI.resultAiScore.textContent = pointMode ? state.match.aiPoints : aiScore;
@@ -3225,7 +3225,7 @@
     }
   }
 
-  function updatePersistentStats(roundWinner, matchWinner) {
+  function updatePersistentStats(roundWinner, matchWinner, reason = "puntos") {
     try {
       const current = JSON.parse(localStorage.getItem("tuteIaStats") || "{}");
       current.roundsPlayed = (current.roundsPlayed || 0) + 1;
@@ -3237,6 +3237,18 @@
         current.variantPlays[state.settings.variantId] = (current.variantPlays[state.settings.variantId] || 0) + 1;
       }
       localStorage.setItem("tuteIaStats", JSON.stringify(current));
+      if (matchWinner) {
+        const pointMode = state.settings.rules.matchMode === "points";
+        window.SalaCeroClub?.recordMatch({
+          game: "tute",
+          mode: "solo",
+          variant: state.settings.variantId,
+          won: matchWinner === "player",
+          score: pointMode ? state.match.playerPoints : state.match.playerRounds,
+          opponentScore: pointMode ? state.match.aiPoints : state.match.aiRounds,
+          special: String(reason).includes("tute") ? "tute" : String(reason).includes("capote") ? "capote" : ""
+        });
+      }
       renderHomeStats();
     } catch (_) {}
   }

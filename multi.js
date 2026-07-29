@@ -115,6 +115,8 @@
 
   function init() {
     cacheUI();
+    const clubName = window.SalaCeroClub?.getData()?.profile?.name;
+    if (clubName) mode.names[0] = clubName;
     configureMode();
     bindUI();
     renderRules();
@@ -1007,6 +1009,7 @@
       if (humanWon) stats.matchesWon=(stats.matchesWon||0)+1;
       stats.variantPlays||={};stats.variantPlays[mode.id]=(stats.variantPlays[mode.id]||0)+1;
       localStorage.setItem("tuteIaStats",JSON.stringify(stats));
+      window.SalaCeroClub?.recordMatch({ game:"tute", mode:"multi", won:Boolean(humanWon), variant:mode.id, score:totalPlayer(0) });
     } catch(_) {}
   }
 

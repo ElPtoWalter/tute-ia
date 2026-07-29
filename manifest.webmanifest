@@ -1,9 +1,9 @@
 {
-  "id": "./?source=pwa",
-  "name": "Sala Cero — Juegos offline",
+  "id": "./index.html?source=pwa",
+  "name": "Sala Cero v18 — Club de juegos offline",
   "short_name": "Sala Cero",
-  "description": "Sala de juegos offline con Tute completo, Generala, IA, multijugador local, música y partidas guardadas.",
-  "start_url": "./?source=pwa",
+  "description": "Tute y Generala offline con perfil local, experiencia, logros, retos, personalización, IA y multijugador local.",
+  "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
   "display_override": [

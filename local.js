@@ -1178,6 +1178,7 @@
       const key = state.config.count === 4 && state.config.teams ? "local4pairs" : `local${state.config.count}`;
       stats.variantPlays[key] = (stats.variantPlays[key] || 0) + 1;
       localStorage.setItem("tuteIaStats", JSON.stringify(stats));
+      window.SalaCeroClub?.recordMatch({ game: "tute", mode: "local", local: true, variant: key });
     } catch (_) {}
   }
 

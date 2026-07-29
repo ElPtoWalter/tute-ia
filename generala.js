@@ -43,6 +43,8 @@
     cacheUI();
     bindUI();
     loadPreferences();
+    const clubName = window.SalaCeroClub?.getData()?.profile?.name;
+    if (clubName) UI.gPlayerName.value = clubName;
     refreshContinue();
     renderSetupNames();
     window.TuteMusicContinuity?.sync();
@@ -470,7 +472,17 @@
     state.active = false;
     localStorage.removeItem(SAVE_KEY);
     const ranking = state.players.map((player,index) => ({ index, name:player.name, score:totalScore(player) })).sort((a,b) => b.score-a.score);
-    const winner = state.instantWinner !== null ? state.players[state.instantWinner] : state.players[ranking[0].index];
+    const winnerIndex = state.instantWinner !== null ? state.instantWinner : ranking[0].index;
+    const winner = state.players[winnerIndex];
+    const profileScore = totalScore(state.players[0]);
+    window.SalaCeroClub?.recordMatch({
+      game: "generala",
+      mode: state.mode,
+      local: state.mode === "local",
+      won: state.mode === "solo" && winnerIndex === 0,
+      score: profileScore,
+      servedGenerala: state.instantWinner === 0
+    });
     UI.gResultSeal.textContent = initials(winner.name);
     UI.gResultTitle.textContent = `${winner.name} gana la partida`;
     UI.gResultText.textContent = state.instantWinner !== null ? "La Generala servida ha cerrado la partida inmediatamente." : `La mejor planilla termina con ${ranking[0].score} puntos.`;

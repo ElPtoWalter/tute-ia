@@ -15,10 +15,11 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="styles.css?v=17.0.0">
-  <link rel="stylesheet" href="pwa.css?v=17.0.0">
-  <link rel="stylesheet" href="mobile.css?v=17.0.0">
-  <link rel="stylesheet" href="cante-effects.css?v=17.0.0">
+  <link rel="stylesheet" href="styles.css?v=18.0.0">
+  <link rel="stylesheet" href="pwa.css?v=18.0.0">
+  <link rel="stylesheet" href="mobile.css?v=18.0.0">
+  <link rel="stylesheet" href="cante-effects.css?v=18.0.0">
+  <link rel="stylesheet" href="club.css?v=18.0.0">
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
@@ -33,6 +34,7 @@
     </button>
 
     <div class="topbar-actions">
+      <a class="club-profile-chip" href="index.html#perfil" data-club-chip aria-label="Abrir perfil de Sala Cero"></a>
       <a class="soft-button hub-back-link" href="index.html">Sala Cero</a>
       <div class="music-control-wrap">
         <button class="icon-button" id="musicButton" title="Música de fondo" aria-label="Música de fondo">
@@ -250,7 +252,7 @@
           <div class="avatar human-avatar">TÚ</div>
           <div>
             <span class="eyebrow">JUGADOR</span>
-            <strong>Eduardo</strong>
+            <strong data-club-name>Eduardo</strong>
           </div>
           <div class="turn-pill" id="playerTurnPill">TU TURNO</div>
         </div>
@@ -480,10 +482,11 @@
   <div class="toast-region" id="toastRegion" aria-live="assertive"></div>
 
   <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="pwa.js?v=17.0.0"></script>
-  <script src="music-continuity.js?v=17.0.0"></script>
-  <script src="cante-effects.js?v=17.0.0"></script>
-  <script src="app.js?v=17.0.0"></script>
+  <script src="pwa.js?v=18.0.0"></script>
+  <script src="club.js?v=18.0.0"></script>
+  <script src="music-continuity.js?v=18.0.0"></script>
+  <script src="cante-effects.js?v=18.0.0"></script>
+  <script src="app.js?v=18.0.0"></script>
   <script>document.getElementById("openTuteLibrary")?.addEventListener("click",()=>document.querySelector(".mode-section")?.scrollIntoView({behavior:"smooth"}));</script>
 </body>
 </html>
