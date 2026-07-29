@@ -18,6 +18,9 @@
     { id: "chinchon_direct", icon: "7", title: "Chinchón perfecto", text: "Consigue un Chinchón de siete cartas.", test: data => data.stats.chinchones >= 1 },
     { id: "escoba_finish", icon: "15", title: "Suma exacta", text: "Completa una partida de Escoba.", test: data => data.stats.escobaGames >= 1 },
     { id: "four_tables", icon: "4", title: "Maestro del salón", text: "Juega a los cuatro juegos de Sala Cero.", test: data => data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 && data.stats.chinchonGames >= 1 && data.stats.escobaGames >= 1 },
+    { id: "culo_finish", icon: "P", title: "Cambio de poder", text: "Completa una partida de Culo / Presidente.", test: data => data.stats.culoGames >= 1 },
+    { id: "president", icon: "♛", title: "Señor Presidente", text: "Termina una partida de Culo como Presidente.", test: data => data.stats.presidents >= 1 },
+    { id: "five_tables", icon: "5", title: "Dueño de Sala Cero", text: "Juega a los cinco juegos de la sala.", test: data => data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 && data.stats.chinchonGames >= 1 && data.stats.escobaGames >= 1 && data.stats.culoGames >= 1 },
     { id: "career_match", icon: "◆", title: "Competidor", text: "Disputa tu primer encuentro de carrera.", test: () => Boolean(window.SalaCeroCareer?.getData?.().history?.length) },
     { id: "career_trophy", icon: "♛", title: "Sala de trofeos", text: "Consigue tu primer trofeo de carrera.", test: () => Object.values(window.SalaCeroCareer?.getData?.().trophies || {}).some(Boolean) }
   ];
@@ -29,11 +32,11 @@
     { id: "royal", label: "Salón real", level: 5, accent: "#f7d37f", surface: "#17100a" }
   ];
 
-  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15"];
+  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15", "P"];
 
   function defaultData() {
     return {
-      version: 20,
+      version: 20.1,
       profile: { name: "Eduardo", avatar: "♠" },
       xp: 0,
       theme: "emerald",
@@ -42,6 +45,7 @@
         tuteGames: 0, tuteWins: 0, generalaGames: 0, generalaWins: 0,
         chinchonGames: 0, chinchonWins: 0, chinchonBestScore: 0, chinchones: 0,
         escobaGames: 0, escobaWins: 0, escobaBestScore: 0, escobasSpecial: 0,
+        culoGames: 0, culoWins: 0, culoBestPrestige: 0, presidents: 0,
         generalaBestScore: 0, generalaServed: 0, localGames: 0
       },
       achievements: {},
@@ -75,7 +79,7 @@
     output.daily.counters = { ...(incoming.daily?.counters || {}) };
     output.daily.claimed = { ...(incoming.daily?.claimed || {}) };
     output.history = Array.isArray(incoming.history) ? incoming.history : [];
-    output.version = 20;
+    output.version = 20.1;
     return output;
   }
 
@@ -104,18 +108,19 @@
   function resetDaily(data) {
     const key = todayKey();
     if (data.daily.date === key) return;
-    data.daily = { date: key, counters: { games: 0, wins: 0, tute: 0, generala: 0, chinchon: 0, escoba: 0 }, claimed: {} };
+    data.daily = { date: key, counters: { games: 0, wins: 0, tute: 0, generala: 0, chinchon: 0, escoba: 0, culo: 0 }, claimed: {} };
   }
 
   function dailyDefinitions(data) {
     const dayNumber = Math.floor(new Date(`${data.daily.date}T12:00:00`).getTime() / 86400000);
-    const games = ["tute", "generala", "chinchon", "escoba"];
+    const games = ["tute", "generala", "chinchon", "escoba", "culo"];
     const game = games[((dayNumber % games.length) + games.length) % games.length];
     const gameText = {
       tute: ["Noche de cartas", "Juega una partida de Tute."],
       generala: ["Cinco dados", "Completa una partida de Generala."],
       chinchon: ["Mano ligada", "Completa una partida de Chinchón."],
-      escoba: ["Suma quince", "Completa una partida de Escoba."]
+      escoba: ["Suma quince", "Completa una partida de Escoba."],
+      culo: ["Cambio de poder", "Completa una partida de Culo / Presidente."]
     }[game];
     return [
       { id: "play", title: "Abrir la sala", text: "Termina una partida en cualquier juego.", target: 1, value: data.daily.counters.games || 0, reward: DAY_REWARD },
@@ -129,7 +134,7 @@
 
   function recordMatch(event = {}) {
     const data = read();
-    const game = ["tute", "generala", "chinchon", "escoba"].includes(event.game) ? event.game : "tute";
+    const game = ["tute", "generala", "chinchon", "escoba", "culo"].includes(event.game) ? event.game : "tute";
     const local = Boolean(event.local || event.mode === "local");
     const won = Boolean(event.won) && !local;
     const score = Math.max(0, Number(event.score) || 0);
@@ -163,6 +168,10 @@
       data.stats.escobaBestScore = Math.max(data.stats.escobaBestScore, score);
       if (event.special === "escobas") data.stats.escobasSpecial += 1;
     }
+    if (game === "culo") {
+      data.stats.culoBestPrestige = Math.max(data.stats.culoBestPrestige, score);
+      if (event.special === "president") data.stats.presidents += 1;
+    }
 
     let xp = 25;
     if (won) xp += 45;
@@ -170,6 +179,7 @@
     if (game === "generala") xp += Math.min(35, Math.floor(score / 20));
     if (game === "chinchon") xp += Math.min(30, Math.floor(score / 3));
     if (game === "escoba") xp += Math.min(30, score * 2);
+    if (game === "culo") xp += Math.min(30, Math.max(0, score) * 4);
     if (won && (event.special === "tute" || event.special === "capote")) xp += 25;
     data.xp += xp;
 
@@ -183,7 +193,7 @@
     write(data);
     applyTheme(data.theme);
     renderAll();
-    showClubToast(`+${xp} XP · ${{tute:"Tute",generala:"Generala",chinchon:"Chinchón",escoba:"Escoba"}[game]}`, unlocked);
+    showClubToast(`+${xp} XP · ${{tute:"Tute",generala:"Generala",chinchon:"Chinchón",escoba:"Escoba",culo:"Culo"}[game]}`, unlocked);
     window.dispatchEvent(new CustomEvent("sala-cero:updated", { detail: { data, unlocked, event } }));
     const careerSummary = window.SalaCeroCareer?.consumeMatch?.(event) || null;
     return { data, xp, unlocked, careerSummary };
@@ -269,6 +279,7 @@
     document.querySelectorAll("[data-club-best-generala]").forEach(el => el.textContent = String(data.stats.generalaBestScore));
     document.querySelectorAll("[data-club-best-chinchon]").forEach(el => el.textContent = String(data.stats.chinchonBestScore));
     document.querySelectorAll("[data-club-best-escoba]").forEach(el => el.textContent = String(data.stats.escobaBestScore));
+    document.querySelectorAll("[data-club-best-culo]").forEach(el => el.textContent = String(data.stats.culoBestPrestige));
     document.querySelectorAll("[data-club-progress]").forEach(el => el.style.setProperty("--progress", `${progress.percent}%`));
     document.querySelectorAll("[data-club-progress-text]").forEach(el => el.textContent = `${progress.current} / ${progress.target} XP`);
 
@@ -286,7 +297,7 @@
         const claimed = Boolean(data.daily.claimed[item.id]);
         const pct = Math.min(100, Math.round(item.value / item.target * 100));
         return `<article class="club-challenge ${complete ? "complete" : ""} ${claimed ? "claimed" : ""}">
-          <span class="club-challenge-icon">${claimed ? "✓" : item.id === "win" ? "★" : ({tute:"T",generala:"G",chinchon:"C",escoba:"15"}[item.id] || "◆")}</span>
+          <span class="club-challenge-icon">${claimed ? "✓" : item.id === "win" ? "★" : ({tute:"T",generala:"G",chinchon:"C",escoba:"15",culo:"P"}[item.id] || "◆")}</span>
           <div><small>RETO DIARIO</small><strong>${item.title}</strong><p>${item.text}</p><div class="club-mini-progress"><i style="width:${pct}%"></i></div><em>${Math.min(item.value, item.target)} / ${item.target}</em></div>
           <button type="button" data-claim-daily="${item.id}" ${!complete || claimed ? "disabled" : ""}>${claimed ? "Cobrado" : `+${item.reward} XP`}</button>
         </article>`;
@@ -324,7 +335,7 @@
         container.innerHTML = `<div class="club-empty">Todavía no hay partidas registradas en el club.</div>`;
         return;
       }
-      const meta = { tute:["T","Tute"], generala:["G","Generala"], chinchon:["C","Chinchón"], escoba:["15","Escoba"] };
+      const meta = { tute:["T","Tute"], generala:["G","Generala"], chinchon:["C","Chinchón"], escoba:["15","Escoba"], culo:["P","Culo"] };
       container.innerHTML = data.history.slice(0, 8).map(item => { const m=meta[item.game]||["◆",item.game]; return `<div class="club-history-row"><span>${m[0]}</span><div><strong>${m[1]}</strong><small>${item.local ? "Partida local" : item.won ? "Victoria" : "Derrota"}${item.score ? ` · ${item.score} puntos` : ""}</small></div><time>${formatDate(item.at)}</time></div>`; }).join("");
     });
   }

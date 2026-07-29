@@ -1,20 +1,15 @@
-# Sala Cero · v20
+# Sala Cero v20.1
 
-Aplicación web offline con cuatro juegos completos:
+Aplicación web offline con cinco juegos completos:
 
-- Tute
-- Generala
-- Chinchón
-- Escoba de 15
+- Tute.
+- Generala.
+- Chinchón.
+- Escoba de 15.
+- Culo / Presidente.
 
-Incluye IA, multijugador local, perfil, experiencia, logros, retos, personalización, carrera y campeonatos.
-
-## Entrada
-
-Abre `index.html`. Cada juego dispone de su propio menú y pantalla de juego.
+Incluye IA, multijugador local, perfil, estadísticas, logros, retos, personalización, campeonatos y guardado de partidas. Chinchón, Escoba y Culo disponen de tutoriales interactivos.
 
 ## Publicación
 
-Sube todos los archivos y carpetas descomprimidos a la raíz del repositorio de GitHub Pages. No subas únicamente el ZIP.
-
-Consulta `CAMBIOS-v20.md` y `QA-v20.md` para conocer el detalle de esta edición.
+Descomprime el ZIP y sube todos los archivos y carpetas a la raíz del repositorio de GitHub Pages. No subas el ZIP directamente.

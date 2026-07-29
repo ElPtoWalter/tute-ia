@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v20 — Cuatro juegos offline",
+  "name": "Sala Cero v20.1 — Cinco juegos offline",
   "short_name": "Sala Cero",
-  "description": "Tute, Generala, Chinchón y Escoba de 15 offline con carrera, perfil local, IA y multijugador en el mismo dispositivo.",
+  "description": "Tute, Generala, Chinchón, Escoba de 15 y Culo / Presidente offline con perfil local, IA y multijugador en el mismo dispositivo.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -90,6 +90,18 @@
       "short_name": "Chinchón",
       "description": "Abrir la mesa de Chinchón",
       "url": "./chinchon.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Jugar al Culo",
+      "short_name": "Culo",
+      "description": "Abrir la mesa de Culo / Presidente",
+      "url": "./culo.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

@@ -1,4 +1,4 @@
-# Instalación de Sala Cero
+# Sala Cero v20.1 — Instalación
 
 ## Publicar en GitHub Pages
 
@@ -22,4 +22,4 @@
 
 ## Funcionamiento offline
 
-Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute, Generala, Chinchón y Escoba se incluyen en la preparación básica offline.
+Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute, Generala, Chinchón, Escoba y Culo se incluyen en la preparación básica offline.

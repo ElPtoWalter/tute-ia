@@ -29,3 +29,9 @@ html[data-career-felt="royal"] .sg-table{--sg-felt:#554011;--sg-felt-dark:#24170
   .sg-combo{font-size:10px}
   .sg-field span{font-size:10px}.sg-rules p{font-size:10px}
 }
+
+/* v20.1: cuatro accesos en los menús de salón */
+.sg-modes{grid-template-columns:repeat(4,minmax(0,1fr))}
+.sg-mode.tutorial-mode{border-color:rgba(116,216,158,.26);background:radial-gradient(circle at 90% 0,rgba(116,216,158,.12),transparent 44%),linear-gradient(145deg,#153b30,#061a14)}
+@media(max-width:1120px){.sg-modes{grid-template-columns:1fr 1fr}}
+@media(max-width:720px){.sg-modes{grid-template-columns:1fr}}
