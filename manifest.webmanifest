@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v20.3 — Perfiles y cinco juegos offline",
+  "name": "Sala Cero v20.4 — Perfiles y seis juegos offline",
   "short_name": "Sala Cero",
-  "description": "Tute, Generala, Chinchón, Escoba de 15 y Culo / Presidente con perfiles locales separados, IA, carrera y multijugador en el mismo dispositivo.",
+  "description": "Tute, Generala, Chinchón, Escoba de 15, Culo / Presidente y Póker Texas Hold'em con perfiles locales, IA y multijugador en el mismo dispositivo.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -102,6 +102,18 @@
       "short_name": "Culo",
       "description": "Abrir la mesa de Culo / Presidente",
       "url": "./culo.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Jugar al Póker",
+      "short_name": "Póker",
+      "description": "Abrir la mesa Texas Hold'em",
+      "url": "./poker.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

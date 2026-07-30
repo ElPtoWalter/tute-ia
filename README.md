@@ -22,3 +22,7 @@ Al abrir Sala Cero se elige o crea un usuario. Cada perfil conserva de manera in
 ## Optimización móvil (v20.3)
 
 La versión 20.3 incorpora una capa adaptable común para la portada, los perfiles, la Carrera y los cinco juegos. Está preparada para teléfonos desde 320 px de ancho, respeta las zonas seguras y utiliza la altura visible real del navegador.
+
+## v20.4 — Póker offline
+
+La sala incorpora Texas Hold’em No Limit para un máximo de cuatro plazas, con modo contra IA y multijugador local. Los recursos gráficos actuales de Póker son provisionales y están preparados para ser sustituidos por la baraja, fichas y Anton crupier definitivos.

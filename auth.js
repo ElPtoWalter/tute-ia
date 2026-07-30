@@ -1,13 +1,13 @@
 (() => {
   "use strict";
 
-  const VERSION = 20.2;
+  const VERSION = 20.4;
   const REGISTRY_KEY = "salaCeroAuthV202";
   const ACTIVE_KEY = "salaCeroActiveUserV202";
   const USER_PREFIX = "salaCeroUser:";
   const GUEST_PREFIX = "salaCeroGuest:";
   const SCOPED_PREFIXES = ["salaCero", "tuteIa", "tuteTutorialComplete:"];
-  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15", "P"];
+  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15", "P", "PK"];
 
   const proto = Storage.prototype;
   const native = {
