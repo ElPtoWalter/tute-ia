@@ -18,3 +18,19 @@
 
 /* v20.4 · Casino de póker */
 .hub-game.poker{grid-column:1/-1;grid-template-columns:1.08fr .92fr;grid-template-rows:1fr;background:linear-gradient(155deg,rgba(18,50,39,.98),rgba(8,12,10,.99))}.hub-game.poker .hub-game-copy{border-top:0;border-left:1px solid var(--hub-line);display:flex;flex-direction:column;justify-content:center}.hub-poker-visual{background:radial-gradient(circle at 53% 42%,rgba(240,207,131,.12),transparent 47%),linear-gradient(145deg,#123b2c,#071b14)}.hub-poker-dealer{position:absolute;left:50%;top:2%;height:355px;max-width:46%;transform:translateX(-50%);object-fit:contain;filter:drop-shadow(0 28px 40px rgba(0,0,0,.46))}.hub-poker-card{position:absolute;width:112px;height:158px;padding:10px;border:4px solid #efe3cd;border-radius:13px;background:#fffaf0;color:#a21e30;box-shadow:0 24px 45px rgba(0,0,0,.42);font:800 34px Georgia,serif}.hub-poker-card i{display:block;font-style:normal}.hub-poker-card.black{color:#16120f}.hub-poker-card.hp1{left:8%;bottom:10%;transform:rotate(-13deg)}.hub-poker-card.hp2{right:9%;bottom:12%;transform:rotate(12deg)}.hub-poker-chip{position:absolute;width:70px;height:70px;display:grid;place-items:center;border-radius:50%;border:7px dashed #f3d078;color:#fff;background:#8e2634;box-shadow:0 15px 26px rgba(0,0,0,.35);font-size:12px;font-weight:950}.hub-poker-chip.hc1{left:27%;bottom:9%;transform:rotate(-8deg)}.hub-poker-chip.hc2{right:27%;bottom:8%;background:#152633;transform:rotate(7deg)}.hub-poker-stamp{position:absolute;right:5%;top:8%;padding:10px 14px;border:2px solid #f0cf83;border-radius:999px;color:#f0cf83;background:rgba(3,14,10,.76);font:900 12px Georgia,serif;letter-spacing:.12em;transform:rotate(5deg)}.hub-footer-v20{grid-template-columns:1fr 1fr auto 1fr 1fr 1fr 1fr}@media(max-width:1100px){.hub-game.poker{grid-template-columns:1fr;grid-template-rows:minmax(330px,1fr) auto}.hub-game.poker .hub-game-copy{border-left:0;border-top:1px solid var(--hub-line)}.hub-footer-v20{grid-template-columns:repeat(3,1fr)}.hub-footer-center{grid-column:1/-1;grid-row:1}}@media(max-width:720px){.hub-game.poker{grid-template-rows:250px auto}.hub-poker-dealer{height:245px}.hub-poker-card{width:72px;height:101px;padding:6px;border-width:2px;border-radius:8px;font-size:22px}.hub-poker-chip{width:45px;height:45px;border-width:4px;font-size:8px}.hub-poker-stamp{font-size:8px;padding:7px 9px}.hub-footer-v20{grid-template-columns:1fr}.hub-footer-center{grid-column:auto}}
+
+/* v21.0.1 · Póker visible en la portada */
+.hub-poker-figure{position:absolute;width:150px;border-radius:15px;box-shadow:0 24px 48px rgba(0,0,0,.48);border:2px solid rgba(240,207,131,.7);object-fit:cover}
+.hub-poker-figure.hp-figure-1{left:4%;bottom:4%;transform:rotate(-13deg)}
+.hub-poker-figure.hp-figure-2{right:4%;bottom:4%;transform:rotate(13deg)}
+.hub-poker-real-chip{position:absolute;width:74px;height:74px;object-fit:contain;filter:drop-shadow(0 14px 18px rgba(0,0,0,.38))}
+.hub-poker-real-chip.hc1{left:26%;bottom:5%;transform:rotate(-10deg)}
+.hub-poker-real-chip.hc2{right:26%;bottom:5%;transform:rotate(10deg)}
+@media(max-width:720px){
+  .hub-poker-figure{width:92px;border-radius:10px}
+  .hub-poker-real-chip{width:48px;height:48px}
+  .hub-poker-figure.hp-figure-1{left:2%;bottom:3%}
+  .hub-poker-figure.hp-figure-2{right:2%;bottom:3%}
+  .hub-poker-real-chip.hc1{left:25%;bottom:3%}
+  .hub-poker-real-chip.hc2{right:25%;bottom:3%}
+}

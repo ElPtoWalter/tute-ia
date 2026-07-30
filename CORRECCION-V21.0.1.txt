@@ -1,0 +1,11 @@
+CORRECCIÓN V21.0.1
+
+El fallo anterior era real: el motor de Póker estaba dentro, pero no aparecía en la portada de Sala Cero y el ZIP estaba metido dentro de una carpeta superior.
+
+Corregido:
+- Póker visible en la portada y navegación.
+- Acceso directo a poker.html.
+- Anton crupier, figuras y fichas visibles.
+- Mesa de 2 a 6 jugadores.
+- ZIP plano: index.html está en la raíz.
+- Caché offline reconstruida solo con archivos existentes.

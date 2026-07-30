@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v20.4 — Perfiles y seis juegos offline",
+  "name": "Sala Cero v21.0.1 — Seis juegos offline",
   "short_name": "Sala Cero",
-  "description": "Tute, Generala, Chinchón, Escoba de 15, Culo / Presidente y Póker Texas Hold'em con perfiles locales, IA y multijugador en el mismo dispositivo.",
+  "description": "Tute, Generala, Chinchón, Escoba de 15, Culo / Presidente y Póker Texas Hold'em con IA y multijugador local.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
