@@ -1,13 +1,16 @@
 (() => {
   'use strict';
   const Core = window.PokerCore;
-  const SAVE_KEY = 'salaCeroPokerSaveV204';
-  const PREF_KEY = 'salaCeroPokerPrefsV204';
-  const VERSION = 20.4;
-  const AI_PROFILES = [
+  const SAVE_KEY = 'salaCeroPokerSaveV210';
+  const PREF_KEY = 'salaCeroPokerPrefsV210';
+  const VERSION = 21.0;
+  
+const AI_PROFILES = [
     {name:'Don Prudencio',avatar:'DP',style:'conservative',label:'Conservador · protege sus fichas'},
     {name:'Lola Relámpago',avatar:'LR',style:'aggressive',label:'Agresiva · presiona la mesa'},
-    {name:'El Tahúr',avatar:'ET',style:'wild',label:'Imprevisible · mezcla cálculo y farol'}
+    {name:'El Tahúr',avatar:'ET',style:'wild',label:'Imprevisible · mezcla cálculo y farol'},
+    {name:'Doña Farola',avatar:'DF',style:'aggressive',label:'Agresiva · subidas rápidas y presión constante'},
+    {name:'Señor All-In',avatar:'AI',style:'wild',label:'Caótico · capaz de ir con todo en cualquier calle'}
   ];
   const SPEEDS = {fast:330,normal:650,slow:1050};
   const PHASE_LABEL = {preflop:'PRE-FLOP',flop:'FLOP',turn:'TURN',river:'RIVER',showdown:'SHOWDOWN',handOver:'MANO TERMINADA',gameOver:'PARTIDA TERMINADA'};
@@ -97,10 +100,10 @@
     const baseName=cleanName(UI.pkPlayerName.value,'Jugador');
     let players=[];
     if(mode==='ai'){
-      const count=Math.max(1,Math.min(3,Number(UI.pkAiCount.value)||2));
+      const count=Math.max(1,Math.min(5,Number(UI.pkAiCount.value)||2));
       players=[makePlayer(0,baseName,false,'♠'),...AI_PROFILES.slice(0,count).map((ai,index)=>makePlayer(index+1,ai.name,true,ai.avatar,ai.style))];
     }else{
-      const count=Math.max(2,Math.min(4,Number(UI.pkLocalCount.value)||2));
+      const count=Math.max(2,Math.min(6,Number(UI.pkLocalCount.value)||2));
       players=[...UI.pkLocalNames.querySelectorAll('input')].slice(0,count).map((input,index)=>makePlayer(index,cleanName(input.value,`Jugador ${index+1}`),false,index===0?'♠':String(index+1)));
     }
     state={version:VERSION,active:true,finished:false,recorded:false,mode,players,dealer:-1,sbSeat:-1,bbSeat:-1,smallBlind:sb,bigBlind:bb,initialSmallBlind:sb,initialBigBlind:bb,startingStack:stack,autoBlinds:UI.pkAutoBlinds.checked,speed,handNumber:0,phase:'idle',deck:[],board:[],burn:[],current:-1,currentBet:0,minRaise:bb,noReopen:[],busy:false,showdown:false,revealedSeat:null,awaitingReveal:false,log:[],lastResult:null,createdAt:new Date().toISOString()};
@@ -358,10 +361,10 @@
 
   function render(){
     if(!state)return;
-    document.body.dataset.pokerMode=state.mode;
+    document.body.dataset.pokerMode=state.mode;document.body.dataset.pokerPlayers=String(state.players.length);
     UI.pkWelcome.classList.add('hidden');UI.pkGame.classList.remove('hidden');
     UI.pkPhaseKicker.textContent=`MANO ${state.handNumber}`;UI.pkPhaseLabel.textContent=PHASE_LABEL[state.phase]||state.phase.toUpperCase();UI.pkBlindLabel.textContent=`${formatChips(state.smallBlind)} / ${formatChips(state.bigBlind)}`;
-    UI.pkPot.textContent=formatChips(potTotal());
+    const potValue=potTotal(); UI.pkPot.innerHTML=potMarkup(potValue);
     const pots=Core.buildSidePots(state.players);UI.pkSidePot.textContent=pots.length>1?`${pots.length-1} bote${pots.length>2?'s':''} lateral${pots.length>2?'es':''}`:'';
     UI.pkDealerMessage.textContent=dealerMessage();UI.pkMessage.textContent=tableMessage();
     renderBoard();renderSeats();renderHero();renderActions();renderLog();
@@ -373,12 +376,21 @@
     UI.pkBoard.innerHTML=cards+blanks;
   }
 
-  function visualPosition(seat){const count=state.players.length;if(count===2)return seat===0?0:2;if(count===3)return [0,1,3][seat];return seat;}
+  
+function visualPosition(seat){
+    const count=state.players.length;
+    if(count===2)return [0,3][seat]??seat;
+    if(count===3)return [0,2,4][seat]??seat;
+    if(count===4)return [0,1,3,5][seat]??seat;
+    if(count===5)return [0,1,2,4,5][seat]??seat;
+    if(count===6)return [0,1,2,3,4,5][seat]??seat;
+    return seat;
+  }
   function renderSeats(){
     UI.pkSeats.innerHTML=state.players.map(player=>{
       const visible=shouldRevealSeat(player);const cardMarkup=player.hand.length?player.hand.map(card=>visible?cardHtml(card):cardBackHtml()).join(''):'';
-      const markers=[player.seat===state.dealer?'<span class="pk-marker">D</span>':'',player.seat===state.sbSeat?'<span class="pk-marker sb">SB</span>':'',player.seat===state.bbSeat?'<span class="pk-marker bb">BB</span>':''].join('');
-      return `<article class="pk-seat seat-${visualPosition(player.seat)} ${state.current===player.seat&&!state.busy?'active':''} ${player.folded?'folded':''} ${player.stack<=0?'eliminated':''}" data-seat="${player.seat}"><div class="pk-markers">${markers}</div><div class="pk-seat-head"><span class="pk-avatar">${escapeHtml(player.avatar||String(player.seat+1))}</span><div class="pk-seat-name"><strong>${escapeHtml(player.name)}</strong><small>${player.isAI?styleLabel(player.style):state.mode==='local'?'JUGADOR LOCAL':'TÚ'}</small></div><div class="pk-stack"><b>${formatChips(player.stack)}</b><small>FICHAS</small></div></div><div class="pk-seat-cards">${cardMarkup}</div><div class="pk-seat-action">${escapeHtml(player.lastAction||'')}</div>${player.bet>0?`<div class="pk-seat-bet">${formatChips(player.bet)}</div>`:''}</article>`;
+      const markers=[player.seat===state.dealer?markerHtml('dealer','D'):'' ,player.seat===state.sbSeat?markerHtml('sb','SB'):'' ,player.seat===state.bbSeat?markerHtml('bb','BB'):'' ].join('');
+      return `<article class="pk-seat seat-${visualPosition(player.seat)} ${state.current===player.seat&&!state.busy?'active':''} ${player.folded?'folded':''} ${player.stack<=0?'eliminated':''}" data-seat="${player.seat}"><div class="pk-markers">${markers}</div><div class="pk-seat-head"><span class="pk-avatar">${escapeHtml(player.avatar||String(player.seat+1))}</span><div class="pk-seat-name"><strong>${escapeHtml(player.name)}</strong><small>${player.isAI?styleLabel(player.style):state.mode==='local'?'JUGADOR LOCAL':'TÚ'}</small></div><div class="pk-stack"><b>${formatChips(player.stack)}</b><small>FICHAS</small></div></div><div class="pk-seat-cards">${cardMarkup}</div><div class="pk-seat-action">${escapeHtml(player.lastAction||'')}</div>${player.bet>0?`<div class="pk-seat-bet">${betMarkup(player.bet)}</div>`:''}</article>`;
     }).join('');
   }
 
@@ -422,11 +434,38 @@
     if(state.phase==='handOver')return state.lastResult?.title||'Mano terminada';if(state.phase==='gameOver')return 'La partida ha terminado';if(state.busy)return 'Anton está repartiendo.';const player=currentPlayer();if(!player)return 'Esperando siguiente fase.';const call=legalFor(player).callAmount;return `${player.name}: ${call?`debe igualar ${formatChips(Math.min(call,player.stack))}`:'puede pasar o apostar'}.`;
   }
 
-  function cardHtml(card,animated=false){
+  
+function cardHtml(card,animated=false){
     const assets=window.SalaCeroPokerAssets||{};
-    if(assets.customCards){const src=assets.cardPath(card);return `<div class="pk-card ${animated?'dealt':''}"><img src="${src}" alt="${escapeHtml(Core.cardLabel(card))}"></div>`;}
+    const faceSrc=assets.faceCardPath?.(card);
+    if(faceSrc){
+      return `<div class="pk-card pk-face-card ${animated?'dealt':''}"><img src="${faceSrc}" alt="${escapeHtml(Core.cardLabel(card))}"></div>`;
+    }
     const red=card.suit==='h'||card.suit==='d';const rank=Core.RANK_LABEL[card.rank]||card.rank;const suit=Core.SUIT_LABEL[card.suit];return `<div class="pk-card ${red?'red':''} ${animated?'dealt':''}" data-card="${card.id}"><span class="corner">${rank}<i>${suit}</i></span><span class="suit-large">${suit}</span><span class="corner bottom">${rank}<i>${suit}</i></span></div>`;
   }
+
+  function markerHtml(type,label){
+    const assets=window.SalaCeroPokerAssets||{};
+    const src=assets.markerPath?.(type);
+    return src
+      ? `<span class="pk-marker pk-marker-image ${type}" title="${label}"><img src="${src}" alt="${label}"></span>`
+      : `<span class="pk-marker ${type==='sb'?'sb':type==='bb'?'bb':''}">${label}</span>`;
+  }
+
+  function chipIcon(amount){
+    const assets=window.SalaCeroPokerAssets||{};
+    const src=assets.chipPath?.(amount);
+    return src?`<img class="pk-chip-inline" src="${src}" alt="Ficha ${formatChips(amount)}">`:'';
+  }
+
+  function betMarkup(amount){
+    return `${chipIcon(amount)}<span>${formatChips(amount)}</span>`;
+  }
+
+  function potMarkup(amount){
+    return `<span class="pk-pot-value">${chipIcon(amount)}<span>${formatChips(amount)}</span></span>`;
+  }
+
   function cardBackHtml(){const assets=window.SalaCeroPokerAssets||{};return assets.customCards?`<div class="pk-card"><img src="${assets.back}" alt="Carta boca abajo"></div>`:'<div class="pk-card back" aria-label="Carta boca abajo"></div>';}
 
   async function animateDeal(sequence){

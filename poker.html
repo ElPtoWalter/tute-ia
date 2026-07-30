@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#071b15">
-  <meta name="description" content="Texas Hold'em offline en Sala Cero: contra hasta tres rivales IA o multijugador local para cuatro personas.">
+  <meta name="description" content="Texas Hold'em offline en Sala Cero: contra hasta cinco rivales IA o multijugador local para seis personas.">
   <title>Póker Texas Hold'em — Sala Cero</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icons/favicon-64.png">
-  <link rel="stylesheet" href="club.css?v=20.4.0">
-  <link rel="stylesheet" href="auth.css?v=20.4.0">
-  <link rel="stylesheet" href="poker.css?v=20.4.0">
-  <script src="auth.js?v=20.4.0"></script>
+  <link rel="stylesheet" href="club.css?v=21.0.0">
+  <link rel="stylesheet" href="auth.css?v=21.0.0">
+  <link rel="stylesheet" href="poker.css?v=21.0.0">
+  <script src="auth.js?v=21.0.0"></script>
 </head>
 <body>
   <div class="pk-noise" aria-hidden="true"></div>
@@ -28,20 +28,20 @@
   <main class="pk-shell">
     <section class="pk-welcome" id="pkWelcome">
       <div class="pk-hero-copy">
-        <span class="pk-kicker">NO LIMIT · 2 A 4 PLAZAS · SIN CONEXIÓN</span>
+        <span class="pk-kicker">NO LIMIT · 2 A 6 PLAZAS · SIN CONEXIÓN</span>
         <h1>Texas Hold'em,<br><em>casino de Sala Cero.</em></h1>
-        <p>Anton dirige la mesa, rota el botón de dealer y reparte cada mano. Compite contra uno, dos o tres rivales con estilos distintos, o pasa el dispositivo entre hasta cuatro personas.</p>
-        <div class="pk-hero-badges"><span>Máximo 4 jugadores</span><span>IA con personalidad</span><span>Partidas guardadas</span></div>
+        <p>Anton dirige la mesa, rota el botón de dealer y reparte cada mano. Compite contra uno, dos, tres, cuatro o cinco rivales con estilos distintos, o pasa el dispositivo entre hasta seis personas.</p>
+        <div class="pk-hero-badges"><span>Máximo 6 jugadores</span><span>IA con personalidad</span><span>Figuras de Anton</span><span>Partidas guardadas</span></div>
       </div>
       <div class="pk-dealer-showcase" aria-label="Crupier Anton provisional">
         <div class="pk-show-light"></div>
         <img id="pkWelcomeDealer" src="assets/poker/anton-crupier-placeholder.svg" alt="Anton crupier, ilustración provisional">
-        <div class="pk-show-label"><small>CRUPIER DE LA CASA</small><strong>ANTON</strong><span>Imagen provisional preparada para sustituir</span></div>
+        <div class="pk-show-label"><small>CRUPIER DE LA CASA</small><strong>ANTON</strong><span>Crupier oficial de Anton Casino</span></div>
         <div class="pk-show-card card-red"><b>A</b><i>♥</i></div><div class="pk-show-card card-black"><b>K</b><i>♠</i></div>
       </div>
       <div class="pk-mode-grid">
-        <button class="pk-mode featured" id="pkSolo" type="button"><span>01</span><small>UN JUGADOR</small><strong>Desafiar a la mesa</strong><p>Elige entre uno y tres rivales IA. Cada uno apuesta con una personalidad propia.</p><b>Configurar partida →</b></button>
-        <button class="pk-mode" id="pkLocal" type="button"><span>02</span><small>2 A 4 PERSONAS</small><strong>Pasa el dispositivo</strong><p>Manos privadas, pantalla de entrega y decisiones protegidas en un único móvil u ordenador.</p><b>Preparar jugadores →</b></button>
+        <button class="pk-mode featured" id="pkSolo" type="button"><span>01</span><small>UN JUGADOR</small><strong>Desafiar a la mesa</strong><p>Elige entre uno y cinco rivales IA. Cada uno apuesta con una personalidad propia.</p><b>Configurar partida →</b></button>
+        <button class="pk-mode" id="pkLocal" type="button"><span>02</span><small>2 A 6 PERSONAS</small><strong>Pasa el dispositivo</strong><p>Manos privadas, pantalla de entrega y decisiones protegidas en un único móvil u ordenador para mesas más amplias.</p><b>Preparar jugadores →</b></button>
         <button class="pk-mode" id="pkContinue" type="button" disabled><span>03</span><small>PARTIDA GUARDADA</small><strong id="pkContinueTitle">Sin partida pendiente</strong><p id="pkContinueMeta">La mesa se guarda después de cada decisión.</p><b>Continuar →</b></button>
       </div>
     </section>
@@ -107,8 +107,8 @@
       <input id="pkMode" type="hidden" value="ai">
       <div class="pk-form-grid"><label><span>Tu nombre</span><input id="pkPlayerName" maxlength="18" value="Jugador"></label><label><span>Fichas iniciales</span><select id="pkStartingStack"><option value="500">500 · partida rápida</option><option value="1000" selected>1.000 · clásica</option><option value="2000">2.000 · larga</option></select></label></div>
       <div class="pk-form-grid"><label><span>Ciegas</span><select id="pkBlinds"><option value="5,10">5 / 10</option><option value="10,20" selected>10 / 20</option><option value="25,50">25 / 50</option></select></label><label><span>Ritmo</span><select id="pkSpeed"><option value="fast">Rápido</option><option value="normal" selected>Casino</option><option value="slow">Pausado</option></select></label></div>
-      <section id="pkAiSetup"><label class="pk-field"><span>Rivales IA</span><select id="pkAiCount"><option value="1">1 rival · duelo</option><option value="2" selected>2 rivales · mesa de 3</option><option value="3">3 rivales · mesa completa</option></select></label><div class="pk-ai-preview" id="pkAiPreview"></div></section>
-      <section id="pkLocalSetup" class="hidden"><label class="pk-field"><span>Jugadores locales</span><select id="pkLocalCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option></select></label><div class="pk-name-grid" id="pkLocalNames"></div></section>
+      <section id="pkAiSetup"><label class="pk-field"><span>Rivales IA</span><select id="pkAiCount"><option value="1">1 rival · duelo</option><option value="2" selected>2 rivales · mesa de 3</option><option value="3">3 rivales · mesa de 4</option><option value="4">4 rivales · mesa de 5</option><option value="5">5 rivales · mesa de 6</option></select></label><div class="pk-ai-preview" id="pkAiPreview"></div></section>
+      <section id="pkLocalSetup" class="hidden"><label class="pk-field"><span>Jugadores locales</span><select id="pkLocalCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label><div class="pk-name-grid" id="pkLocalNames"></div></section>
       <label class="pk-check"><input id="pkAutoBlinds" type="checkbox" checked><span><b>Subir ciegas automáticamente</b><small>Cada ocho manos aumentan para evitar partidas interminables.</small></span></label>
       <button class="pk-primary" type="submit">Anton abre la mesa <span>→</span></button>
     </form>
