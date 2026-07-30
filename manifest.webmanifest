@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v21.0.1 — Seis juegos offline",
+  "name": "Sala Cero v21.1.0 — Siete juegos offline",
   "short_name": "Sala Cero",
-  "description": "Tute, Generala, Chinchón, Escoba de 15, Culo / Presidente y Póker Texas Hold'em con IA y multijugador local.",
+  "description": "Tute, Generala, Chinchón, Escoba de 15, Culo / Presidente, Póker y Es un 10 pero... en una sala offline.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -114,6 +114,18 @@
       "short_name": "Póker",
       "description": "Abrir la mesa Texas Hold'em",
       "url": "./poker.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Es un 10 pero...",
+      "short_name": "Es un 10",
+      "description": "Barajar la baraja de Anton y revelar una carta",
+      "url": "./es-un-10.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

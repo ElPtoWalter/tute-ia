@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#32111c">
+  <meta name="description" content="Es un 10 pero... en Sala Cero: baraja de Tute de Anton, una carta aleatoria por ronda y funcionamiento offline.">
+  <title>Es un 10 pero... — Sala Cero</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="es-un-10.css?v=21.1.0">
+</head>
+<body>
+  <div class="ten-noise" aria-hidden="true"></div>
+
+  <header class="ten-topbar">
+    <a class="ten-brand" href="index.html" aria-label="Volver a Sala Cero">
+      <span class="ten-mark">10</span>
+      <span><strong>ES UN 10 PERO...</strong><small>SALA CERO · BARAJA DE ANTON</small></span>
+    </a>
+    <a class="ten-home" href="index.html">Sala Cero</a>
+  </header>
+
+  <main class="ten-main">
+    <section class="ten-copy" aria-labelledby="tenTitle">
+      <span class="ten-kicker">UNA CARTA · UNA RONDA · SIN CONEXIÓN</span>
+      <h1 id="tenTitle">Es un 10<br><em>pero...</em></h1>
+      <p>Di la frase en voz alta y descubre una única carta de la baraja de Tute de Anton.</p>
+    </section>
+
+    <section class="ten-table" aria-label="Baraja del juego">
+      <div class="ten-felt-inlay" aria-hidden="true"></div>
+      <div class="ten-round"><span>RONDA</span><strong id="tenRound">1</strong></div>
+
+      <div class="ten-deck-wrap" id="tenDeckWrap">
+        <div class="ten-shadow" aria-hidden="true"></div>
+        <div class="ten-stack-card layer-4" aria-hidden="true"><img src="assets/cards/back.svg" alt=""></div>
+        <div class="ten-stack-card layer-3" aria-hidden="true"><img src="assets/cards/back.svg" alt=""></div>
+        <div class="ten-stack-card layer-2" aria-hidden="true"><img src="assets/cards/back.svg" alt=""></div>
+        <div class="ten-stack-card layer-1" aria-hidden="true"><img src="assets/cards/back.svg" alt=""></div>
+
+        <button class="ten-card" id="tenCard" type="button" aria-label="Mostrar una carta">
+          <span class="ten-card-inner">
+            <span class="ten-card-face ten-card-back"><img src="assets/cards/back.svg" alt="Carta de Tute boca abajo"></span>
+            <span class="ten-card-face ten-card-front"><img id="tenFrontImage" src="assets/cards/oros-1.webp" alt="Carta elegida"></span>
+          </span>
+        </button>
+      </div>
+
+      <div class="ten-status" id="tenStatus" aria-live="polite">Barajando la baraja...</div>
+      <button class="ten-primary" id="tenAction" type="button" disabled>
+        <span id="tenActionIcon">↻</span>
+        <strong id="tenActionText">Barajando...</strong>
+      </button>
+      <p class="ten-hint" id="tenHint">Solo se muestra una carta en cada ronda.</p>
+    </section>
+  </main>
+
+  <script src="es-un-10.js?v=21.1.0"></script>
+</body>
+</html>

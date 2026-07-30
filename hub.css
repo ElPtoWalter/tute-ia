@@ -34,3 +34,20 @@
   .hub-poker-real-chip.hc1{left:25%;bottom:3%}
   .hub-poker-real-chip.hc2{right:25%;bottom:3%}
 }
+
+
+/* v21.1 · Es un 10 pero... */
+.hub-game.esun10{grid-column:1/-1;grid-template-columns:1.02fr .98fr;grid-template-rows:1fr;background:linear-gradient(155deg,rgba(89,24,43,.98),rgba(25,6,12,.99))}
+.hub-game.esun10 .hub-game-copy{border-top:0;border-left:1px solid var(--hub-line);display:flex;flex-direction:column;justify-content:center}
+.hub-esun10-visual{background:radial-gradient(circle at 50% 48%,rgba(240,207,131,.14),transparent 47%),linear-gradient(145deg,#5a1930,#18070d)}
+.hub-ten-glow{position:absolute;left:50%;top:48%;width:330px;height:330px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(240,207,131,.16),transparent 68%)}
+.hub-ten-card{position:absolute;left:50%;top:50%;width:185px;border-radius:15px;box-shadow:0 25px 50px rgba(0,0,0,.45);transform-origin:50% 90%}
+.hub-ten-card.back-3{transform:translate(-53%,-48%) rotate(-9deg)}
+.hub-ten-card.back-2{transform:translate(-49%,-51%) rotate(6deg)}
+.hub-ten-card.back-1{transform:translate(-50%,-50%) rotate(-1deg)}
+.hub-ten-card.reveal{left:auto;right:7%;top:12%;width:145px;transform:rotate(12deg);box-shadow:0 28px 50px rgba(0,0,0,.48)}
+.hub-ten-stamp{position:absolute;left:7%;bottom:9%;padding:10px 14px;border:2px solid #f0cf83;border-radius:999px;color:#f0cf83;background:rgba(37,5,14,.74);font:900 12px Georgia,serif;letter-spacing:.11em;transform:rotate(-5deg)}
+.hub-footer-v20{grid-template-columns:repeat(4,1fr)}
+.hub-footer-center{grid-column:1/-1;grid-row:1}
+@media(max-width:1100px){.hub-game.esun10{grid-template-columns:1fr;grid-template-rows:minmax(330px,1fr) auto}.hub-game.esun10 .hub-game-copy{border-left:0;border-top:1px solid var(--hub-line)}.hub-footer-v20{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){.hub-game.esun10{grid-template-rows:250px auto}.hub-ten-card{width:126px}.hub-ten-card.reveal{width:94px;right:3%;top:13%}.hub-ten-stamp{font-size:8px;padding:7px 9px}.hub-ten-glow{width:230px;height:230px}.hub-footer-v20{grid-template-columns:1fr}.hub-footer-center{grid-column:auto}}
