@@ -1,6 +1,7 @@
 (() => {
   'use strict';
-  const KEY = 'salaCeroDeviceModeV212';
+  const KEY = 'salaCeroDeviceModeV220';
+  const LEGACY_KEYS = ['salaCeroDeviceModeV212'];
   const root = document.documentElement;
   const current = () => root.dataset.deviceMode === 'desktop' ? 'desktop' : 'mobile';
   const recommended = () => root.dataset.deviceRecommended === 'desktop' ? 'desktop' : 'mobile';

@@ -1,6 +1,6 @@
-# Sala Cero v21.2
+# Sala Cero v22.0
 
-Aplicación web offline con siete juegos:
+Aplicación web offline optimizada para móvil/iPhone y ordenador con nueve juegos:
 
 - Tute.
 - Generala.
@@ -8,6 +8,8 @@ Aplicación web offline con siete juegos:
 - Escoba de 15.
 - Culo / Presidente.
 - Póker Texas Hold'em.
+- Blackjack de Anton Casino.
+- El impostor de Anton.
 - Es un 10 pero...
 
 Incluye IA, multijugador local, perfiles, estadísticas, logros, retos, personalización, campeonatos y guardado local.
@@ -26,6 +28,8 @@ Descomprime el ZIP y sube directamente todos sus archivos y carpetas a la raíz 
 
 Los perfiles y las partidas permanecen en el navegador. No se sincronizan entre dispositivos y no requieren registro externo.
 
-## v21.3
+## v22.0 — Optimización integral
 
-Sala Cero incluye nueve juegos offline. Esta versión incorpora Blackjack de Anton Casino y El impostor de Anton, ambos con formatos específicos para móvil/iPhone y ordenador. Consulta `CAMBIOS-v21.3.md` y `QA-v21.3.md`.
+Esta edición incorpora una capa visual común para toda la sala, controles táctiles legibles, composición específica para iPhone y ordenador, mejoras de accesibilidad, carga más robusta sin conexión y ajustes individuales para las mesas de los nueve juegos.
+
+Consulta `CAMBIOS-v22.md`, `QA-v22.md` e `INSTALAR-v22.txt`.

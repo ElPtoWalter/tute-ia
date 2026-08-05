@@ -1,6 +1,7 @@
 (() => {
   'use strict';
-  const KEY = 'salaCeroDeviceModeV212';
+  const KEY = 'salaCeroDeviceModeV220';
+  const LEGACY_KEYS = ['salaCeroDeviceModeV212'];
   const root = document.documentElement;
   const meta = document.querySelector('meta[name="viewport"]');
   const mobileHardware = (() => {
@@ -11,7 +12,13 @@
   })();
   let stored = null;
   try {
-    const value = localStorage.getItem(KEY);
+    let value = localStorage.getItem(KEY);
+    if (value !== 'mobile' && value !== 'desktop') {
+      for (const legacyKey of LEGACY_KEYS) {
+        const legacy = localStorage.getItem(legacyKey);
+        if (legacy === 'mobile' || legacy === 'desktop') { value = legacy; localStorage.setItem(KEY, legacy); break; }
+      }
+    }
     if (value === 'mobile' || value === 'desktop') stored = value;
   } catch (_) {}
   const recommended = mobileHardware ? 'mobile' : 'desktop';

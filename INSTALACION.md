@@ -1,16 +1,16 @@
-# Sala Cero v21.2 — Instalación
+# Sala Cero v22.0 — Instalación
 
 ## Publicar en GitHub Pages
 
 1. Descomprime el ZIP.
 2. Sustituye el contenido del repositorio por los archivos descomprimidos.
-3. Comprueba que `index.html`, `poker.html`, `es-un-10.html`, `device-mode.css`, `device-mode.js`, `device-mode-boot.js`, `sw.js` y la carpeta `assets` estén en la raíz correspondiente.
+3. Comprueba que `index.html`, `poker.html`, `blackjack.html`, `impostor.html`, `es-un-10.html`, `device-mode.css`, `device-mode.js`, `device-mode-boot.js`, `polish-v22.css`, `polish-v22.js`, `sw.js` y la carpeta `assets` estén en la raíz correspondiente.
 4. Espera a que GitHub Pages termine el despliegue.
 5. Abre la web una vez con conexión.
 
 ## Actualizar una instalación anterior
 
-La caché cambia a la versión `21.2.0`. Si todavía aparece el diseño anterior:
+La caché cambia a la versión `22.0.0`. Si todavía aparece el diseño anterior:
 
 - cierra por completo la pestaña o la PWA;
 - vuelve a abrirla con conexión;

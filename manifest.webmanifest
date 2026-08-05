@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero · v21.3",
+  "name": "Sala Cero — Nueve juegos offline",
   "short_name": "Sala Cero",
-  "description": "Nueve juegos offline con formatos independientes para móvil/iPhone y ordenador.",
+  "description": "Nueve juegos offline optimizados para móvil y ordenador: Tute, Generala, Chinchón, Escoba, Culo, Póker, Es un 10, Blackjack e Impostor.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
