@@ -1,34 +1,34 @@
-# Sala Cero v20.3 — Instalación
+# Sala Cero v21.2 — Instalación
 
 ## Publicar en GitHub Pages
 
 1. Descomprime el ZIP.
-2. Sustituye todo el contenido del repositorio por el contenido de la carpeta.
-3. Confirma que también se han subido `tute.html`, `generala.html`, `chinchon.html`, `escoba.html`, sus archivos JavaScript y CSS, `sw.js` y todas las carpetas de `assets`.
-4. Espera a que GitHub Pages complete el despliegue.
-5. Abre la web y fuerza una recarga con `Ctrl + Shift + R` en ordenador.
+2. Sustituye el contenido del repositorio por los archivos descomprimidos.
+3. Comprueba que `index.html`, `poker.html`, `es-un-10.html`, `device-mode.css`, `device-mode.js`, `device-mode-boot.js`, `sw.js` y la carpeta `assets` estén en la raíz correspondiente.
+4. Espera a que GitHub Pages termine el despliegue.
+5. Abre la web una vez con conexión.
 
-## Instalar en Android
+## Actualizar una instalación anterior
 
-1. Abre la web en Chrome.
-2. Pulsa «Instalar y gestionar» o el menú del navegador.
-3. Selecciona «Instalar aplicación» o «Añadir a pantalla de inicio».
+La caché cambia a la versión `21.2.0`. Si todavía aparece el diseño anterior:
+
+- cierra por completo la pestaña o la PWA;
+- vuelve a abrirla con conexión;
+- en ordenador, usa `Ctrl + Shift + R`.
 
 ## Instalar en iPhone
 
 1. Abre la web en Safari.
 2. Pulsa Compartir.
 3. Selecciona «Añadir a pantalla de inicio».
+4. En la primera entrada, elige «Móvil / iPhone».
 
-## Funcionamiento offline
+## Instalar en Android
 
-Abre la aplicación al menos una vez con conexión. La música completa es opcional; la pista ligera, las cartas, Tute, Generala, Chinchón, Escoba y Culo se incluyen en la preparación básica offline.
+1. Abre la web en Chrome.
+2. Selecciona «Instalar aplicación» o «Añadir a pantalla de inicio».
+3. Elige el formato móvil cuando aparezca el selector.
 
-## Primera entrada en la v20.3
+## Cambiar el formato
 
-La primera vez aparecerá el selector de usuarios. Si existía progreso de la v20.1, se migrará a un perfil heredado y se pedirá seleccionarlo. No borres los datos del navegador antes de abrir la nueva versión si quieres conservar el progreso anterior.
-
-
-## Actualización de la caché móvil
-
-Después de sustituir los archivos en GitHub Pages, abre la web una vez con conexión. Si el móvil mantiene el diseño anterior, cierra la PWA o la pestaña completamente y vuelve a abrirla. El service worker 20.3.0 eliminará la caché antigua durante la activación.
+Pulsa el pequeño botón de dispositivo que aparece en la interfaz. El cambio se guarda y la página se recarga con la composición elegida.

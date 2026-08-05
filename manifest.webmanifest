@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero v21.1.0 — Siete juegos offline",
+  "name": "Sala Cero · v21.2",
   "short_name": "Sala Cero",
-  "description": "Tute, Generala, Chinchón, Escoba de 15, Culo / Presidente, Póker y Es un 10 pero... en una sala offline.",
+  "description": "Siete juegos offline con formatos independientes para móvil/iPhone y ordenador.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",

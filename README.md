@@ -1,24 +1,27 @@
-# Sala Cero v20.3
+# Sala Cero v21.2
 
-Aplicación web offline con cinco juegos completos:
+Aplicación web offline con siete juegos:
 
 - Tute.
 - Generala.
 - Chinchón.
 - Escoba de 15.
 - Culo / Presidente.
+- Póker Texas Hold'em.
+- Es un 10 pero...
 
-Incluye IA, multijugador local, perfil, estadísticas, logros, retos, personalización, campeonatos y guardado de partidas. Chinchón, Escoba y Culo disponen de tutoriales interactivos.
+Incluye IA, multijugador local, perfiles, estadísticas, logros, retos, personalización, campeonatos y guardado local.
+
+## Formatos independientes
+
+La primera entrada muestra un selector entre **Móvil / iPhone** y **Ordenador**. La elección se guarda en el dispositivo y puede cambiarse mediante el botón de formato disponible en todas las páginas.
+
+El formato móvil no es una reducción del diseño de ordenador: utiliza cartas y controles mayores, paneles compactos, altura visible de Safari y zonas seguras. El formato de ordenador conserva las mesas panorámicas y más información simultánea.
 
 ## Publicación
 
-Descomprime el ZIP y sube todos los archivos y carpetas a la raíz del repositorio de GitHub Pages. No subas el ZIP directamente.
+Descomprime el ZIP y sube directamente todos sus archivos y carpetas a la raíz del repositorio de GitHub Pages. `index.html` debe quedar en la raíz.
 
-## Perfiles locales (v20.2)
+## Datos locales
 
-Al abrir Sala Cero se elige o crea un usuario. Cada perfil conserva de manera independiente partidas guardadas, carrera, estadísticas, logros, retos, música y personalización. El PIN de cuatro cifras es opcional. Los datos permanecen en el navegador; no se sincronizan con otros dispositivos.
-
-
-## Optimización móvil (v20.3)
-
-La versión 20.3 incorpora una capa adaptable común para la portada, los perfiles, la Carrera y los cinco juegos. Está preparada para teléfonos desde 320 px de ancho, respeta las zonas seguras y utiliza la altura visible real del navegador.
+Los perfiles y las partidas permanecen en el navegador. No se sincronizan entre dispositivos y no requieren registro externo.
