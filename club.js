@@ -24,6 +24,9 @@
     { id: "poker_finish", icon: "♠", title: "Primera noche de póker", text: "Completa una partida de Texas Hold'em.", test: data => data.stats.pokerGames >= 1 },
     { id: "poker_champion", icon: "♛", title: "Tiburón de Sala Cero", text: "Gana una mesa de póker contra la IA.", test: data => data.stats.pokerWins >= 1 },
     { id: "six_tables", icon: "6", title: "Casino completo", text: "Juega a los seis juegos de Sala Cero.", test: data => data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 && data.stats.chinchonGames >= 1 && data.stats.escobaGames >= 1 && data.stats.culoGames >= 1 && data.stats.pokerGames >= 1 },
+    { id: "blackjack_finish", icon: "21", title: "Primera mano de Blackjack", text: "Completa una ronda de Blackjack.", test: data => data.stats.blackjackGames >= 1 },
+    { id: "blackjack_win", icon: "♛", title: "Veintiuno", text: "Gana una ronda de Blackjack contra Anton.", test: data => data.stats.blackjackWins >= 1 },
+    { id: "impostor_finish", icon: "?", title: "Nadie es de fiar", text: "Completa una ronda de El impostor.", test: data => data.stats.impostorGames >= 1 },
     { id: "career_match", icon: "◆", title: "Competidor", text: "Disputa tu primer encuentro de carrera.", test: () => Boolean(window.SalaCeroCareer?.getData?.().history?.length) },
     { id: "career_trophy", icon: "♛", title: "Sala de trofeos", text: "Consigue tu primer trofeo de carrera.", test: () => Object.values(window.SalaCeroCareer?.getData?.().trophies || {}).some(Boolean) }
   ];
@@ -35,11 +38,11 @@
     { id: "royal", label: "Salón real", level: 5, accent: "#f7d37f", surface: "#17100a" }
   ];
 
-  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15", "P", "PK"];
+  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15", "P", "PK", "21", "?"];
 
   function defaultData() {
     return {
-      version: 20.4,
+      version: 21.3,
       profile: { name: "Jugador", avatar: "♠" },
       xp: 0,
       theme: "emerald",
@@ -50,6 +53,8 @@
         escobaGames: 0, escobaWins: 0, escobaBestScore: 0, escobasSpecial: 0,
         culoGames: 0, culoWins: 0, culoBestPrestige: 0, presidents: 0,
         pokerGames: 0, pokerWins: 0, pokerBestStack: 0, pokerChampions: 0,
+        blackjackGames: 0, blackjackWins: 0, blackjackBestStack: 0, blackjackNaturals: 0,
+        impostorGames: 0,
         generalaBestScore: 0, generalaServed: 0, localGames: 0
       },
       achievements: {},
@@ -83,7 +88,7 @@
     output.daily.counters = { ...(incoming.daily?.counters || {}) };
     output.daily.claimed = { ...(incoming.daily?.claimed || {}) };
     output.history = Array.isArray(incoming.history) ? incoming.history : [];
-    output.version = 20.4;
+    output.version = 21.3;
     return output;
   }
 
@@ -112,12 +117,12 @@
   function resetDaily(data) {
     const key = todayKey();
     if (data.daily.date === key) return;
-    data.daily = { date: key, counters: { games: 0, wins: 0, tute: 0, generala: 0, chinchon: 0, escoba: 0, culo: 0, poker: 0 }, claimed: {} };
+    data.daily = { date: key, counters: { games: 0, wins: 0, tute: 0, generala: 0, chinchon: 0, escoba: 0, culo: 0, poker: 0, blackjack: 0, impostor: 0 }, claimed: {} };
   }
 
   function dailyDefinitions(data) {
     const dayNumber = Math.floor(new Date(`${data.daily.date}T12:00:00`).getTime() / 86400000);
-    const games = ["tute", "generala", "chinchon", "escoba", "culo", "poker"];
+    const games = ["tute", "generala", "chinchon", "escoba", "culo", "poker", "blackjack", "impostor"];
     const game = games[((dayNumber % games.length) + games.length) % games.length];
     const gameText = {
       tute: ["Noche de cartas", "Juega una partida de Tute."],
@@ -125,7 +130,9 @@
       chinchon: ["Mano ligada", "Completa una partida de Chinchón."],
       escoba: ["Suma quince", "Completa una partida de Escoba."],
       culo: ["Cambio de poder", "Completa una partida de Culo / Presidente."],
-      poker: ["Noche de casino", "Completa una partida de Texas Hold'em."]
+      poker: ["Noche de casino", "Completa una partida de Texas Hold'em."],
+      blackjack: ["Veintiuno", "Completa una ronda de Blackjack."],
+      impostor: ["Palabra secreta", "Completa una ronda de El impostor."]
     }[game];
     return [
       { id: "play", title: "Abrir la sala", text: "Termina una partida en cualquier juego.", target: 1, value: data.daily.counters.games || 0, reward: DAY_REWARD },
@@ -139,7 +146,7 @@
 
   function recordMatch(event = {}) {
     const data = read();
-    const game = ["tute", "generala", "chinchon", "escoba", "culo", "poker"].includes(event.game) ? event.game : "tute";
+    const game = ["tute", "generala", "chinchon", "escoba", "culo", "poker", "blackjack", "impostor"].includes(event.game) ? event.game : "tute";
     const local = Boolean(event.local || event.mode === "local");
     const won = Boolean(event.won) && !local;
     const score = Math.max(0, Number(event.score) || 0);
@@ -181,6 +188,10 @@
       data.stats.pokerBestStack = Math.max(data.stats.pokerBestStack, score);
       if (event.special === "champion") data.stats.pokerChampions += 1;
     }
+    if (game === "blackjack") {
+      data.stats.blackjackBestStack = Math.max(data.stats.blackjackBestStack, score);
+      if (event.special === "blackjack") data.stats.blackjackNaturals += 1;
+    }
 
     let xp = 25;
     if (won) xp += 45;
@@ -190,6 +201,8 @@
     if (game === "escoba") xp += Math.min(30, score * 2);
     if (game === "culo") xp += Math.min(30, Math.max(0, score) * 4);
     if (game === "poker") xp += Math.min(40, Math.floor(score / 100));
+    if (game === "blackjack") xp += Math.min(35, Math.floor(score / 100));
+    if (game === "impostor") xp += Math.min(20, score * 2);
     if (won && (event.special === "tute" || event.special === "capote")) xp += 25;
     data.xp += xp;
 
@@ -203,7 +216,7 @@
     write(data);
     applyTheme(data.theme);
     renderAll();
-    showClubToast(`+${xp} XP · ${{tute:"Tute",generala:"Generala",chinchon:"Chinchón",escoba:"Escoba",culo:"Culo",poker:"Póker"}[game]}`, unlocked);
+    showClubToast(`+${xp} XP · ${{tute:"Tute",generala:"Generala",chinchon:"Chinchón",escoba:"Escoba",culo:"Culo",poker:"Póker",blackjack:"Blackjack",impostor:"Impostor"}[game]}`, unlocked);
     window.dispatchEvent(new CustomEvent("sala-cero:updated", { detail: { data, unlocked, event } }));
     const careerSummary = window.SalaCeroCareer?.consumeMatch?.(event) || null;
     return { data, xp, unlocked, careerSummary };
@@ -292,6 +305,7 @@
     document.querySelectorAll("[data-club-best-escoba]").forEach(el => el.textContent = String(data.stats.escobaBestScore));
     document.querySelectorAll("[data-club-best-culo]").forEach(el => el.textContent = String(data.stats.culoBestPrestige));
     document.querySelectorAll("[data-club-best-poker]").forEach(el => el.textContent = String(data.stats.pokerBestStack));
+    document.querySelectorAll("[data-club-best-blackjack]").forEach(el => el.textContent = String(data.stats.blackjackBestStack));
     document.querySelectorAll("[data-club-progress]").forEach(el => el.style.setProperty("--progress", `${progress.percent}%`));
     document.querySelectorAll("[data-club-progress-text]").forEach(el => el.textContent = `${progress.current} / ${progress.target} XP`);
 

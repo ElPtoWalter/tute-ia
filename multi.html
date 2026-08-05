@@ -1,127 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><script src="device-mode-boot.js?v=21.2.0"></script>
-  <meta name="theme-color" content="#071c17">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Tute IA">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="color-scheme" content="dark">
-  <title>Tute IA — Mesa multijugador offline</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="assets/icons/favicon-64.png">
-  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
-  <link rel="stylesheet" href="multi.css?v=21.2.0">
-  <link rel="stylesheet" href="pwa.css?v=21.2.0">
-  <link rel="stylesheet" href="mobile.css?v=21.2.0">
-  <link rel="stylesheet" href="cante-effects.css?v=21.2.0">
-  <link rel="stylesheet" href="club.css?v=21.2.0">
-  <link rel="stylesheet" href="career.css?v=21.2.0">
-<link rel="stylesheet" href="auth.css?v=21.2.0"><script src="auth.js?v=21.2.0"></script>  <link rel="stylesheet" href="mobile-final.css?v=21.2.0">
-  <link rel="stylesheet" href="device-mode.css?v=21.2.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=21.3.0"></script>
+<meta content="#071c17" name="theme-color"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<meta content="Tute IA" name="apple-mobile-web-app-title"/>
+<meta content="telephone=no" name="format-detection"/>
+<meta content="dark" name="color-scheme"/>
+<title>Tute IA — Mesa multijugador offline</title>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="assets/icons/favicon-64.png" rel="icon"/>
+<link href="assets/icons/apple-touch-icon.png" rel="apple-touch-icon"/>
+<link href="multi.css?v=21.3.0" rel="stylesheet"/>
+<link href="pwa.css?v=21.3.0" rel="stylesheet"/>
+<link href="mobile.css?v=21.3.0" rel="stylesheet"/>
+<link href="cante-effects.css?v=21.3.0" rel="stylesheet"/>
+<link href="club.css?v=21.3.0" rel="stylesheet"/>
+<link href="career.css?v=21.3.0" rel="stylesheet"/>
+<link href="auth.css?v=21.3.0" rel="stylesheet"/><script src="auth.js?v=21.3.0"></script> <link href="mobile-final.css?v=21.3.0" rel="stylesheet"/>
+<link href="device-mode.css?v=21.3.0" rel="stylesheet"/>
 </head>
 <body>
-  <div class="grain" aria-hidden="true"></div>
-  <header class="multi-topbar">
-    <a class="multi-brand" href="tute.html"><span>T</span><div><strong>TUTE IA</strong><small>CLUB OFFLINE</small></div></a>
-    <div class="multi-title"><span id="modeKicker">MESA OFFLINE</span><strong id="modeTitle">Tute arrastrado</strong></div>
-    <div class="multi-actions">
-      <button id="multiMusicButton" class="round-button" title="Música">♫</button>
-      <button id="multiRulesButton" class="soft-action">Reglas</button>
-      <a href="career.html" class="soft-action">Carrera</a>
-      <a href="tute.html" class="gold-action">Menú principal</a>
-    </div>
-  </header>
-
-  <main class="multi-layout">
-    <section class="multi-table" id="multiTable">
-      <div class="felt-ornament" aria-hidden="true"></div>
-      <aside class="multi-tutorial hidden" id="multiTutorial">
-        <div><span id="multiTutorialKicker">LECCIÓN 1</span><button id="multiTutorialExit">Salir</button></div>
-        <h2 id="multiTutorialTitle"></h2>
-        <p id="multiTutorialText"></p>
-        <div class="tutorial-dots" id="multiTutorialDots"></div>
-        <button class="gold-action" id="multiTutorialNext">Continuar →</button>
-      </aside>
-
-      <div class="seat seat-top" id="seat2">
-        <div class="seat-badge"><span class="seat-avatar">DV</span><div><small>RIVAL</small><strong id="name2">Doña Virtud</strong></div><b id="turn2">TURNO</b></div>
-        <div class="multi-hand ai-hand" id="hand2"></div>
-      </div>
-      <div class="seat seat-left" id="seat1">
-        <div class="seat-badge"><span class="seat-avatar">DC</span><div><small>RIVAL</small><strong id="name1">Don Cálculo</strong></div><b id="turn1">TURNO</b></div>
-        <div class="multi-hand ai-hand vertical-hand" id="hand1"></div>
-      </div>
-      <div class="seat seat-right" id="seat3">
-        <div class="seat-badge"><span class="seat-avatar">EN</span><div><small id="role3">RIVAL</small><strong id="name3">El Notario</strong></div><b id="turn3">TURNO</b></div>
-        <div class="multi-hand ai-hand vertical-hand" id="hand3"></div>
-      </div>
-
-      <div class="multi-center">
-        <div class="multi-status"><span id="multiPhase">PREPARANDO</span><strong id="multiStatus">Configura la mesa para comenzar.</strong></div>
-        <div class="trump-pod"><span>TRIUNFO</span><div id="multiTrump"></div><b id="multiTrumpSuit">—</b></div>
-        <div class="trick-ring" id="multiTrickRing">
-          <div class="multi-slot slot-0" id="slot0"><span>TÚ</span></div>
-          <div class="multi-slot slot-1" id="slot1"><span>IA 1</span></div>
-          <div class="multi-slot slot-2" id="slot2"><span>IA 2</span></div>
-          <div class="multi-slot slot-3" id="slot3"><span>IA 3</span></div>
-          <div class="drop-core" id="multiDropCore"><span>SUELTA PARA JUGAR</span></div>
-        </div>
-        <div class="multi-actions-dock" id="multiCanteActions"><p id="multiHint">Pulsa «Sentarse y repartir».</p></div>
-      </div>
-
-      <div class="seat seat-bottom" id="seat0">
-        <div class="seat-badge human"><span class="seat-avatar">TÚ</span><div><small>JUGADOR</small><strong data-club-name>Jugador</strong></div><b id="turn0">TU TURNO</b></div>
-        <div class="multi-hand player-multi-hand" id="hand0"></div>
-        <div class="order-helper">↔ Arrastra para ordenar · Pulsa o lleva una carta al centro para jugar</div>
-      </div>
-    </section>
-
-    <aside class="multi-sidebar">
-      <section class="multi-panel score-panel">
-        <div class="panel-title"><div><small>MARCADOR</small><h2 id="scoreTitle">Puntuación individual</h2></div><span id="trickCounter">BAZA 1</span></div>
-        <div class="score-list" id="multiScoreList"></div>
-      </section>
-      <section class="multi-panel reading-panel">
-        <div class="panel-title"><div><small>REGLA ACTIVA</small><h2 id="multiRuleTitle">Arrastre completo</h2></div><i></i></div>
-        <p id="multiRuleText">Debes asistir y superar cuando corresponda.</p>
-        <div class="rule-mini-grid"><span><b id="playerCardsLeft">0</b> cartas</span><span><b id="tricksPlayed">0</b> bazas</span><span><b id="currentLeader">TÚ</b> sale</span></div>
-      </section>
-      <section class="multi-panel log-panel"><div class="panel-title"><div><small>CRÓNICA</small><h2>Últimas jugadas</h2></div></div><div id="multiLog" class="multi-log"></div></section>
-    </aside>
-  </main>
-
-  <dialog id="multiSetup" class="multi-modal">
-    <form method="dialog" id="multiSetupForm" class="multi-modal-card">
-      <span class="modal-kicker" id="setupModeKicker">3 JUGADORES</span>
-      <h1 id="setupModeTitle">Tute arrastrado</h1>
-      <p id="setupModeDescription"></p>
-      <div class="mode-facts" id="setupFacts"></div>
-      <fieldset><legend>Dificultad de las IA</legend><label><input type="radio" name="multiDifficulty" value="easy"> Tranquila</label><label><input type="radio" name="multiDifficulty" value="normal" checked> Competitiva</label><label><input type="radio" name="multiDifficulty" value="hard"> Maestra</label></fieldset>
-      <section class="resume-card hidden" id="multiResumeCard">
-        <div class="resume-card-copy"><span>PARTIDA GUARDADA</span><strong id="multiResumeTitle">Continuar mesa</strong><small id="multiResumeMeta">Guardado automático</small></div>
-        <div class="resume-card-actions"><button id="multiDiscardSave" type="button">Descartar</button><button class="resume-primary" id="multiResumeSave" type="button">Continuar</button></div>
-      </section>
-
-      <button class="gold-action start-multi" value="default">Sentarse y repartir →</button>
-      <a href="tute.html" class="modal-back">Volver al menú</a>
-    </form>
-  </dialog>
-
-  <dialog id="multiRulesModal" class="multi-modal"><div class="multi-modal-card"><button class="modal-close" id="closeMultiRules">×</button><span class="modal-kicker">REGLAMENTO</span><h1 id="multiRulesTitle"></h1><div class="multi-rules-grid" id="multiRulesGrid"></div><button class="gold-action" id="understandMultiRules">Entendido</button></div></dialog>
-  <dialog id="multiResult" class="multi-modal"><div class="multi-modal-card result-card"><span class="modal-kicker">PARTIDA TERMINADA</span><div class="result-seal" id="multiResultSeal">V</div><h1 id="multiResultTitle"></h1><p id="multiResultText"></p><div class="final-ranking" id="multiFinalRanking"></div><button class="gold-action" id="multiRematch">Revancha →</button><a href="tute.html" class="modal-back">Volver al menú</a></div></dialog>
-
-  <audio id="multiMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="pwa.js?v=21.2.0"></script>
-  <script src="club.js?v=21.2.0"></script>
-  <script src="career.js?v=21.2.0"></script>
-  <script src="music-continuity.js?v=21.2.0"></script>
-  <script src="cante-effects.js?v=21.2.0"></script>
-  <script src="multi.js?v=21.2.0"></script>
-  <script src="mobile-layout.js?v=21.2.0"></script>
-  <script src="device-mode.js?v=21.2.0"></script>
+<div aria-hidden="true" class="grain"></div>
+<header class="multi-topbar">
+<a class="multi-brand" href="tute.html"><span>T</span><div><strong>TUTE IA</strong><small>CLUB OFFLINE</small></div></a>
+<div class="multi-title"><span id="modeKicker">MESA OFFLINE</span><strong id="modeTitle">Tute arrastrado</strong></div>
+<div class="multi-actions">
+<button class="round-button" id="multiMusicButton" title="Música">♫</button>
+<button class="soft-action" id="multiRulesButton">Reglas</button>
+<a class="soft-action" href="career.html">Carrera</a>
+<a class="gold-action" href="tute.html">Menú principal</a>
+</div>
+</header>
+<main class="multi-layout">
+<section class="multi-table" id="multiTable">
+<div aria-hidden="true" class="felt-ornament"></div>
+<aside class="multi-tutorial hidden" id="multiTutorial">
+<div><span id="multiTutorialKicker">LECCIÓN 1</span><button id="multiTutorialExit">Salir</button></div>
+<h2 id="multiTutorialTitle"></h2>
+<p id="multiTutorialText"></p>
+<div class="tutorial-dots" id="multiTutorialDots"></div>
+<button class="gold-action" id="multiTutorialNext">Continuar →</button>
+</aside>
+<div class="seat seat-top" id="seat2">
+<div class="seat-badge"><span class="seat-avatar">DV</span><div><small>RIVAL</small><strong id="name2">Doña Virtud</strong></div><b id="turn2">TURNO</b></div>
+<div class="multi-hand ai-hand" id="hand2"></div>
+</div>
+<div class="seat seat-left" id="seat1">
+<div class="seat-badge"><span class="seat-avatar">DC</span><div><small>RIVAL</small><strong id="name1">Don Cálculo</strong></div><b id="turn1">TURNO</b></div>
+<div class="multi-hand ai-hand vertical-hand" id="hand1"></div>
+</div>
+<div class="seat seat-right" id="seat3">
+<div class="seat-badge"><span class="seat-avatar">EN</span><div><small id="role3">RIVAL</small><strong id="name3">El Notario</strong></div><b id="turn3">TURNO</b></div>
+<div class="multi-hand ai-hand vertical-hand" id="hand3"></div>
+</div>
+<div class="multi-center">
+<div class="multi-status"><span id="multiPhase">PREPARANDO</span><strong id="multiStatus">Configura la mesa para comenzar.</strong></div>
+<div class="trump-pod"><span>TRIUNFO</span><div id="multiTrump"></div><b id="multiTrumpSuit">—</b></div>
+<div class="trick-ring" id="multiTrickRing">
+<div class="multi-slot slot-0" id="slot0"><span>TÚ</span></div>
+<div class="multi-slot slot-1" id="slot1"><span>IA 1</span></div>
+<div class="multi-slot slot-2" id="slot2"><span>IA 2</span></div>
+<div class="multi-slot slot-3" id="slot3"><span>IA 3</span></div>
+<div class="drop-core" id="multiDropCore"><span>SUELTA PARA JUGAR</span></div>
+</div>
+<div class="multi-actions-dock" id="multiCanteActions"><p id="multiHint">Pulsa «Sentarse y repartir».</p></div>
+</div>
+<div class="seat seat-bottom" id="seat0">
+<div class="seat-badge human"><span class="seat-avatar">TÚ</span><div><small>JUGADOR</small><strong data-club-name="">Jugador</strong></div><b id="turn0">TU TURNO</b></div>
+<div class="multi-hand player-multi-hand" id="hand0"></div>
+<div class="order-helper">↔ Arrastra para ordenar · Pulsa o lleva una carta al centro para jugar</div>
+</div>
+</section>
+<aside class="multi-sidebar">
+<section class="multi-panel score-panel">
+<div class="panel-title"><div><small>MARCADOR</small><h2 id="scoreTitle">Puntuación individual</h2></div><span id="trickCounter">BAZA 1</span></div>
+<div class="score-list" id="multiScoreList"></div>
+</section>
+<section class="multi-panel reading-panel">
+<div class="panel-title"><div><small>REGLA ACTIVA</small><h2 id="multiRuleTitle">Arrastre completo</h2></div><i></i></div>
+<p id="multiRuleText">Debes asistir y superar cuando corresponda.</p>
+<div class="rule-mini-grid"><span><b id="playerCardsLeft">0</b> cartas</span><span><b id="tricksPlayed">0</b> bazas</span><span><b id="currentLeader">TÚ</b> sale</span></div>
+</section>
+<section class="multi-panel log-panel"><div class="panel-title"><div><small>CRÓNICA</small><h2>Últimas jugadas</h2></div></div><div class="multi-log" id="multiLog"></div></section>
+</aside>
+</main>
+<dialog class="multi-modal" id="multiSetup">
+<form class="multi-modal-card" id="multiSetupForm" method="dialog">
+<span class="modal-kicker" id="setupModeKicker">3 JUGADORES</span>
+<h1 id="setupModeTitle">Tute arrastrado</h1>
+<p id="setupModeDescription"></p>
+<div class="mode-facts" id="setupFacts"></div>
+<fieldset><legend>Dificultad de las IA</legend><label><input name="multiDifficulty" type="radio" value="easy"/> Tranquila</label><label><input checked="" name="multiDifficulty" type="radio" value="normal"/> Competitiva</label><label><input name="multiDifficulty" type="radio" value="hard"/> Maestra</label></fieldset>
+<section class="resume-card hidden" id="multiResumeCard">
+<div class="resume-card-copy"><span>PARTIDA GUARDADA</span><strong id="multiResumeTitle">Continuar mesa</strong><small id="multiResumeMeta">Guardado automático</small></div>
+<div class="resume-card-actions"><button id="multiDiscardSave" type="button">Descartar</button><button class="resume-primary" id="multiResumeSave" type="button">Continuar</button></div>
+</section>
+<button class="gold-action start-multi" value="default">Sentarse y repartir →</button>
+<a class="modal-back" href="tute.html">Volver al menú</a>
+</form>
+</dialog>
+<dialog class="multi-modal" id="multiRulesModal"><div class="multi-modal-card"><button class="modal-close" id="closeMultiRules">×</button><span class="modal-kicker">REGLAMENTO</span><h1 id="multiRulesTitle"></h1><div class="multi-rules-grid" id="multiRulesGrid"></div><button class="gold-action" id="understandMultiRules">Entendido</button></div></dialog>
+<dialog class="multi-modal" id="multiResult"><div class="multi-modal-card result-card"><span class="modal-kicker">PARTIDA TERMINADA</span><div class="result-seal" id="multiResultSeal">V</div><h1 id="multiResultTitle"></h1><p id="multiResultText"></p><div class="final-ranking" id="multiFinalRanking"></div><button class="gold-action" id="multiRematch">Revancha →</button><a class="modal-back" href="tute.html">Volver al menú</a></div></dialog>
+<audio id="multiMusic" loop="" preload="auto" src="assets/audio/casino-jazz-lite.mp3"></audio>
+<script src="pwa.js?v=21.3.0"></script>
+<script src="club.js?v=21.3.0"></script>
+<script src="career.js?v=21.3.0"></script>
+<script src="music-continuity.js?v=21.3.0"></script>
+<script src="cante-effects.js?v=21.3.0"></script>
+<script src="multi.js?v=21.3.0"></script>
+<script src="mobile-layout.js?v=21.3.0"></script>
+<script src="device-mode.js?v=21.3.0"></script>
 </body>
 </html>

@@ -25,3 +25,7 @@ Descomprime el ZIP y sube directamente todos sus archivos y carpetas a la raíz 
 ## Datos locales
 
 Los perfiles y las partidas permanecen en el navegador. No se sincronizan entre dispositivos y no requieren registro externo.
+
+## v21.3
+
+Sala Cero incluye nueve juegos offline. Esta versión incorpora Blackjack de Anton Casino y El impostor de Anton, ambos con formatos específicos para móvil/iPhone y ordenador. Consulta `CAMBIOS-v21.3.md` y `QA-v21.3.md`.

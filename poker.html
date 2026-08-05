@@ -1,146 +1,134 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><script src="device-mode-boot.js?v=21.2.0"></script>
-  <meta name="theme-color" content="#071b15">
-  <meta name="description" content="Texas Hold'em offline en Sala Cero: contra hasta cinco rivales IA o multijugador local para seis personas.">
-  <title>Póker Texas Hold'em — Sala Cero</title>
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="assets/icons/favicon-64.png">
-  <link rel="stylesheet" href="club.css?v=21.2.0">
-  <link rel="stylesheet" href="auth.css?v=21.2.0">
-  <link rel="stylesheet" href="poker.css?v=21.2.0">
-  <script src="auth.js?v=21.2.0"></script>
-  <link rel="stylesheet" href="device-mode.css?v=21.2.0">
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=21.3.0"></script>
+<meta content="#071b15" name="theme-color"/>
+<meta content="Texas Hold'em offline en Sala Cero: contra hasta cinco rivales IA o multijugador local para seis personas." name="description"/>
+<title>Póker Texas Hold'em — Sala Cero</title>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="assets/icons/favicon-64.png" rel="icon"/>
+<link href="club.css?v=21.3.0" rel="stylesheet"/>
+<link href="auth.css?v=21.3.0" rel="stylesheet"/>
+<link href="poker.css?v=21.3.0" rel="stylesheet"/>
+<script src="auth.js?v=21.3.0"></script>
+<link href="device-mode.css?v=21.3.0" rel="stylesheet"/>
 </head>
 <body>
-  <div class="pk-noise" aria-hidden="true"></div>
-  <header class="pk-topbar">
-    <a class="pk-brand" href="index.html"><span class="pk-brand-mark">♠</span><span><strong>PÓKER</strong><small>SALA CERO · TEXAS HOLD'EM</small></span></a>
-    <nav class="pk-top-actions">
-      <a href="index.html#perfil" class="pk-icon" aria-label="Perfil">♣</a>
-      <button id="pkMusic" class="pk-icon" type="button" aria-label="Música">♫</button>
-      <button id="pkRules" class="pk-soft" type="button">Reglas</button>
-      <a href="index.html" class="pk-soft">Sala Cero</a>
-    </nav>
-  </header>
-
-  <main class="pk-shell">
-    <section class="pk-welcome" id="pkWelcome">
-      <div class="pk-hero-copy">
-        <span class="pk-kicker">NO LIMIT · 2 A 6 PLAZAS · SIN CONEXIÓN</span>
-        <h1>Texas Hold'em,<br><em>casino de Sala Cero.</em></h1>
-        <p>Anton dirige la mesa, rota el botón de dealer y reparte cada mano. Compite contra uno, dos, tres, cuatro o cinco rivales con estilos distintos, o pasa el dispositivo entre hasta seis personas.</p>
-        <div class="pk-hero-badges"><span>Máximo 6 jugadores</span><span>IA con personalidad</span><span>Figuras de Anton</span><span>Partidas guardadas</span></div>
-      </div>
-      <div class="pk-dealer-showcase" aria-label="Anton crupier oficial">
-        <div class="pk-show-light"></div>
-        <img id="pkWelcomeDealer" src="assets/poker/anton-crupier-placeholder.svg" alt="Anton crupier, crupier oficial de Anton Casino">
-        <div class="pk-show-label"><small>CRUPIER DE LA CASA</small><strong>ANTON</strong><span>Crupier oficial de Anton Casino</span></div>
-        <div class="pk-show-card card-red"><b>A</b><i>♥</i></div><div class="pk-show-card card-black"><b>K</b><i>♠</i></div>
-      </div>
-      <div class="pk-mode-grid">
-        <button class="pk-mode featured" id="pkSolo" type="button"><span>01</span><small>UN JUGADOR</small><strong>Desafiar a la mesa</strong><p>Elige entre uno y cinco rivales IA. Cada uno apuesta con una personalidad propia.</p><b>Configurar partida →</b></button>
-        <button class="pk-mode" id="pkLocal" type="button"><span>02</span><small>2 A 6 PERSONAS</small><strong>Pasa el dispositivo</strong><p>Manos privadas, pantalla de entrega y decisiones protegidas en un único móvil u ordenador para mesas más amplias.</p><b>Preparar jugadores →</b></button>
-        <button class="pk-mode" id="pkContinue" type="button" disabled><span>03</span><small>PARTIDA GUARDADA</small><strong id="pkContinueTitle">Sin partida pendiente</strong><p id="pkContinueMeta">La mesa se guarda después de cada decisión.</p><b>Continuar →</b></button>
-      </div>
-    </section>
-
-    <section class="pk-game hidden" id="pkGame" aria-live="polite">
-      <div class="pk-gamebar">
-        <div><small id="pkPhaseKicker">MANO 1</small><strong id="pkPhaseLabel">PRE-FLOP</strong></div>
-        <div class="pk-gamebar-center"><span>CIEGAS</span><b id="pkBlindLabel">10 / 20</b></div>
-        <div class="pk-gamebar-actions"><button id="pkLogToggle" type="button">Crónica</button><button id="pkExit" type="button">Guardar y salir</button></div>
-      </div>
-
-      <section class="pk-casino-stage">
-        <div class="pk-dealer" id="pkDealer">
-          <div class="pk-dealer-glow"></div>
-          <img id="pkDealerImage" src="assets/poker/anton-crupier-placeholder.svg" alt="Anton crupier, crupier oficial de Anton Casino">
-          <div class="pk-dealer-plaque"><small>CRUPIER</small><strong>ANTON</strong><span id="pkDealerMessage">Barajando la mesa</span></div>
-        </div>
-
-        <div class="pk-table-wrap">
-          <div class="pk-table-rail"></div>
-          <div class="pk-table-felt">
-            <div class="pk-table-logo"><span>0</span><small>SALA CERO</small></div>
-            <div class="pk-pot"><small>BOTE</small><strong id="pkPot">0</strong><div id="pkSidePot" class="pk-side-pot"></div></div>
-            <div class="pk-board" id="pkBoard" aria-label="Cartas comunitarias"></div>
-            <div class="pk-table-message" id="pkMessage">Anton está preparando la mesa.</div>
-            <div class="pk-seat-layer" id="pkSeats"></div>
-            <div class="pk-chip-flight-layer" id="pkFlights" aria-hidden="true"></div>
-          </div>
-        </div>
-
-        <section class="pk-hero-zone" id="pkHeroZone">
-          <div class="pk-private-hand" id="pkPrivateHand"></div>
-          <div class="pk-hand-info"><small id="pkHandKicker">TU MANO</small><strong id="pkHandName">Esperando reparto</strong><span id="pkHandDetail">Las cartas privadas aparecerán aquí.</span></div>
-        </section>
-
-        <section class="pk-actions" id="pkActions">
-          <button class="pk-action fold" id="pkFold" type="button"><span>×</span><strong>Retirarse</strong><small>Fold</small></button>
-          <button class="pk-action neutral" id="pkCheckCall" type="button"><span>✓</span><strong>Pasar</strong><small id="pkCallAmount">Check</small></button>
-          <div class="pk-raise-box">
-            <div class="pk-raise-head"><span>SUBIDA TOTAL</span><strong id="pkRaiseValue">40</strong></div>
-            <input id="pkRaiseSlider" type="range" min="40" max="1000" step="20" value="40" aria-label="Cantidad total de la subida">
-            <div class="pk-raise-presets"><button type="button" data-raise-preset="half">½ bote</button><button type="button" data-raise-preset="pot">Bote</button><button type="button" data-raise-preset="allin">All-in</button></div>
-          </div>
-          <button class="pk-action raise" id="pkRaise" type="button"><span>↑</span><strong>Subir</strong><small>Raise</small></button>
-        </section>
-
-        <aside class="pk-log-panel" id="pkLogPanel">
-          <div class="pk-log-head"><div><small>CRÓNICA DE ANTON</small><strong>Últimas decisiones</strong></div><button id="pkLogClose" type="button">×</button></div>
-          <div class="pk-log" id="pkLog"></div>
-        </aside>
-      </section>
-    </section>
-  </main>
-
-  <div class="pk-handoff hidden" id="pkHandoff">
-    <div class="pk-handoff-card"><span>PASAD EL DISPOSITIVO</span><div class="pk-handoff-token" id="pkHandoffToken">♠</div><h2 id="pkHandoffName">Jugador 2</h2><p>Las cartas privadas y las opciones de apuesta permanecen ocultas.</p><button id="pkReveal" type="button">Soy este jugador · ver mi mano</button></div>
-  </div>
-
-  <dialog class="pk-modal" id="pkSetup">
-    <form class="pk-modal-card" id="pkSetupForm">
-      <button class="pk-close" id="pkSetupClose" type="button">×</button>
-      <span class="pk-kicker">CONFIGURAR MESA</span><h2 id="pkSetupTitle">Partida contra IA</h2>
-      <input id="pkMode" type="hidden" value="ai">
-      <div class="pk-form-grid"><label><span>Tu nombre</span><input id="pkPlayerName" maxlength="18" value="Jugador"></label><label><span>Fichas iniciales</span><select id="pkStartingStack"><option value="500">500 · partida rápida</option><option value="1000" selected>1.000 · clásica</option><option value="2000">2.000 · larga</option></select></label></div>
-      <div class="pk-form-grid"><label><span>Ciegas</span><select id="pkBlinds"><option value="5,10">5 / 10</option><option value="10,20" selected>10 / 20</option><option value="25,50">25 / 50</option></select></label><label><span>Ritmo</span><select id="pkSpeed"><option value="fast">Rápido</option><option value="normal" selected>Casino</option><option value="slow">Pausado</option></select></label></div>
-      <section id="pkAiSetup"><label class="pk-field"><span>Rivales IA</span><select id="pkAiCount"><option value="1">1 rival · duelo</option><option value="2" selected>2 rivales · mesa de 3</option><option value="3">3 rivales · mesa de 4</option><option value="4">4 rivales · mesa de 5</option><option value="5">5 rivales · mesa de 6</option></select></label><div class="pk-ai-preview" id="pkAiPreview"></div></section>
-      <section id="pkLocalSetup" class="hidden"><label class="pk-field"><span>Jugadores locales</span><select id="pkLocalCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label><div class="pk-name-grid" id="pkLocalNames"></div></section>
-      <label class="pk-check"><input id="pkAutoBlinds" type="checkbox" checked><span><b>Subir ciegas automáticamente</b><small>Cada ocho manos aumentan para evitar partidas interminables.</small></span></label>
-      <button class="pk-primary" type="submit">Anton abre la mesa <span>→</span></button>
-    </form>
-  </dialog>
-
-  <dialog class="pk-modal" id="pkRulesModal">
-    <div class="pk-modal-card pk-rules-card"><button class="pk-close" id="pkRulesClose" type="button">×</button><span class="pk-kicker">TEXAS HOLD'EM NO LIMIT</span><h2>Reglas de la mesa</h2><div class="pk-rules-grid">
-      <article><b>01</b><h3>Dos cartas privadas</h3><p>Cada jugador recibe dos cartas. Anton descubre cinco comunitarias en flop, turn y river.</p></article>
-      <article><b>02</b><h3>La mejor combinación</h3><p>Se usan las mejores cinco cartas entre las dos privadas y las cinco comunitarias. No es obligatorio usar ambas cartas propias.</p></article>
-      <article><b>03</b><h3>Rondas de apuestas</h3><p>En cada calle puedes retirarte, pasar, igualar, subir o ir all-in. La subida mínima se calcula automáticamente.</p></article>
-      <article><b>04</b><h3>Ciegas y dealer</h3><p>El botón, la ciega pequeña y la grande rotan después de cada mano. En un duelo el dealer coloca la pequeña.</p></article>
-      <article><b>05</b><h3>All-in y botes laterales</h3><p>Cuando las aportaciones son distintas se crean botes laterales. Nadie puede ganar fichas que no haya igualado.</p></article>
-      <article><b>06</b><h3>Victoria</h3><p>Gana la partida quien reúne todas las fichas. En local se protege cada mano antes de mostrarla.</p></article>
-    </div><button class="pk-primary" id="pkRulesOk" type="button">Entendido</button></div>
-  </dialog>
-
-  <dialog class="pk-modal" id="pkHandResult">
-    <div class="pk-modal-card pk-result-card"><span class="pk-kicker" id="pkResultKicker">MANO TERMINADA</span><div class="pk-result-seal">♠</div><h2 id="pkResultTitle">Bote adjudicado</h2><p id="pkResultText"></p><div class="pk-result-list" id="pkResultList"></div><button class="pk-primary" id="pkNextHand" type="button">Siguiente mano</button><a class="pk-secondary-link" href="index.html">Volver a Sala Cero</a></div>
-  </dialog>
-
-  <dialog class="pk-modal" id="pkGameResult">
-    <div class="pk-modal-card pk-result-card"><span class="pk-kicker">PARTIDA TERMINADA</span><div class="pk-result-seal crown">♛</div><h2 id="pkGameResultTitle">Campeón de la mesa</h2><p id="pkGameResultText"></p><div class="pk-result-list" id="pkFinalRanking"></div><button class="pk-primary" id="pkRematch" type="button">Jugar otra partida</button><a class="pk-secondary-link" href="index.html">Volver a Sala Cero</a></div>
-  </dialog>
-
-  <div class="pk-toast" id="pkToast"></div>
-  <audio id="backgroundMusic" src="assets/audio/casino-jazz-lite.mp3" preload="auto" loop></audio>
-  <script src="music-continuity.js?v=21.2.0"></script>
-  <script src="club.js?v=21.2.0"></script>
-  <script src="poker-assets.js?v=21.2.0"></script>
-  <script src="poker-core.js?v=21.2.0"></script>
-  <script src="poker.js?v=21.2.0"></script>
-  <script src="device-mode.js?v=21.2.0"></script>
+<div aria-hidden="true" class="pk-noise"></div>
+<header class="pk-topbar">
+<a class="pk-brand" href="index.html"><span class="pk-brand-mark">♠</span><span><strong>PÓKER</strong><small>SALA CERO · TEXAS HOLD'EM</small></span></a>
+<nav class="pk-top-actions">
+<a aria-label="Perfil" class="pk-icon" href="index.html#perfil">♣</a>
+<button aria-label="Música" class="pk-icon" id="pkMusic" type="button">♫</button>
+<button class="pk-soft" id="pkRules" type="button">Reglas</button>
+<a class="pk-soft" href="index.html">Sala Cero</a>
+</nav>
+</header>
+<main class="pk-shell">
+<section class="pk-welcome" id="pkWelcome">
+<div class="pk-hero-copy">
+<span class="pk-kicker">NO LIMIT · 2 A 6 PLAZAS · SIN CONEXIÓN</span>
+<h1>Texas Hold'em,<br/><em>casino de Sala Cero.</em></h1>
+<p>Anton dirige la mesa, rota el botón de dealer y reparte cada mano. Compite contra uno, dos, tres, cuatro o cinco rivales con estilos distintos, o pasa el dispositivo entre hasta seis personas.</p>
+<div class="pk-hero-badges"><span>Máximo 6 jugadores</span><span>IA con personalidad</span><span>Figuras de Anton</span><span>Partidas guardadas</span></div>
+</div>
+<div aria-label="Anton crupier oficial" class="pk-dealer-showcase">
+<div class="pk-show-light"></div>
+<img alt="Anton crupier, crupier oficial de Anton Casino" id="pkWelcomeDealer" src="assets/poker/anton-crupier-placeholder.svg"/>
+<div class="pk-show-label"><small>CRUPIER DE LA CASA</small><strong>ANTON</strong><span>Crupier oficial de Anton Casino</span></div>
+<div class="pk-show-card card-red"><b>A</b><i>♥</i></div><div class="pk-show-card card-black"><b>K</b><i>♠</i></div>
+</div>
+<div class="pk-mode-grid">
+<button class="pk-mode featured" id="pkSolo" type="button"><span>01</span><small>UN JUGADOR</small><strong>Desafiar a la mesa</strong><p>Elige entre uno y cinco rivales IA. Cada uno apuesta con una personalidad propia.</p><b>Configurar partida →</b></button>
+<button class="pk-mode" id="pkLocal" type="button"><span>02</span><small>2 A 6 PERSONAS</small><strong>Pasa el dispositivo</strong><p>Manos privadas, pantalla de entrega y decisiones protegidas en un único móvil u ordenador para mesas más amplias.</p><b>Preparar jugadores →</b></button>
+<button class="pk-mode" disabled="" id="pkContinue" type="button"><span>03</span><small>PARTIDA GUARDADA</small><strong id="pkContinueTitle">Sin partida pendiente</strong><p id="pkContinueMeta">La mesa se guarda después de cada decisión.</p><b>Continuar →</b></button>
+</div>
+</section>
+<section aria-live="polite" class="pk-game hidden" id="pkGame">
+<div class="pk-gamebar">
+<div><small id="pkPhaseKicker">MANO 1</small><strong id="pkPhaseLabel">PRE-FLOP</strong></div>
+<div class="pk-gamebar-center"><span>CIEGAS</span><b id="pkBlindLabel">10 / 20</b></div>
+<div class="pk-gamebar-actions"><button id="pkLogToggle" type="button">Crónica</button><button id="pkExit" type="button">Guardar y salir</button></div>
+</div>
+<section class="pk-casino-stage">
+<div class="pk-dealer" id="pkDealer">
+<div class="pk-dealer-glow"></div>
+<img alt="Anton crupier, crupier oficial de Anton Casino" id="pkDealerImage" src="assets/poker/anton-crupier-placeholder.svg"/>
+<div class="pk-dealer-plaque"><small>CRUPIER</small><strong>ANTON</strong><span id="pkDealerMessage">Barajando la mesa</span></div>
+</div>
+<div class="pk-table-wrap">
+<div class="pk-table-rail"></div>
+<div class="pk-table-felt">
+<div class="pk-table-logo"><span>0</span><small>SALA CERO</small></div>
+<div class="pk-pot"><small>BOTE</small><strong id="pkPot">0</strong><div class="pk-side-pot" id="pkSidePot"></div></div>
+<div aria-label="Cartas comunitarias" class="pk-board" id="pkBoard"></div>
+<div class="pk-table-message" id="pkMessage">Anton está preparando la mesa.</div>
+<div class="pk-seat-layer" id="pkSeats"></div>
+<div aria-hidden="true" class="pk-chip-flight-layer" id="pkFlights"></div>
+</div>
+</div>
+<section class="pk-hero-zone" id="pkHeroZone">
+<div class="pk-private-hand" id="pkPrivateHand"></div>
+<div class="pk-hand-info"><small id="pkHandKicker">TU MANO</small><strong id="pkHandName">Esperando reparto</strong><span id="pkHandDetail">Las cartas privadas aparecerán aquí.</span></div>
+</section>
+<section class="pk-actions" id="pkActions">
+<button class="pk-action fold" id="pkFold" type="button"><span>×</span><strong>Retirarse</strong><small>Fold</small></button>
+<button class="pk-action neutral" id="pkCheckCall" type="button"><span>✓</span><strong>Pasar</strong><small id="pkCallAmount">Check</small></button>
+<div class="pk-raise-box">
+<div class="pk-raise-head"><span>SUBIDA TOTAL</span><strong id="pkRaiseValue">40</strong></div>
+<input aria-label="Cantidad total de la subida" id="pkRaiseSlider" max="1000" min="40" step="20" type="range" value="40"/>
+<div class="pk-raise-presets"><button data-raise-preset="half" type="button">½ bote</button><button data-raise-preset="pot" type="button">Bote</button><button data-raise-preset="allin" type="button">All-in</button></div>
+</div>
+<button class="pk-action raise" id="pkRaise" type="button"><span>↑</span><strong>Subir</strong><small>Raise</small></button>
+</section>
+<aside class="pk-log-panel" id="pkLogPanel">
+<div class="pk-log-head"><div><small>CRÓNICA DE ANTON</small><strong>Últimas decisiones</strong></div><button id="pkLogClose" type="button">×</button></div>
+<div class="pk-log" id="pkLog"></div>
+</aside>
+</section>
+</section>
+</main>
+<div class="pk-handoff hidden" id="pkHandoff">
+<div class="pk-handoff-card"><span>PASAD EL DISPOSITIVO</span><div class="pk-handoff-token" id="pkHandoffToken">♠</div><h2 id="pkHandoffName">Jugador 2</h2><p>Las cartas privadas y las opciones de apuesta permanecen ocultas.</p><button id="pkReveal" type="button">Soy este jugador · ver mi mano</button></div>
+</div>
+<dialog class="pk-modal" id="pkSetup">
+<form class="pk-modal-card" id="pkSetupForm">
+<button class="pk-close" id="pkSetupClose" type="button">×</button>
+<span class="pk-kicker">CONFIGURAR MESA</span><h2 id="pkSetupTitle">Partida contra IA</h2>
+<input id="pkMode" type="hidden" value="ai"/>
+<div class="pk-form-grid"><label><span>Tu nombre</span><input id="pkPlayerName" maxlength="18" value="Jugador"/></label><label><span>Fichas iniciales</span><select id="pkStartingStack"><option value="500">500 · partida rápida</option><option selected="" value="1000">1.000 · clásica</option><option value="2000">2.000 · larga</option></select></label></div>
+<div class="pk-form-grid"><label><span>Ciegas</span><select id="pkBlinds"><option value="5,10">5 / 10</option><option selected="" value="10,20">10 / 20</option><option value="25,50">25 / 50</option></select></label><label><span>Ritmo</span><select id="pkSpeed"><option value="fast">Rápido</option><option selected="" value="normal">Casino</option><option value="slow">Pausado</option></select></label></div>
+<section id="pkAiSetup"><label class="pk-field"><span>Rivales IA</span><select id="pkAiCount"><option value="1">1 rival · duelo</option><option selected="" value="2">2 rivales · mesa de 3</option><option value="3">3 rivales · mesa de 4</option><option value="4">4 rivales · mesa de 5</option><option value="5">5 rivales · mesa de 6</option></select></label><div class="pk-ai-preview" id="pkAiPreview"></div></section>
+<section class="hidden" id="pkLocalSetup"><label class="pk-field"><span>Jugadores locales</span><select id="pkLocalCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label><div class="pk-name-grid" id="pkLocalNames"></div></section>
+<label class="pk-check"><input checked="" id="pkAutoBlinds" type="checkbox"/><span><b>Subir ciegas automáticamente</b><small>Cada ocho manos aumentan para evitar partidas interminables.</small></span></label>
+<button class="pk-primary" type="submit">Anton abre la mesa <span>→</span></button>
+</form>
+</dialog>
+<dialog class="pk-modal" id="pkRulesModal">
+<div class="pk-modal-card pk-rules-card"><button class="pk-close" id="pkRulesClose" type="button">×</button><span class="pk-kicker">TEXAS HOLD'EM NO LIMIT</span><h2>Reglas de la mesa</h2><div class="pk-rules-grid">
+<article><b>01</b><h3>Dos cartas privadas</h3><p>Cada jugador recibe dos cartas. Anton descubre cinco comunitarias en flop, turn y river.</p></article>
+<article><b>02</b><h3>La mejor combinación</h3><p>Se usan las mejores cinco cartas entre las dos privadas y las cinco comunitarias. No es obligatorio usar ambas cartas propias.</p></article>
+<article><b>03</b><h3>Rondas de apuestas</h3><p>En cada calle puedes retirarte, pasar, igualar, subir o ir all-in. La subida mínima se calcula automáticamente.</p></article>
+<article><b>04</b><h3>Ciegas y dealer</h3><p>El botón, la ciega pequeña y la grande rotan después de cada mano. En un duelo el dealer coloca la pequeña.</p></article>
+<article><b>05</b><h3>All-in y botes laterales</h3><p>Cuando las aportaciones son distintas se crean botes laterales. Nadie puede ganar fichas que no haya igualado.</p></article>
+<article><b>06</b><h3>Victoria</h3><p>Gana la partida quien reúne todas las fichas. En local se protege cada mano antes de mostrarla.</p></article>
+</div><button class="pk-primary" id="pkRulesOk" type="button">Entendido</button></div>
+</dialog>
+<dialog class="pk-modal" id="pkHandResult">
+<div class="pk-modal-card pk-result-card"><span class="pk-kicker" id="pkResultKicker">MANO TERMINADA</span><div class="pk-result-seal">♠</div><h2 id="pkResultTitle">Bote adjudicado</h2><p id="pkResultText"></p><div class="pk-result-list" id="pkResultList"></div><button class="pk-primary" id="pkNextHand" type="button">Siguiente mano</button><a class="pk-secondary-link" href="index.html">Volver a Sala Cero</a></div>
+</dialog>
+<dialog class="pk-modal" id="pkGameResult">
+<div class="pk-modal-card pk-result-card"><span class="pk-kicker">PARTIDA TERMINADA</span><div class="pk-result-seal crown">♛</div><h2 id="pkGameResultTitle">Campeón de la mesa</h2><p id="pkGameResultText"></p><div class="pk-result-list" id="pkFinalRanking"></div><button class="pk-primary" id="pkRematch" type="button">Jugar otra partida</button><a class="pk-secondary-link" href="index.html">Volver a Sala Cero</a></div>
+</dialog>
+<div class="pk-toast" id="pkToast"></div>
+<audio id="backgroundMusic" loop="" preload="auto" src="assets/audio/casino-jazz-lite.mp3"></audio>
+<script src="music-continuity.js?v=21.3.0"></script>
+<script src="club.js?v=21.3.0"></script>
+<script src="poker-assets.js?v=21.3.0"></script>
+<script src="poker-core.js?v=21.3.0"></script>
+<script src="poker.js?v=21.3.0"></script>
+<script src="device-mode.js?v=21.3.0"></script>
 </body>
 </html>

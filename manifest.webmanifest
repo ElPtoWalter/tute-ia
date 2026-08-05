@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero · v21.2",
+  "name": "Sala Cero · v21.3",
   "short_name": "Sala Cero",
-  "description": "Siete juegos offline con formatos independientes para móvil/iPhone y ordenador.",
+  "description": "Nueve juegos offline con formatos independientes para móvil/iPhone y ordenador.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -138,6 +138,30 @@
       "short_name": "Carrera",
       "description": "Abrir campeonatos, liga y vitrina de trofeos",
       "url": "./career.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Blackjack de Anton",
+      "short_name": "Blackjack",
+      "description": "Jugar contra la banca de Anton",
+      "url": "./blackjack.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "El impostor de Anton",
+      "short_name": "Impostor",
+      "description": "Juego local de palabra secreta",
+      "url": "./impostor.html",
       "icons": [
         {
           "src": "assets/icon-192.png",
