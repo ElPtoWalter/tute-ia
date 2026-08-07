@@ -115,8 +115,7 @@
 
   function init() {
     cacheUI();
-    const clubName = window.SalaCeroClub?.getData()?.profile?.name;
-    if (clubName) mode.names[0] = clubName;
+    mode.names[0] = "Jugador";
     configureMode();
     bindUI();
     renderRules();
@@ -204,7 +203,6 @@
 
   function nextTutorial() {
     if (state.tutorialIndex >= tutorialSteps.length-1) {
-      try { localStorage.setItem(`tuteTutorialComplete:${mode.id}`, "true"); } catch (_) {}
       UI.multiTutorial.classList.add("hidden");
       toast("Tutorial completado");
       return;
@@ -1002,15 +1000,7 @@
     }
   }
 
-  function updateStats(humanWon) {
-    try {
-      const stats=JSON.parse(localStorage.getItem("tuteIaStats")||"{}");
-      stats.matchesPlayed=(stats.matchesPlayed||0)+1;
-      if (humanWon) stats.matchesWon=(stats.matchesWon||0)+1;
-      stats.variantPlays||={};stats.variantPlays[mode.id]=(stats.variantPlays[mode.id]||0)+1;
-      localStorage.setItem("tuteIaStats",JSON.stringify(stats));
-      window.SalaCeroClub?.recordMatch({ game:"tute", mode:"multi", won:Boolean(humanWon), variant:mode.id, score:totalPlayer(0) });
-    } catch(_) {}
+  function updateStats() { /* v22: sin estadísticas ni progresión */
   }
 
   function toast(text) {

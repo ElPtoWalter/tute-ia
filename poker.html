@@ -3,25 +3,19 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=22.0.0"></script>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#071b15" name="theme-color"/>
 <meta content="Texas Hold'em offline en Sala Cero: contra hasta cinco rivales IA o multijugador local para seis personas." name="description"/>
 <title>Póker Texas Hold'em — Sala Cero</title>
 <link href="manifest.webmanifest" rel="manifest"/>
 <link href="assets/icons/favicon-64.png" rel="icon"/>
-<link href="club.css?v=22.0.0" rel="stylesheet"/>
-<link href="auth.css?v=22.0.0" rel="stylesheet"/>
 <link href="poker.css?v=22.0.0" rel="stylesheet"/>
-<script src="auth.js?v=22.0.0"></script>
-<link href="device-mode.css?v=22.0.0" rel="stylesheet"/>
-<link href="polish-v22.css?v=22.0.0" rel="stylesheet"/>
-</head>
+<link href="sala-cero-v22.css?v=22.0.0" rel="stylesheet"/></head>
 <body>
 <div aria-hidden="true" class="pk-noise"></div>
 <header class="pk-topbar">
 <a class="pk-brand" href="index.html"><span class="pk-brand-mark">♠</span><span><strong>PÓKER</strong><small>SALA CERO · TEXAS HOLD'EM</small></span></a>
 <nav class="pk-top-actions">
-<a aria-label="Perfil" class="pk-icon" href="index.html#perfil">♣</a>
 <button aria-label="Música" class="pk-icon" id="pkMusic" type="button">♫</button>
 <button class="pk-soft" id="pkRules" type="button">Reglas</button>
 <a class="pk-soft" href="index.html">Sala Cero</a>
@@ -99,7 +93,7 @@
 <button class="pk-close" id="pkSetupClose" type="button">×</button>
 <span class="pk-kicker">CONFIGURAR MESA</span><h2 id="pkSetupTitle">Partida contra IA</h2>
 <input id="pkMode" type="hidden" value="ai"/>
-<div class="pk-form-grid"><label><span>Tu nombre</span><input id="pkPlayerName" maxlength="18" value="Jugador"/></label><label><span>Fichas iniciales</span><select id="pkStartingStack"><option value="500">500 · partida rápida</option><option selected="" value="1000">1.000 · clásica</option><option value="2000">2.000 · larga</option></select></label></div>
+<div class="pk-form-grid"><label class="sc-solo-name-field"><span>Tu nombre</span><input id="pkPlayerName" maxlength="18" value="Jugador"/></label><label><span>Fichas iniciales</span><select id="pkStartingStack"><option value="500">500 · partida rápida</option><option selected="" value="1000">1.000 · clásica</option><option value="2000">2.000 · larga</option></select></label></div>
 <div class="pk-form-grid"><label><span>Ciegas</span><select id="pkBlinds"><option value="5,10">5 / 10</option><option selected="" value="10,20">10 / 20</option><option value="25,50">25 / 50</option></select></label><label><span>Ritmo</span><select id="pkSpeed"><option value="fast">Rápido</option><option selected="" value="normal">Casino</option><option value="slow">Pausado</option></select></label></div>
 <section id="pkAiSetup"><label class="pk-field"><span>Rivales IA</span><select id="pkAiCount"><option value="1">1 rival · duelo</option><option selected="" value="2">2 rivales · mesa de 3</option><option value="3">3 rivales · mesa de 4</option><option value="4">4 rivales · mesa de 5</option><option value="5">5 rivales · mesa de 6</option></select></label><div class="pk-ai-preview" id="pkAiPreview"></div></section>
 <section class="hidden" id="pkLocalSetup"><label class="pk-field"><span>Jugadores locales</span><select id="pkLocalCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label><div class="pk-name-grid" id="pkLocalNames"></div></section>
@@ -126,11 +120,8 @@
 <div class="pk-toast" id="pkToast"></div>
 <audio id="backgroundMusic" loop="" preload="auto" src="assets/audio/casino-jazz-lite.mp3"></audio>
 <script src="music-continuity.js?v=22.0.0"></script>
-<script src="club.js?v=22.0.0"></script>
 <script src="poker-assets.js?v=22.0.0"></script>
 <script src="poker-core.js?v=22.0.0"></script>
 <script src="poker.js?v=22.0.0"></script>
-<script src="device-mode.js?v=22.0.0"></script>
-<script src="polish-v22.js?v=22.0.0"></script>
-</body>
+<script src="sala-cero-v22.js?v=22.0.0"></script></body>
 </html>

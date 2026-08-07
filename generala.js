@@ -37,17 +37,9 @@
     instantWinner: null
   };
 
-  function careerAiConfig() {
-    return window.SalaCeroCareer?.getAiConfig?.("generala") || null;
-  }
+  function aiDisplayName() { return "Doña Fortuna"; }
 
-  function aiDisplayName() {
-    return careerAiConfig()?.name || "Doña Fortuna";
-  }
-
-  function aiPersonality() {
-    return careerAiConfig()?.personality || "balanced";
-  }
+  function aiPersonality() { return "balanced"; }
 
   document.addEventListener("DOMContentLoaded", init);
 
@@ -55,12 +47,10 @@
     cacheUI();
     bindUI();
     loadPreferences();
-    const clubName = window.SalaCeroClub?.getData()?.profile?.name;
-    if (clubName) UI.gPlayerName.value = clubName;
+    UI.gPlayerName.value = "Jugador";
     refreshContinue();
     renderSetupNames();
     window.TuteMusicContinuity?.sync();
-    applyCareerLaunch();
   }
 
   function cacheUI() {
@@ -103,20 +93,6 @@
     UI.gDifficultyGroup.classList.toggle("hidden", mode !== "solo");
     renderSetupNames();
     UI.gSetupModal.showModal();
-  }
-
-  function applyCareerLaunch() {
-    const config = careerAiConfig();
-    if (!config || !new URLSearchParams(location.search).has("career")) return;
-    const radio = document.querySelector(`input[name="gDifficulty"][value="${config.difficulty || "normal"}"]`);
-    if (radio) radio.checked = true;
-    const soloTitle = UI.gSoloMode?.querySelector("strong");
-    if (soloTitle) soloTitle.textContent = `Contra ${config.name}`;
-    setTimeout(() => {
-      openSetup("solo");
-      UI.gSetupKicker.textContent = config.competitionTitle?.toUpperCase() || "ENCUENTRO DE CARRERA";
-      UI.gSetupTitle.textContent = `${config.matchLabel} · ${config.name}`;
-    }, 180);
   }
 
   function renderSetupNames() {
@@ -532,16 +508,6 @@
     const ranking = state.players.map((player,index) => ({ index, name:player.name, score:totalScore(player) })).sort((a,b) => b.score-a.score);
     const winnerIndex = state.instantWinner !== null ? state.instantWinner : ranking[0].index;
     const winner = state.players[winnerIndex];
-    const profileScore = totalScore(state.players[0]);
-    window.SalaCeroClub?.recordMatch({
-      game: "generala",
-      mode: state.mode,
-      local: state.mode === "local",
-      won: state.mode === "solo" && winnerIndex === 0,
-      score: profileScore,
-      opponentScore: state.mode === "solo" ? totalScore(state.players[1]) : 0,
-      servedGenerala: state.instantWinner === 0
-    });
     UI.gResultSeal.textContent = initials(winner.name);
     UI.gResultTitle.textContent = `${winner.name} gana la partida`;
     UI.gResultText.textContent = state.instantWinner !== null ? "La Generala servida ha cerrado la partida inmediatamente." : `La mejor planilla termina con ${ranking[0].score} puntos.`;

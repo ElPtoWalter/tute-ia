@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=22.0.0"></script>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#071c17" name="theme-color"/>
 <meta content="yes" name="mobile-web-app-capable"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
@@ -17,15 +17,9 @@
 <link href="assets/icons/favicon-64.png" rel="icon"/>
 <link href="assets/icons/apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="styles.css?v=22.0.0" rel="stylesheet"/>
-<link href="pwa.css?v=22.0.0" rel="stylesheet"/>
 <link href="mobile.css?v=22.0.0" rel="stylesheet"/>
 <link href="cante-effects.css?v=22.0.0" rel="stylesheet"/>
-<link href="club.css?v=22.0.0" rel="stylesheet"/>
-<link href="career.css?v=22.0.0" rel="stylesheet"/>
-<link href="auth.css?v=22.0.0" rel="stylesheet"/><script src="auth.js?v=22.0.0"></script> <link href="mobile-final.css?v=22.0.0" rel="stylesheet"/>
-<link href="device-mode.css?v=22.0.0" rel="stylesheet"/>
-<link href="polish-v22.css?v=22.0.0" rel="stylesheet"/>
-</head>
+<link href="sala-cero-v22.css?v=22.0.0" rel="stylesheet"/></head>
 <body>
 <div aria-hidden="true" class="noise"></div>
 <header class="topbar">
@@ -33,12 +27,10 @@
 <span class="brand-mark">T</span>
 <span>
 <strong>SALA CERO</strong>
-<small>CLUB DE TUTE</small>
+<small>SALA DE TUTE</small>
 </span>
 </button>
 <div class="topbar-actions">
-<a aria-label="Abrir perfil de Sala Cero" class="club-profile-chip" data-club-chip="" href="index.html#perfil"></a>
-<a class="soft-button hub-back-link" href="career.html">Carrera</a>
 <a class="soft-button hub-back-link" href="index.html">Sala Cero</a>
 <div class="music-control-wrap">
 <button aria-label="Música de fondo" class="icon-button" id="musicButton" title="Música de fondo">
@@ -62,7 +54,7 @@
 <div aria-hidden="true" class="home-ambient home-ambient-two"></div>
 <div class="home-hero">
 <div class="home-copy">
-<span class="home-kicker"><i></i> CLUB DE TUTE · 100 % OFFLINE</span>
+<span class="home-kicker"><i></i> SALA DE TUTE · 100 % OFFLINE</span>
 <h1 id="homeTitle">Tute,<br/><em>con su propia mesa.</em></h1>
 <p>Elige cómo quieres jugar al Tute: partida clásica, tutorial para aprender, multijugador local o una mesa a medida con tus normas.</p>
 <div aria-label="Características" class="home-features">
@@ -72,19 +64,13 @@
 <span>Reglas personalizadas</span>
 <span>Música de fondo</span>
 </div>
-<div class="club-dashboard tute-home-dashboard">
-<article class="club-stat"><span>MODO BASE</span><strong>Clásico</strong><small>arrastre y cante configurables</small></article>
-<article class="club-stat"><span>MESAS</span><strong>1, 2, 3 y 4</strong><small>solo, parejas o individual</small></article>
-<article class="club-stat"><span>ENTORNO</span><strong>Offline</strong><small>sin cuentas ni conexión</small></article>
-<article class="club-now-playing"><span class="music-live-dot"></span><div><span>AMBIENTE</span><strong>Casino Jazz · fondo continuo</strong></div><button id="homeMusicButton" type="button">Reproducir</button></article>
-</div>
 </div>
 <div aria-hidden="true" class="home-deck-showcase tute-deck-showcase">
 <img alt="" class="showcase-card card-one" src="assets/cards/oros-1.webp"/>
 <img alt="" class="showcase-card card-two" src="assets/cards/copas-12.webp"/>
 <img alt="" class="showcase-card card-three" src="assets/cards/espadas-11.webp"/>
 <img alt="" class="showcase-card card-four" src="assets/cards/bastos-10.webp"/>
-<div class="showcase-seal"><strong>T</strong><span>CLUB DE TUTE</span></div>
+<div class="showcase-seal"><strong>T</strong><span>SALA DE TUTE</span></div>
 </div>
 </div>
 <div class="mode-section tute-mode-section">
@@ -95,7 +81,7 @@
 </div>
 <div class="tute-heading-actions">
 <a class="soft-action-link" href="index.html">← Volver a Sala Cero</a>
-<span class="mode-count">V22.0 · CLUB Y CAMPEONATOS</span>
+<span class="mode-count">V22 · JUEGO DIRECTO</span>
 </div>
 </div>
 <div class="mode-grid mode-grid-four">
@@ -139,28 +125,14 @@
 </span>
 <span class="mode-meta"><b>Motor parametrizable</b><i>Personalizar →</i></span>
 </button>
-<a class="mode-card mode-card-career" href="career.html">
-<span class="mode-number">05</span>
-<span class="mode-icon">♛</span>
-<span class="mode-card-copy">
-<small>COMPETICIÓN</small>
-<strong>Carrera de Sala Cero</strong>
-<span>Disputa la Copa de Maestros, enfréntate a rivales con personalidad y consigue trofeos para la vitrina.</span>
-</span>
-<span class="mode-meta"><b data-career-rank="">Aspirante</b><i>Abrir campeonatos →</i></span>
-</a>
 </div>
 <section aria-live="polite" class="resume-card hidden" id="resumeGameCard">
 <div class="resume-card-copy"><span>PARTIDA GUARDADA</span><strong id="resumeGameTitle">Continúa donde lo dejaste</strong><small id="resumeGameMeta">Guardado automáticamente en este dispositivo</small></div>
 <div class="resume-card-actions"><button id="discardResumeButton" type="button">Descartar</button><button class="resume-primary" id="resumeGameButton" type="button">Continuar partida</button></div>
 </section>
-<section class="offline-ready-card">
-<div><span>APP INSTALABLE</span><strong>Preparada para móvil y sin conexión</strong><small>Cartas, reglas, tutoriales y partidas guardadas funcionan offline. La música completa se descarga de forma opcional.</small></div>
-<button id="openPwaPanelButton" type="button">Instalar y gestionar</button>
-</section>
 <div class="future-modes">
 <article><span>MENÚ DEDICADO</span><strong>Solo Tute en esta sección</strong><p>La portada principal reúne los cuatro juegos; aquí dentro entras directamente al universo del Tute.</p></article>
-<article><span>SIGUIENTE GRAN PASO</span><strong>Más mesas y juego online</strong><p>Esta estructura deja preparado el club del Tute para crecer con nuevas variantes y multijugador remoto.</p></article>
+<article><span>SIGUIENTE GRAN PASO</span><strong>Más mesas y juego online</strong><p>Esta estructura deja preparado el Tute para crecer con nuevas variantes y multijugador remoto.</p></article>
 </div>
 </div>
 </section>
@@ -244,7 +216,7 @@
 <div class="avatar human-avatar">TÚ</div>
 <div>
 <span class="eyebrow">JUGADOR</span>
-<strong data-club-name="">Jugador</strong>
+<strong>Jugador</strong>
 </div>
 <div class="turn-pill" id="playerTurnPill">TU TURNO</div>
 </div>
@@ -450,14 +422,9 @@
 <div aria-live="assertive" class="toast-region" id="toastRegion"></div>
 <audio id="backgroundMusic" loop="" preload="auto" src="assets/audio/casino-jazz-lite.mp3"></audio>
 <script src="pwa.js?v=22.0.0"></script>
-<script src="club.js?v=22.0.0"></script>
-<script src="career.js?v=22.0.0"></script>
 <script src="music-continuity.js?v=22.0.0"></script>
 <script src="cante-effects.js?v=22.0.0"></script>
 <script src="app.js?v=22.0.0"></script>
 <script>document.getElementById("openTuteLibrary")?.addEventListener("click",()=>document.querySelector(".mode-section")?.scrollIntoView({behavior:"smooth"}));</script>
-<script src="mobile-layout.js?v=22.0.0"></script>
-<script src="device-mode.js?v=22.0.0"></script>
-<script src="polish-v22.js?v=22.0.0"></script>
-</body>
+<script src="sala-cero-v22.js?v=22.0.0"></script></body>
 </html>

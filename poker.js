@@ -5,7 +5,7 @@
   const PREF_KEY = 'salaCeroPokerPrefsV210';
   const VERSION = 21.0;
   
-const AI_PROFILES = [
+const AI_PLAYERS = [
     {name:'Don Prudencio',avatar:'DP',style:'conservative',label:'Conservador · protege sus fichas'},
     {name:'Lola Relámpago',avatar:'LR',style:'aggressive',label:'Agresiva · presiona la mesa'},
     {name:'El Tahúr',avatar:'ET',style:'wild',label:'Imprevisible · mezcla cálculo y farol'},
@@ -29,7 +29,7 @@ const AI_PROFILES = [
     bindUi();
     populateAiPreview();
     populateLocalNames(2);
-    hydrateProfile();
+    setDefaultPlayerName();
     refreshContinue();
     applyDealerAsset();
   }
@@ -60,10 +60,7 @@ const AI_PROFILES = [
     window.addEventListener('beforeunload',()=>{if(state?.active)saveGame();});
   }
 
-  function hydrateProfile(){
-    const club=window.SalaCeroClub?.getData?.();
-    const profile=window.SalaCeroAuth?.getActiveProfile?.();
-    UI.pkPlayerName.value=club?.profile?.name||profile?.name||'Jugador';
+  function setDefaultPlayerName(){ UI.pkPlayerName.value="Jugador";
   }
 
   function applyDealerAsset(){
@@ -74,13 +71,13 @@ const AI_PROFILES = [
 
   function populateAiPreview(){
     const count=Number(UI.pkAiCount.value||2);
-    UI.pkAiPreview.innerHTML=AI_PROFILES.slice(0,count).map(ai=>`<article class="pk-ai-card"><b>${escapeHtml(ai.name)}</b><small>${escapeHtml(ai.label)}</small></article>`).join('');
+    UI.pkAiPreview.innerHTML=AI_PLAYERS.slice(0,count).map(ai=>`<article class="pk-ai-card"><b>${escapeHtml(ai.name)}</b><small>${escapeHtml(ai.label)}</small></article>`).join('');
   }
 
   function populateLocalNames(count){
     const existing=[...UI.pkLocalNames.querySelectorAll('input')].map(input=>input.value);
-    const profile=window.SalaCeroClub?.getData?.().profile?.name||'Jugador 1';
-    UI.pkLocalNames.innerHTML=Array.from({length:count},(_,index)=>`<input maxlength="18" data-local-name="${index}" value="${escapeHtml(existing[index]|| (index===0?profile:`Jugador ${index+1}`))}" aria-label="Nombre del jugador ${index+1}">`).join('');
+    const defaultName='Jugador 1';
+    UI.pkLocalNames.innerHTML=Array.from({length:count},(_,index)=>`<input maxlength="18" data-local-name="${index}" value="${escapeHtml(existing[index]|| (index===0?defaultName:`Jugador ${index+1}`))}" aria-label="Nombre del jugador ${index+1}">`).join('');
   }
 
   function openSetup(mode){
@@ -88,7 +85,7 @@ const AI_PROFILES = [
     UI.pkSetupTitle.textContent=mode==='ai'?'Partida contra IA':'Multijugador local';
     UI.pkAiSetup.classList.toggle('hidden',mode!=='ai');
     UI.pkLocalSetup.classList.toggle('hidden',mode!=='local');
-    hydrateProfile();
+    setDefaultPlayerName();
     UI.pkSetup.showModal();
   }
 
@@ -101,7 +98,7 @@ const AI_PROFILES = [
     let players=[];
     if(mode==='ai'){
       const count=Math.max(1,Math.min(5,Number(UI.pkAiCount.value)||2));
-      players=[makePlayer(0,baseName,false,'♠'),...AI_PROFILES.slice(0,count).map((ai,index)=>makePlayer(index+1,ai.name,true,ai.avatar,ai.style))];
+      players=[makePlayer(0,baseName,false,'♠'),...AI_PLAYERS.slice(0,count).map((ai,index)=>makePlayer(index+1,ai.name,true,ai.avatar,ai.style))];
     }else{
       const count=Math.max(2,Math.min(6,Number(UI.pkLocalCount.value)||2));
       players=[...UI.pkLocalNames.querySelectorAll('input')].slice(0,count).map((input,index)=>makePlayer(index,cleanName(input.value,`Jugador ${index+1}`),false,index===0?'♠':String(index+1)));
@@ -310,7 +307,7 @@ const AI_PROFILES = [
     UI.pkGameResultText.textContent=`Anton cierra el casino después de ${state.handNumber} manos. ${champion.name} reúne ${formatChips(champion.stack)} fichas.`;
     UI.pkFinalRanking.innerHTML=ranking.map((player,index)=>`<div class="pk-result-row ${index===0?'winner':''}"><span>${index+1}. ${escapeHtml(player.name)}</span><strong>${formatChips(player.stack)}</strong></div>`).join('');
     if(!state.recorded){
-      const human=state.players[0];window.SalaCeroClub?.recordMatch?.({game:'poker',won:state.mode==='ai'&&champion.seat===human.seat,local:state.mode==='local',mode:state.mode,score:human?.stack||0,special:champion.seat===human?.seat?'champion':''});state.recorded=true;
+      const human=state.players[0];state.recorded=true;
     }
     clearSave();render();if(!UI.pkGameResult.open)UI.pkGameResult.showModal();
   }

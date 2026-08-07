@@ -1,9 +1,0 @@
-SALA CERO V22.0
-
-1. Descomprime el ZIP.
-2. Sustituye en GitHub todos los archivos y carpetas de la versión anterior por los de esta carpeta.
-3. Mantén exactamente la misma estructura de archivos.
-4. Espera a que GitHub Pages termine el despliegue.
-5. Abre la web y recarga una vez para activar el service worker v22.0.0.
-
-No es necesario borrar partidas ni perfiles guardados. La preferencia móvil/ordenador anterior se conserva.

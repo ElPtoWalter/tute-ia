@@ -1,26 +1,22 @@
-# Sala Cero v22.0 — Optimización integral
+# Sala Cero v22.0.0 — Rebuild
 
-Esta versión se centra en que toda la sala transmita una impresión coherente, cuidada y cómoda tanto en ordenador como en móvil/iPhone.
+La capa de producto se ha rehecho desde cero. Los motores de juego se conservan, pero se elimina la arquitectura de cuenta/progresión y se unifica el responsive.
 
-## Cambios principales
+## Eliminado
+- Inicio de sesión/perfiles.
+- Nombre global de usuario.
+- XP, niveles, logros, retos, trofeos y carrera.
+- Selector manual PC/móvil.
+- Panel PWA complejo y copias de seguridad globales.
+- Capas CSS/JS duplicadas del selector de dispositivo y recursos heredados no usados.
 
-- Nueva capa visual común `polish-v22.css` aplicada al menú, Carrera y los nueve juegos.
-- Jerarquía tipográfica y contraste revisados; se eliminan tamaños móviles de 4–8 px que resultaban difíciles de leer.
-- Controles táctiles ampliados, estados de foco claros, mejor respuesta al pulsar y botones desactivados más comprensibles.
-- Cabeceras unificadas con navegación desplazable en pantallas estrechas, sin comprimir los botones.
-- Adaptación específica de las mesas de Tute, Generala, Chinchón, Escoba, Culo, Póker y Blackjack.
-- Es un 10 optimizado para mostrar la carta como protagonista en vertical.
-- Impostor simplificado para que cada pantalla tenga una acción principal clara.
-- Diálogos, reglas, configuraciones y resultados adaptados a la altura real del dispositivo y a las zonas seguras de iPhone.
-- Mejor soporte para teclado, lectores de pantalla, movimiento reducido y navegación mediante foco.
-- Imágenes secundarias de la portada con carga diferida para acelerar la primera impresión.
-- Service worker actualizado a v22.0.0: la instalación offline ya no falla por completo si un recurso aislado no puede descargarse.
-- Eliminado el PNG duplicado del cubilete; se conserva la versión WebP de menor peso.
-- Versiones visibles de portada, Carrera, Tute y panel PWA unificadas en v22.0.
-- Preferencia anterior de formato móvil/ordenador conservada automáticamente al actualizar.
+## Nuevo
+- Portada totalmente nueva y directa.
+- Responsive automático.
+- Safe-area real para iPhone.
+- Controles de 48–56 px y formularios a 16 px para evitar zoom de Safari.
+- Modales móviles tipo bottom sheet/pantalla completa.
+- Menos decoración y más espacio para mesa, cartas, dados y acciones.
+- Service worker más pequeño y caché coherente con v22.
 
-## Compatibilidad
-
-- Ordenador: diseño panorámico con información simultánea y paneles laterales.
-- Móvil/iPhone: interfaz vertical, controles de al menos 44–48 px y ausencia de desbordamiento horizontal.
-- Funcionamiento offline y partidas guardadas conservados.
+Los nombres que siguen existiendo dentro de modos multijugador son nombres de jugadores de esa partida, no perfiles ni sesiones.

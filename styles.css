@@ -2827,7 +2827,7 @@ body.tutorial-mode #newMatchButton::before { content: ""; }
 }
 
 /* ─────────────────────────────────────────────
-   v13 · Club offline, multijugador local y música
+   v13 · multijugador local y música
    ───────────────────────────────────────────── */
 .mode-grid-three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2847,59 +2847,6 @@ body.tutorial-mode #newMatchButton::before { content: ""; }
 .mode-card-custom .mode-card-copy small,
 .mode-card-custom .mode-meta i { color: #aeb8ed; }
 
-.club-dashboard {
-  display: grid;
-  grid-template-columns: .7fr .7fr 1.1fr 2fr;
-  gap: 12px;
-  margin-top: 14px;
-}
-.club-stat,
-.club-now-playing {
-  min-height: 116px;
-  padding: 18px;
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: 18px;
-  background: rgba(255,255,255,.022);
-}
-.club-stat > span,
-.club-now-playing div > span {
-  display: block;
-  color: #8da096;
-  font-size: 7px;
-  font-weight: 950;
-  letter-spacing: .16em;
-}
-.club-stat strong {
-  display: block;
-  margin: 8px 0 4px;
-  color: var(--gold-bright);
-  font-family: Georgia, serif;
-  font-size: 29px;
-  font-weight: 500;
-}
-.club-stat small { color: #778a80; font-size: 8px; }
-.club-now-playing {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-.club-now-playing div { flex: 1; }
-.club-now-playing strong {
-  display: block;
-  margin-top: 5px;
-  font-size: 12px;
-}
-.club-now-playing button {
-  min-height: 38px;
-  padding: 0 13px;
-  border: 1px solid rgba(240,207,131,.28);
-  border-radius: 11px;
-  color: var(--gold-bright);
-  background: rgba(217,182,111,.07);
-  cursor: pointer;
-  font-size: 9px;
-  font-weight: 900;
-}
 .music-live-dot {
   width: 9px;
   height: 9px;
@@ -3134,19 +3081,14 @@ body.tutorial-mode #newMatchButton::before { content: ""; }
 @media (max-width: 1080px) {
   .mode-grid-three { grid-template-columns: 1fr 1fr; }
   .mode-grid-three .mode-card-custom { grid-column: 1 / -1; }
-  .club-dashboard { grid-template-columns: repeat(2, 1fr); }
-  .club-now-playing { grid-column: 1 / -1; }
 }
 @media (max-width: 760px) {
   .mode-grid-three,
   .variant-grid,
   .custom-rules-layout,
-  .club-dashboard { grid-template-columns: 1fr; }
   .mode-grid-three .mode-card-custom,
-  .club-now-playing { grid-column: auto; }
   .wide-modal-card { width: calc(100vw - 18px); }
   .variant-option { min-height: 190px; }
-  .club-now-playing { align-items: flex-start; flex-wrap: wrap; }
   .music-popover { right: -90px; width: min(245px, calc(100vw - 30px)); }
   .variant-live-badge { display: none; }
 }

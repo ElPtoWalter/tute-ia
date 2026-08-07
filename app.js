@@ -221,17 +221,9 @@
     round: null
   };
 
-  function careerAiConfig() {
-    return window.SalaCeroCareer?.getAiConfig?.("tute") || null;
-  }
+  function aiDisplayName() { return "Doña Virtud"; }
 
-  function aiDisplayName() {
-    return careerAiConfig()?.name || "Doña Virtud";
-  }
-
-  function aiPersonality() {
-    return careerAiConfig()?.personality || "calculating";
-  }
+  function aiPersonality() { return "calculating"; }
 
   const BASE_TUTORIAL_STEPS = [
     {
@@ -549,9 +541,6 @@
     return steps;
   }
 
-  function tutorialStorageKey(variantId) {
-    return `tuteTutorialComplete:${variantId}`;
-  }
 
   async function ensureMusicStarted() {
     if (!musicEnabled || !UI.backgroundMusic?.paused) return;
@@ -578,22 +567,8 @@
     document.body.classList.toggle("music-playing", playing);
     UI.musicIcon.textContent = playing ? "♫" : "♩";
     UI.musicStatus.textContent = playing ? "Reproduciendo · bucle offline" : "Música pausada";
-    UI.homeMusicButton.textContent = playing ? "Pausar" : "Reproducir";
+    if (UI.homeMusicButton) UI.homeMusicButton.textContent = playing ? "Pausar" : "Reproducir";
     document.querySelectorAll(".music-live-dot").forEach(dot => dot.classList.toggle("paused", !playing));
-  }
-
-  function renderHomeStats() {
-    try {
-      const stats = JSON.parse(localStorage.getItem("tuteIaStats") || "{}");
-      const games = stats.matchesPlayed || 0;
-      const wins = stats.matchesWon || 0;
-      UI.statGames.textContent = games;
-      UI.statWins.textContent = wins;
-      UI.statWinRate.textContent = `${games ? Math.round(wins / games * 100) : 0} % de efectividad`;
-      const counts = stats.variantPlays || {};
-      const favoriteId = Object.keys(counts).sort((a, b) => (counts[b] || 0) - (counts[a] || 0))[0] || selectedVariantId;
-      UI.statFavorite.textContent = getVariant(favoriteId).shortName;
-    } catch (_) {}
   }
 
   document.addEventListener("DOMContentLoaded", init);
@@ -605,13 +580,11 @@
     buildVariantSelectors();
     renderEmptyState();
     updateTutorialCompletionBadge();
-    renderHomeStats();
     updateMusicUi();
     window.TuteMusicContinuity?.sync();
     showHome();
     refreshSoloSaveCard();
     handleLaunchShortcut();
-    applyCareerLaunch();
     window.addEventListener("resize", () => state.round && renderHands(), { passive: true });
   }
 
@@ -722,7 +695,7 @@
       UI.musicPopover.classList.toggle("hidden");
       if (wasHidden && UI.backgroundMusic.paused && musicEnabled) await ensureMusicStarted();
     });
-    UI.homeMusicButton.addEventListener("click", toggleMusic);
+    UI.homeMusicButton?.addEventListener("click", toggleMusic);
     UI.mobileInfoButton?.addEventListener("click", () => {
       const open = !UI.sidePanel.classList.contains("mobile-open");
       setMobileInfoOpen(open);
@@ -772,26 +745,6 @@
     openSetupForVariant(selectedVariantId || "house");
   }
 
-  function applyCareerLaunch() {
-    const config = careerAiConfig();
-    if (!config || !new URLSearchParams(location.search).has("career")) return;
-    const variantId = VARIANTS[config.variant] ? config.variant : "house";
-    selectedVariantId = variantId;
-    saveSelectedVariant(variantId);
-    const radio = document.querySelector(`input[name="difficulty"][value="${config.difficulty || "normal"}"]`);
-    if (radio) {
-      radio.checked = true;
-      document.querySelectorAll(".choice-card").forEach(card => card.classList.toggle("selected", card.contains(radio)));
-    }
-    UI.aiName.textContent = aiDisplayName();
-    setTimeout(() => {
-      openSetupForVariant(variantId);
-      UI.setupEyebrow.textContent = config.competitionTitle?.toUpperCase() || UI.setupEyebrow.textContent;
-      UI.setupTitle.textContent = `${config.matchLabel} · ${config.name}`;
-      UI.setupCopy.textContent = `${config.label || "Rival de carrera"}. ${config.motto || "Encuentro oficial de Sala Cero."}`;
-    }, 180);
-  }
-
   function setMobileInfoOpen(open) {
     if (!UI.sidePanel || !UI.mobileInfoButton || !UI.mobileInfoBackdrop) return;
     UI.sidePanel.classList.toggle("mobile-open", open);
@@ -819,22 +772,15 @@
     clearTutorialFocus();
     renderEmptyState();
     updateTutorialCompletionBadge();
-    renderHomeStats();
     updateMusicUi();
     window.TutePWA?.setPlaying(false);
     refreshSoloSaveCard();
   }
 
   function updateTutorialCompletionBadge() {
-    let completed = 0;
-    try {
-      ["house", "habanero", "fournier", "americano", "arrastrado3", "pairs4", "individual4", "custom"].forEach(id => {
-        if (localStorage.getItem(tutorialStorageKey(id)) === "true") completed += 1;
-      });
-    } catch (_) {}
-    state.tutorial.completed = completed > 0;
-    UI.tutorialCompletionBadge.textContent = completed ? `${completed} reglamento${completed === 1 ? "" : "s"} completado${completed === 1 ? "" : "s"}` : "8 tutoriales adaptados";
-    UI.tutorialModeButton.classList.toggle("tutorial-complete", completed > 0);
+    state.tutorial.completed = false;
+    if (UI.tutorialCompletionBadge) UI.tutorialCompletionBadge.textContent = "Tutorial interactivo";
+    UI.tutorialModeButton?.classList.remove("tutorial-complete");
   }
 
   function startTutorial(variantId = "house") {
@@ -1157,7 +1103,6 @@
   }
 
   function completeTutorial() {
-    try { localStorage.setItem(tutorialStorageKey(state.settings.variantId), "true"); } catch (_) {}
     state.tutorial.completed = true;
     playSound("victory");
     showToast(`<strong>Tutorial de ${getVariant().name} completado.</strong> Ya puedes enfrentarte a la IA.`);
@@ -2665,7 +2610,7 @@
     playSound(option.points === 40 ? "song40" : "song");
     render();
     if (window.TuteCanteFX) {
-      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Jugador") : aiDisplayName() });
+      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? "Jugador" : aiDisplayName() });
     }
     continueAfterTrick();
   }
@@ -2934,7 +2879,7 @@
 
       if (songPairs.has(card.id)) score -= 20;
 
-      score += careerPersonalityAdjustment(card, opponentCard, wins, trickValue, personality);
+      score += personalityAdjustment(card, opponentCard, wins, trickValue, personality);
 
       if (state.settings.difficulty === "hard") {
         score += expertAdjustment(card, opponentCard, wins);
@@ -2948,7 +2893,7 @@
     return scored[0].card;
   }
 
-  function careerPersonalityAdjustment(card, opponentCard, wins, trickValue, personality) {
+  function personalityAdjustment(card, opponentCard, wins, trickValue, personality) {
     const round = state.round;
     let score = 0;
     if (personality === "conservative") {
@@ -3039,7 +2984,6 @@
       : state.match.playerRounds > state.match.aiRounds ? "player" : "ai";
 
     render();
-    updatePersistentStats(winner, matchOver ? matchWinner : null, reason);
 
     UI.resultPlayerScore.textContent = pointMode ? state.match.playerPoints : playerScore;
     UI.resultAiScore.textContent = pointMode ? state.match.aiPoints : aiScore;
@@ -3283,34 +3227,6 @@
       discardSoloSave();
       window.TutePWA?.toast("La partida guardada no se pudo recuperar.");
     }
-  }
-
-  function updatePersistentStats(roundWinner, matchWinner, reason = "puntos") {
-    try {
-      const current = JSON.parse(localStorage.getItem("tuteIaStats") || "{}");
-      current.roundsPlayed = (current.roundsPlayed || 0) + 1;
-      if (roundWinner === "player") current.roundsWon = (current.roundsWon || 0) + 1;
-      if (matchWinner) {
-        current.matchesPlayed = (current.matchesPlayed || 0) + 1;
-        if (matchWinner === "player") current.matchesWon = (current.matchesWon || 0) + 1;
-        current.variantPlays ||= {};
-        current.variantPlays[state.settings.variantId] = (current.variantPlays[state.settings.variantId] || 0) + 1;
-      }
-      localStorage.setItem("tuteIaStats", JSON.stringify(current));
-      if (matchWinner) {
-        const pointMode = state.settings.rules.matchMode === "points";
-        window.SalaCeroClub?.recordMatch({
-          game: "tute",
-          mode: "solo",
-          variant: state.settings.variantId,
-          won: matchWinner === "player",
-          score: pointMode ? state.match.playerPoints : state.match.playerRounds,
-          opponentScore: pointMode ? state.match.aiPoints : state.match.aiRounds,
-          special: String(reason).includes("tute") ? "tute" : String(reason).includes("capote") ? "capote" : ""
-        });
-      }
-      renderHomeStats();
-    } catch (_) {}
   }
 
 })();

@@ -1,33 +1,20 @@
 {
-  "id": "./index.html?source=pwa",
-  "name": "Sala Cero — Nueve juegos offline",
+  "id": "./index.html",
+  "name": "Sala Cero",
   "short_name": "Sala Cero",
-  "description": "Nueve juegos offline optimizados para móvil y ordenador: Tute, Generala, Chinchón, Escoba, Culo, Póker, Es un 10, Blackjack e Impostor.",
-  "start_url": "./index.html?source=pwa",
+  "description": "Nueve juegos offline optimizados automáticamente para móvil y ordenador.",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "display_override": [
-    "fullscreen",
-    "standalone",
-    "minimal-ui"
-  ],
   "orientation": "any",
   "background_color": "#04110e",
-  "theme_color": "#071c17",
+  "theme_color": "#071813",
   "lang": "es-ES",
   "dir": "ltr",
   "categories": [
     "games",
-    "entertainment",
-    "education"
+    "entertainment"
   ],
-  "prefer_related_applications": false,
-  "launch_handler": {
-    "client_mode": [
-      "navigate-existing",
-      "auto"
-    ]
-  },
   "icons": [
     {
       "src": "assets/icon-192.png",
@@ -50,159 +37,24 @@
   ],
   "shortcuts": [
     {
-      "name": "Abrir Tute",
-      "short_name": "Tute",
-      "description": "Entrar al club de Tute",
-      "url": "./tute.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
+      "name": "Tute",
+      "url": "./tute.html"
     },
     {
-      "name": "Jugar a la Generala",
-      "short_name": "Generala",
-      "description": "Abrir la mesa de Generala",
-      "url": "./generala.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
+      "name": "Generala",
+      "url": "./generala.html"
     },
     {
-      "name": "Jugar a la Escoba",
-      "short_name": "Escoba",
-      "description": "Abrir la mesa de Escoba de 15",
-      "url": "./escoba.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
+      "name": "Blackjack",
+      "url": "./blackjack.html"
     },
     {
-      "name": "Jugar al Chinchón",
-      "short_name": "Chinchón",
-      "description": "Abrir la mesa de Chinchón",
-      "url": "./chinchon.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
+      "name": "El impostor",
+      "url": "./impostor.html"
     },
     {
-      "name": "Jugar al Culo",
-      "short_name": "Culo",
-      "description": "Abrir la mesa de Culo / Presidente",
-      "url": "./culo.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Jugar al Póker",
-      "short_name": "Póker",
-      "description": "Abrir la mesa Texas Hold'em",
-      "url": "./poker.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Es un 10 pero...",
-      "short_name": "Es un 10",
-      "description": "Barajar la baraja de Anton y revelar una carta",
-      "url": "./es-un-10.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Carrera de Sala Cero",
-      "short_name": "Carrera",
-      "description": "Abrir campeonatos, liga y vitrina de trofeos",
-      "url": "./career.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Blackjack de Anton",
-      "short_name": "Blackjack",
-      "description": "Jugar contra la banca de Anton",
-      "url": "./blackjack.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "El impostor de Anton",
-      "short_name": "Impostor",
-      "description": "Juego local de palabra secreta",
-      "url": "./impostor.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Tute local",
-      "short_name": "Pasa el móvil",
-      "description": "Partida local de Tute",
-      "url": "./local.html",
-      "icons": [
-        {
-          "src": "assets/icon-192.png",
-          "sizes": "192x192"
-        }
-      ]
-    }
-  ],
-  "screenshots": [
-    {
-      "src": "assets/screenshots/mobile-home.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Menú principal de Tute IA en móvil"
-    },
-    {
-      "src": "assets/screenshots/local-handoff.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "Pantalla privada para pasar el móvil entre jugadores"
-    },
-    {
-      "src": "assets/screenshots/desktop-table.png",
-      "sizes": "1365x768",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Mesa de juego offline"
+      "name": "Póker",
+      "url": "./poker.html"
     }
   ]
 }

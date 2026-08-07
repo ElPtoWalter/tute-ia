@@ -3,7 +3,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=22.0.0"></script>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <meta content="#161129" name="theme-color"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -14,12 +14,7 @@
 <link href="assets/icons/apple-touch-icon.png" rel="apple-touch-icon"/>
 <link href="generala.css?v=22.0.0" rel="stylesheet"/>
 <link href="generala-classic.css?v=22.0.0" rel="stylesheet"/>
-<link href="club.css?v=22.0.0" rel="stylesheet"/>
-<link href="career.css?v=22.0.0" rel="stylesheet"/>
-<link href="auth.css?v=22.0.0" rel="stylesheet"/><script src="auth.js?v=22.0.0"></script> <link href="mobile-final.css?v=22.0.0" rel="stylesheet"/>
-<link href="device-mode.css?v=22.0.0" rel="stylesheet"/>
-<link href="polish-v22.css?v=22.0.0" rel="stylesheet"/>
-</head>
+<link href="sala-cero-v22.css?v=22.0.0" rel="stylesheet"/></head>
 <body>
 <div aria-hidden="true" class="g-noise"></div>
 <header class="g-topbar">
@@ -28,10 +23,8 @@
 <span><strong>GENERALA</strong><small>SALA CERO</small></span>
 </a>
 <div class="g-top-actions">
-<a aria-label="Abrir perfil de Sala Cero" class="club-profile-chip" data-club-chip="" href="index.html#perfil"></a>
 <button aria-label="Música" class="g-icon-button" id="gMusicButton" type="button">♫</button>
 <button class="g-soft-button" id="gRulesButton" type="button">Reglas</button>
-<a class="g-soft-button" href="career.html">Carrera</a>
 <a class="g-soft-button" href="index.html">Sala de juegos</a>
 </div>
 </header>
@@ -64,11 +57,6 @@
 <small>PARTIDA GUARDADA</small><strong id="gContinueTitle">Sin partida pendiente</strong>
 <p id="gContinueMeta">La partida se guarda automáticamente después de cada tirada y anotación.</p><b>Continuar →</b>
 </button>
-<a class="g-mode-card g-mode-card-career" href="career.html">
-<span class="g-mode-no">04</span><span class="g-mode-symbol">♛</span>
-<small>LIGA Y CAMPEONATOS</small><strong>Carrera de Sala Cero</strong>
-<p>Compite por jornadas, escala en la clasificación y desbloquea dados y cubiletes de campeonato.</p><b>Entrar en competición →</b>
-</a>
 </div>
 </section>
 <section aria-label="Mesa de Generala" class="g-game hidden" id="gGame">
@@ -124,7 +112,7 @@
 <button class="g-close" id="gCloseSetup" type="button">×</button>
 <span class="g-kicker" id="gSetupKicker">PARTIDA CONTRA IA</span><h1 id="gSetupTitle">Configura la mesa</h1>
 <input id="gModeInput" type="hidden" value="solo"/>
-<label class="g-field"><span>Tu nombre</span><input id="gPlayerName" maxlength="18" value="Jugador"/></label>
+<label class="g-field sc-solo-name-field"><span>Tu nombre</span><input id="gPlayerName" maxlength="18" value="Jugador"/></label>
 <div class="g-local-options hidden" id="gLocalOptions">
 <label class="g-field"><span>Jugadores</span><select id="gPlayerCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label>
 <div class="g-name-grid" id="gNameGrid"></div>
@@ -146,12 +134,7 @@
 </dialog>
 <div aria-live="assertive" class="g-toast" id="gToast"></div>
 <audio id="backgroundMusic" loop="" preload="auto" src="assets/audio/casino-jazz-lite.mp3"></audio>
-<script src="club.js?v=22.0.0"></script>
-<script src="career.js?v=22.0.0"></script>
 <script src="music-continuity.js?v=22.0.0"></script>
 <script src="generala.js?v=22.0.0"></script>
-<script src="mobile-layout.js?v=22.0.0"></script>
-<script src="device-mode.js?v=22.0.0"></script>
-<script src="polish-v22.js?v=22.0.0"></script>
-</body>
+<script src="sala-cero-v22.js?v=22.0.0"></script></body>
 </html>

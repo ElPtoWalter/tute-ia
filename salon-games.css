@@ -3,10 +3,7 @@
 @media(max-width:720px){.sg-top{min-height:56px;padding-inline:10px}.sg-brand small{display:none}.sg-actions .sg-soft{display:none}.sg-shell{padding:0}.sg-welcome{display:block;min-height:calc(100dvh - 56px);padding:16px 11px 28px}.sg-hero{padding:16px 4px}.sg-hero h1{font-size:48px}.sg-hero p{font-size:11px}.sg-showcase{min-height:235px;border-radius:22px}.sg-showcase img{width:96px}.sg-showcase-seal{width:74px;height:74px;font-size:34px}.sg-modes{grid-template-columns:1fr;margin-top:12px}.sg-mode{min-height:145px}.sg-game{display:block;min-height:calc(100dvh - 56px);padding-bottom:100px}.sg-table{min-height:calc(100dvh - 56px);border-radius:0;border:0;padding:9px 7px 18px;box-shadow:inset 0 0 0 6px #3a1f10,inset 0 0 0 8px #a67335}.sg-panel.score{position:fixed;left:7px;right:7px;bottom:max(7px,var(--safe-bottom));z-index:900;max-height:79px;padding:8px;border-radius:15px;overflow:hidden}.sg-panel.score.expanded{max-height:66dvh;overflow:auto}.sg-panel-head{margin:0}.sg-panel-head h2{font-size:18px}.sg-turn{width:100%;padding:7px 9px}.sg-center{min-height:335px;padding:12px 2px;gap:12px}.sg-piles{gap:20px}.sg-pile{width:82px;height:126px}.sg-hand{min-height:158px;gap:4px;padding-bottom:18px;overflow-x:auto;justify-content:flex-start}.sg-hand .sg-card{flex:0 0 64px;width:64px}.sg-opponent-hand{min-height:75px}.sg-opponent-hand img{width:43px;height:68px;margin-left:-18px}.sg-table-cards{min-height:205px;gap:6px}.sg-table-cards .sg-card{width:61px}.sg-message{font-size:8px}.sg-controls{gap:5px}.sg-primary,.sg-secondary,.sg-danger{min-height:42px;padding:0 12px;font-size:8px}.sg-combo{font-size:7px;padding:7px 9px}.sg-grid-2,.sg-rules{grid-template-columns:1fr}.sg-modal-card{padding:22px 14px}.sg-modal-card h2{font-size:29px}}
 
 
-/* Personalización heredada de Carrera */
-html[data-career-felt="burgundy"] .sg-table{--sg-felt:#6a1725;--sg-felt-dark:#310812}
-html[data-career-felt="night"] .sg-table{--sg-felt:#102d4a;--sg-felt-dark:#061522}
-html[data-career-felt="royal"] .sg-table{--sg-felt:#554011;--sg-felt-dark:#241703}
+/* Enlace secundario dentro de los modales */
 .sg-modal-card>a.sg-secondary{display:grid;place-items:center}
 
 /* Animaciones de mesa v20 */
