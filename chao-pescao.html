@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06212a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="Chao Pescao en Sala Cero: preguntas absurdas, faroleo y deducción para jugar pasando un solo móvil.">
+<title>Chao Pescao — Sala Cero</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon-64.png">
+<link rel="stylesheet" href="chao-pescao.css?v=22.2.0">
+<link rel="stylesheet" href="sala-cero-v22.css?v=22.2.0">
+</head>
+<body class="cp-body">
+<div class="cp-water" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+<header class="cp-top">
+  <a class="cp-brand" href="index.html"><span class="cp-mark"><i></i></span><span><b>CHAO PESCAO</b><small>SALA CERO · PARTY GAME</small></span></a>
+  <a class="cp-home" href="index.html">Sala Cero</a>
+</header>
+<main class="cp-shell">
+  <section class="cp-welcome" id="cpWelcome">
+    <div class="cp-hero-copy">
+      <span class="cp-eyebrow">4–10 PERSONAS · UN MÓVIL · OFFLINE</span>
+      <h1>Uno dice la verdad.<br><em>Los demás, a pescar.</em></h1>
+      <p>El pescador escucha una respuesta de cada persona e intenta descubrir quién está mintiendo. Cada pez rojo atrapado suma. Pero si señalas al pez azul, pierdes todo lo ganado en esa ronda.</p>
+      <button class="cp-primary" id="cpConfigure">Preparar partida →</button>
+    </div>
+    <div class="cp-hero-art" aria-hidden="true">
+      <div class="cp-fish cp-fish-red f1"><i></i></div><div class="cp-fish cp-fish-red f2"><i></i></div><div class="cp-fish cp-fish-blue hero-blue"><i></i></div><div class="cp-hook">⌁</div><div class="cp-stamp">¿QUIÉN DICE LA VERDAD?</div>
+    </div>
+    <div class="cp-how">
+      <article><b>01</b><strong>Lee la pregunta</strong><p>El pescador no ve la solución.</p></article>
+      <article><b>02</b><strong>Pasa el móvil</strong><p>Todos descubren su pez en secreto.</p></article>
+      <article><b>03</b><strong>Chao pescao</strong><p>Atrapa mentiras sin tocar la verdad.</p></article>
+    </div>
+  </section>
+  <section class="cp-setup hidden" id="cpSetup">
+    <div class="cp-panel">
+      <button class="cp-close" id="cpSetupClose" aria-label="Cerrar">×</button><span class="cp-eyebrow">CONFIGURAR PARTIDA</span><h2>¿Quién se moja?</h2>
+      <div class="cp-grid2"><label><span>Jugadores</span><select id="cpCount"></select></label><label><span>Duración</span><select id="cpLength"><option value="1">1 vuelta · todos pescan una vez</option><option value="2">2 vueltas · partida larga</option></select></label></div>
+      <label><span>Categoría</span><select id="cpCategory"></select></label>
+      <div class="cp-category-note">Preguntas originales de Sala Cero. La mecánica es la conocida; el mazo no reproduce cartas comerciales.</div>
+      <div class="cp-names" id="cpNames"></div><button class="cp-primary cp-wide" id="cpStart">Empezar la pesca →</button>
+    </div>
+  </section>
+  <section class="cp-game hidden" id="cpGame">
+    <div class="cp-gamebar"><div><small id="cpRoundLabel">RONDA 1 / 6</small><strong id="cpFisherLabel">Pesca Jugador 1</strong></div><button id="cpScoreToggle">Marcador</button></div>
+    <div class="cp-score-drawer hidden" id="cpScoreDrawer"><div id="cpScoreList"></div></div>
+    <section class="cp-stage cp-question-stage" id="cpQuestionStage">
+      <span class="cp-eyebrow">SOLO MIRA EL PESCADOR</span><div class="cp-role-person"><small>PESCADOR</small><strong id="cpFisherName">Jugador 1</strong></div>
+      <article class="cp-question-card"><small id="cpQuestionCategory">CURIOSIDADES</small><h2 id="cpQuestion">¿Pregunta?</h2><p>No pulses para ver ninguna respuesta: tú no debes conocerla.</p></article>
+      <button class="cp-primary cp-wide" id="cpPassToFish">Ya la he leído · pasar el móvil →</button>
+    </section>
+    <section class="cp-stage cp-handoff hidden" id="cpHandoff">
+      <span class="cp-eyebrow">PASA EL DISPOSITIVO</span><div class="cp-phone">▯</div><h2 id="cpHandoffName">Jugador 2</h2><p>Solo esta persona debe mirar la pantalla.</p><button class="cp-primary cp-wide" id="cpRevealRole">Soy esta persona · ver mi pez</button>
+    </section>
+    <section class="cp-stage cp-secret hidden" id="cpSecret">
+      <span class="cp-eyebrow">TU PAPEL ES SECRETO</span><div class="cp-secret-card" id="cpSecretCard"><div class="cp-bigfish"><i></i></div><small id="cpRoleKicker">ERES PEZ ROJO</small><h2 id="cpRoleTitle">MIENTE</h2><p id="cpRoleText">Inventa una respuesta creíble.</p><div class="cp-real-answer"><small>RESPUESTA REAL</small><strong id="cpRealAnswer">—</strong></div></div><button class="cp-primary cp-wide" id="cpHideRole">Ocultar y pasar →</button>
+    </section>
+    <section class="cp-stage cp-return hidden" id="cpReturn">
+      <span class="cp-eyebrow">TODOS LOS PECES ESTÁN LISTOS</span><div class="cp-phone locked">▯</div><h2>Devuelve el móvil a <span id="cpReturnName">Jugador 1</span></h2><p>La respuesta real ya ha desaparecido de la pantalla.</p><button class="cp-primary cp-wide" id="cpBackToFisher">Soy el pescador · empezar →</button>
+    </section>
+    <section class="cp-stage cp-fishing hidden" id="cpFishing">
+      <div class="cp-live-head"><div><span class="cp-eyebrow">RONDA EN JUEGO</span><h2 id="cpLiveFisher">Jugador 1 pesca</h2></div><div class="cp-pot"><small>EN RIESGO</small><strong><span id="cpRoundPoints">0</span> pt</strong></div></div>
+      <article class="cp-live-question"><small>PREGUNTA</small><strong id="cpLiveQuestion">¿Pregunta?</strong></article><p class="cp-instruction">Escucha una respuesta de cada persona. Toca <b>Chao Pescao</b> sobre quien creas que está mintiendo.</p><div class="cp-suspects" id="cpSuspects"></div><button class="cp-bank" id="cpBank">Plantarse y guardar <span id="cpBankPoints">0</span> pt</button>
+    </section>
+    <section class="cp-stage cp-round-result hidden" id="cpRoundResult">
+      <div class="cp-result-icon" id="cpResultIcon">✓</div><span class="cp-eyebrow">FIN DE LA RONDA</span><h2 id="cpResultTitle">Buena pesca</h2><p id="cpResultText">—</p><div class="cp-answer-reveal"><small>LA RESPUESTA REAL ERA</small><strong id="cpAnswerReveal">—</strong></div><div class="cp-deltas" id="cpDeltas"></div><button class="cp-primary cp-wide" id="cpNextRound">Siguiente ronda →</button>
+    </section>
+    <section class="cp-stage cp-final hidden" id="cpFinal">
+      <span class="cp-eyebrow">PARTIDA TERMINADA</span><div class="cp-trophy">♛</div><h2 id="cpWinnerTitle">Tenemos campeón</h2><p id="cpWinnerText">—</p><div class="cp-final-board" id="cpFinalBoard"></div><button class="cp-primary cp-wide" id="cpReplay">Revancha con los mismos jugadores →</button><button class="cp-secondary cp-wide" id="cpNewGame">Cambiar jugadores</button>
+    </section>
+  </section>
+</main>
+<div class="cp-toast" id="cpToast"></div><script src="chao-pescao.js?v=22.2.0"></script><script src="sala-cero-v22.js?v=22.2.0"></script>
+</body></html>

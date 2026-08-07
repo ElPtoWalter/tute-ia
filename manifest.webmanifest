@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "Sala Cero",
   "short_name": "Sala Cero",
-  "description": "Nueve juegos offline optimizados automáticamente para móvil y ordenador.",
+  "description": "Diez juegos offline optimizados automáticamente para móvil y ordenador.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -51,6 +51,10 @@
     {
       "name": "El impostor",
       "url": "./impostor.html"
+    },
+    {
+      "name": "Chao Pescao",
+      "url": "./chao-pescao.html"
     },
     {
       "name": "Póker",
