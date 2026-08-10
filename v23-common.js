@@ -1,0 +1,23 @@
+(()=>{
+  'use strict';
+  const q=(s,r=document)=>r.querySelector(s), qa=(s,r=document)=>[...r.querySelectorAll(s)];
+  const shuffle=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b};
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+  const suits=['oros','copas','espadas','bastos'];
+  const ranks=[1,2,3,4,5,6,7,10,11,12];
+  const spanishDeck=()=>shuffle(suits.flatMap(suit=>ranks.map(rank=>({suit,rank,id:`${suit}-${rank}`,src:`assets/cards/${suit}-${rank}.webp`}))));
+  const cardButton=(card,cls='')=>`<button type="button" class="v23-playing-card ${cls}" data-card="${card.id}" aria-label="${card.rank} de ${card.suit}" style="background-image:url('${card.src}')"></button>`;
+  let toastTimer=null;
+  const toast=(msg)=>{let el=q('.v23-toast');if(!el){el=document.createElement('div');el.className='v23-toast';document.body.append(el)}el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200)};
+  const beep=(freq=620,dur=.09,type='sine',vol=.05)=>{try{const C=window.AudioContext||window.webkitAudioContext;const ctx=window.__v23Audio||(window.__v23Audio=new C());const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(ctx.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);o.stop(ctx.currentTime+dur)}catch(_){}};
+  const haptic=pattern=>{try{navigator.vibrate?.(pattern)}catch(_){}};
+  const show=(el)=>{if(typeof el==='string')el=q(el);el?.classList.remove('hidden');if(el)el.hidden=false};
+  const hide=(el)=>{if(typeof el==='string')el=q(el);el?.classList.add('hidden');if(el)el.hidden=true};
+  const passScreen=(title,subtitle,onReveal,icon='📱')=>{let el=q('#v23Pass');if(!el){el=document.createElement('div');el.id='v23Pass';el.className='v23-pass hidden';el.innerHTML=`<div class="v23-pass-card"><div class="v23-icon" data-pass-icon></div><h2 data-pass-title></h2><p data-pass-sub></p><button class="v23-btn primary big" type="button" data-pass-reveal>Ver mi pantalla</button></div>`;document.body.append(el)}q('[data-pass-icon]',el).textContent=icon;q('[data-pass-title]',el).textContent=title;q('[data-pass-sub]',el).textContent=subtitle||'Asegúrate de que solo tú ves la pantalla.';show(el);const btn=q('[data-pass-reveal]',el);const next=()=>{hide(el);btn.removeEventListener('click',next);onReveal?.()};btn.addEventListener('click',next)};
+  const setupHelp=()=>{const help=q('#helpModal');q('[data-help]')?.addEventListener('click',()=>show(help));qa('[data-close-help]').forEach(b=>b.addEventListener('click',()=>hide(help)));help?.addEventListener('click',e=>{if(e.target===help)hide(help)});document.addEventListener('keydown',e=>{if(e.key==='Escape')hide(help)});};
+  const makePlayers=(n,prefix='Jugador')=>Array.from({length:n},(_,i)=>({id:i,name:`${prefix} ${i+1}`,score:0}));
+  const registerSW=()=>{if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{})};
+  window.SC23={q,qa,shuffle,pick,clamp,spanishDeck,cardButton,toast,beep,haptic,show,hide,passScreen,setupHelp,makePlayers};
+  document.addEventListener('DOMContentLoaded',()=>{setupHelp();registerSW()});
+})();
