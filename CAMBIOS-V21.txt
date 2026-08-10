@@ -1,0 +1,19 @@
+SALA CERO · PÓKER TEXAS HOLD'EM · v21.0
+
+Mejoras realizadas en esta revisión:
+- Integrado Anton crupier oficial en la portada y en la mesa.
+- Integradas las 12 figuras personalizadas de Anton (J, Q, K de los 4 palos).
+- Integrados los diseños de fichas de Anton Casino (€1, €5, €10, €25, €50, €100 y €500).
+- Integrados los marcadores personalizados de CRUPIER, CIEGA CHICA y CIEGA GRANDE.
+- Mesa ampliada hasta 6 jugadores totales.
+- Modo IA ampliado hasta 5 rivales.
+- Modo local ampliado hasta 6 jugadores.
+- Reorganización de asientos para mesas de 2, 3, 4, 5 y 6 jugadores.
+- Ajustes visuales para móvil y PC.
+- Caché/service worker actualizado con los nuevos assets del póker.
+
+Archivo principal para probar:
+- poker.html
+
+Entrega:
+- sala-cero-v21-0-poker-anton.zip

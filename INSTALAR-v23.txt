@@ -1,0 +1,11 @@
+SALA CERO V23.0 — INSTALACIÓN
+
+1. Haz una copia del repositorio actual por seguridad.
+2. Borra o sustituye los archivos de la versión anterior.
+3. Sube TODO el contenido de este ZIP directamente a la raíz del repositorio.
+4. Comprueba que index.html está en la raíz y que las carpetas assets/ se mantienen.
+5. Espera a que GitHub Pages publique los cambios.
+6. Abre la web con conexión y haz una recarga completa para activar el service worker v23.0.0.
+7. En iPhone, si seguía apareciendo una versión antigua, cierra la pestaña/PWA y vuelve a abrirla tras la primera recarga.
+
+No se requiere API ni servidor adicional para los juegos nuevos.

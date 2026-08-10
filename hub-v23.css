@@ -1,0 +1,12 @@
+/* Sala Cero v23 — ampliación de catálogo */
+.hub-v23-section{margin-top:34px}.hub-v23-section .hub-section-head{margin-bottom:16px}.hub-v23-section .hub-section-head strong{color:#f1d28b}
+.hub-v23-card .hub-game-visual{display:grid;place-items:center;overflow:hidden;background:
+radial-gradient(circle at 30% 25%,rgba(240,210,139,.14),transparent 30%),
+radial-gradient(circle at 75% 70%,rgba(70,140,105,.18),transparent 38%),
+linear-gradient(145deg,#0c271f,#04110d)}
+.hub-v23-icon{position:relative;z-index:2;display:grid;place-items:center;width:118px;height:118px;border:1px solid rgba(240,210,139,.26);border-radius:32px;background:rgba(0,0,0,.2);font-size:58px;box-shadow:0 24px 60px rgba(0,0,0,.28),inset 0 0 34px rgba(240,210,139,.05);transform:rotate(-3deg)}
+.hub-v23-orbit{position:absolute;width:270px;height:270px;border:1px solid rgba(240,210,139,.12);border-radius:50%;box-shadow:0 0 0 38px rgba(240,210,139,.025),0 0 0 76px rgba(240,210,139,.018)}
+.hub-v23-stamp{position:absolute;right:14px;bottom:14px;z-index:3;padding:7px 10px;border:1px solid rgba(240,210,139,.24);border-radius:999px;background:rgba(2,10,8,.75);color:#e2cc95;font-size:8px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(8px)}
+.hub-v23-card:hover .hub-v23-icon{transform:rotate(0) scale(1.04)}.hub-v23-icon{transition:transform .18s ease}
+.hub-catalog-nav{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 2px}.hub-catalog-nav a{padding:8px 11px;border:1px solid rgba(241,207,130,.16);border-radius:999px;color:#c3cec7;text-decoration:none;font-size:9px;font-weight:900;letter-spacing:.08em;background:rgba(255,255,255,.025)}.hub-catalog-nav a:hover{border-color:rgba(241,207,130,.36);color:#f1d28b}
+@media(max-width:820px){.hub-v23-section{margin-top:24px}.hub-v23-icon{width:96px;height:96px;border-radius:28px;font-size:48px}.hub-v23-stamp{font-size:7px}.hub-catalog-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px;scrollbar-width:none}.hub-catalog-nav::-webkit-scrollbar{display:none}.hub-catalog-nav a{flex:0 0 auto}}
