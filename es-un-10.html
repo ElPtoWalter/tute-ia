@@ -3,16 +3,17 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=23.0.0"></script>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/><script src="device-mode-boot.js?v=24.0.1"></script>
 <meta content="#32111c" name="theme-color"/>
 <meta content="Es un 10 pero... en Sala Cero: baraja de Tute de Anton, una carta aleatoria por ronda y funcionamiento offline." name="description"/>
 <title>Es un 10 pero... — Sala Cero</title>
 <link href="manifest.webmanifest" rel="manifest"/>
 <link href="assets/icons/favicon-64.png" rel="icon"/>
 <link href="assets/icons/apple-touch-icon.png" rel="apple-touch-icon"/>
-<link href="es-un-10.css?v=23.0.0" rel="stylesheet"/>
-<link href="device-mode.css?v=23.0.0" rel="stylesheet"/>
-<link href="polish-v22.css?v=23.0.0" rel="stylesheet"/>
+<link href="es-un-10.css?v=24.0.1" rel="stylesheet"/>
+<link href="device-mode.css?v=24.0.1" rel="stylesheet"/>
+<link href="polish-v22.css?v=24.0.1" rel="stylesheet"/>
+<link href="v24-responsive.css?v=24.0.1" rel="stylesheet"/>
 </head>
 <body>
 <div aria-hidden="true" class="ten-noise"></div>
@@ -34,14 +35,14 @@
 <div class="ten-round"><span>RONDA</span><strong id="tenRound">1</strong></div>
 <div class="ten-deck-wrap" id="tenDeckWrap">
 <div aria-hidden="true" class="ten-shadow"></div>
-<div aria-hidden="true" class="ten-stack-card layer-4"><img alt="" src="assets/cards/back.svg"/></div>
-<div aria-hidden="true" class="ten-stack-card layer-3"><img alt="" src="assets/cards/back.svg"/></div>
-<div aria-hidden="true" class="ten-stack-card layer-2"><img alt="" src="assets/cards/back.svg"/></div>
-<div aria-hidden="true" class="ten-stack-card layer-1"><img alt="" src="assets/cards/back.svg"/></div>
+<div aria-hidden="true" class="ten-stack-card layer-4"><img decoding="async" loading="lazy" alt="" src="assets/cards/back.svg"/></div>
+<div aria-hidden="true" class="ten-stack-card layer-3"><img decoding="async" loading="lazy" alt="" src="assets/cards/back.svg"/></div>
+<div aria-hidden="true" class="ten-stack-card layer-2"><img decoding="async" loading="lazy" alt="" src="assets/cards/back.svg"/></div>
+<div aria-hidden="true" class="ten-stack-card layer-1"><img decoding="async" loading="lazy" alt="" src="assets/cards/back.svg"/></div>
 <button aria-label="Mostrar una carta" class="ten-card" id="tenCard" type="button">
 <span class="ten-card-inner">
-<span class="ten-card-face ten-card-back"><img alt="Carta de Tute boca abajo" src="assets/cards/back.svg"/></span>
-<span class="ten-card-face ten-card-front"><img alt="Carta elegida" id="tenFrontImage" src="assets/cards/oros-1.webp"/></span>
+<span class="ten-card-face ten-card-back"><img decoding="async" loading="lazy" alt="Carta de Tute boca abajo" src="assets/cards/back.svg"/></span>
+<span class="ten-card-face ten-card-front"><img decoding="async" loading="lazy" alt="Carta elegida" id="tenFrontImage" src="assets/cards/oros-1.webp"/></span>
 </span>
 </button>
 </div>
@@ -53,8 +54,9 @@
 <p class="ten-hint" id="tenHint">Solo se muestra una carta en cada ronda.</p>
 </section>
 </main>
-<script src="es-un-10.js?v=23.0.0"></script>
-<script src="device-mode.js?v=23.0.0"></script>
-<script src="polish-v22.js?v=23.0.0"></script>
+<script src="es-un-10.js?v=24.0.1"></script>
+<script src="device-mode.js?v=24.0.1"></script>
+<script src="polish-v22.js?v=24.0.1"></script>
+<script src="v24-ui.js?v=24.0.1"></script>
 </body>
 </html>

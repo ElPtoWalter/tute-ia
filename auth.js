@@ -163,10 +163,9 @@
 
   const fileName = (location.pathname.split("/").pop() || "index.html").toLowerCase();
   const isHome = fileName === "" || fileName === "index.html";
-  if (!activeId() && !isHome && fileName !== "offline.html" && fileName !== "card-preview.html") {
-    const target = new URL("index.html#entrar", location.href);
-    location.replace(target.href);
-  }
+  // El modo invitado ya está aislado mediante GUEST_PREFIX. No se obliga a
+  // volver a la portada: cualquier juego puede arrancar con un solo toque.
+  if (!activeId()) document.documentElement.dataset.authMode = "guest";
 
   function getActiveProfile() {
     const id = activeId();
@@ -428,8 +427,12 @@
   document.addEventListener("DOMContentLoaded", () => {
     const current = getActiveProfile();
     if (!current && isHome) {
-      if (registry().profiles.length) renderLogin();
-      else renderCreate({ allowBack: false });
+      // La sala se puede explorar y jugar como invitado. El perfil pasa a ser
+      // una mejora opcional, no una barrera de entrada en la primera visita.
+      if (location.hash === "#entrar") {
+        if (registry().profiles.length) renderLogin({ allowClose: true });
+        else renderCreate({ allowBack: false, allowClose: true });
+      }
       return;
     }
     injectAccountButton();
