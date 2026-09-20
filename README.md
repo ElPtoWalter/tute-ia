@@ -1,6 +1,6 @@
-# Sala Cero v23.0
+# Sala Cero v24.0
 
-Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPhone y ordenador. La prioridad de v23 es poder abrir la web, elegir un juego y empezar a jugar alrededor de un solo dispositivo sin cuentas externas ni APIs.
+Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPhone y ordenador. La versión 24 prioriza una entrada inmediata, una navegación táctil coherente y partidas realmente utilizables en pantallas pequeñas, sin obligar a crear una cuenta.
 
 ## Juegos incluidos
 
@@ -15,7 +15,7 @@ Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPho
 - Blackjack de Antón
 - El Impostor
 
-### Nuevos en v23
+### Juegos de grupo
 - Chao Pescao
 - Mentiroso de dados
 - 7 y Media
@@ -31,14 +31,14 @@ Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPho
 
 ## Diseño y dispositivo
 
-Los nueve juegos originales conservan la capa de optimización móvil/ordenador de v22. Los doce juegos nuevos usan una interfaz v23 común, responsive y táctil, con botones grandes, zonas seguras de iPhone, tipografía legible y pantallas privadas para los juegos de información oculta.
+Las 27 páginas comparten ahora una capa responsive v24. El dispositivo se detecta automáticamente, sin selector previo; la portada incorpora buscador, filtros y navegación inferior móvil. Las mesas compactan paneles, respetan las zonas seguras de iPhone y mantienen los controles esenciales visibles. El acceso invitado queda disponible desde el primer momento.
 
 ## Offline
 
-El service worker v23.0.0 incluye las páginas, estilos y motores de los 21 juegos. No se necesita ninguna API para los doce juegos nuevos; sus preguntas, palabras, categorías, retos y lógica se ejecutan localmente.
+El service worker v24.0.1 incluye las páginas, estilos y motores de los 21 juegos, además de una ruta de recuperación offline para todas las páginas. No se necesita ninguna API para los juegos: preguntas, palabras, categorías, retos y lógica se ejecutan localmente.
 
 ## Publicación
 
 Sube directamente todo el contenido de este paquete a la raíz del repositorio de GitHub Pages. `index.html`, `sw.js` y `manifest.webmanifest` deben quedar en la raíz.
 
-Consulta `CAMBIOS-v23.md`, `QA-v23.md` e `INSTALAR-v23.txt`.
+Consulta `CAMBIOS-v24.md`, `QA-v24.md` e `INSTALACION.md`.

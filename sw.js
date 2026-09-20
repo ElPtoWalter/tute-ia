@@ -1,20 +1,30 @@
-const VERSION = "23.0.0";
+const VERSION = "24.0.1";
 const SHELL_CACHE = `tute-ia-shell-${VERSION}`;
 const RUNTIME_CACHE = `tute-ia-runtime-${VERSION}`;
 const MEDIA_CACHE = `tute-ia-media-${VERSION}`;
 const OFFLINE_URL = "./offline.html";
 const LITE_AUDIO = "./assets/audio/casino-jazz-lite.mp3";
 const FULL_AUDIO = "./assets/audio/casino-jazz-background.mp3";
-const CORE_ASSETS = ["./","./app.js","./assets/audio/casino-jazz-lite.mp3","./assets/cards/back.svg","./assets/cards/bastos-1.webp","./assets/cards/bastos-10.webp","./assets/cards/bastos-11.webp","./assets/cards/bastos-12.webp","./assets/cards/bastos-2.webp","./assets/cards/bastos-3.webp","./assets/cards/bastos-4.webp","./assets/cards/bastos-5.webp","./assets/cards/bastos-6.webp","./assets/cards/bastos-7.webp","./assets/cards/copas-1.webp","./assets/cards/copas-10.webp","./assets/cards/copas-11.webp","./assets/cards/copas-12.webp","./assets/cards/copas-2.webp","./assets/cards/copas-3.webp","./assets/cards/copas-4.webp","./assets/cards/copas-5.webp","./assets/cards/copas-6.webp","./assets/cards/copas-7.webp","./assets/cards/espadas-1.webp","./assets/cards/espadas-10.webp","./assets/cards/espadas-11.webp","./assets/cards/espadas-12.webp","./assets/cards/espadas-2.webp","./assets/cards/espadas-3.webp","./assets/cards/espadas-4.webp","./assets/cards/espadas-5.webp","./assets/cards/espadas-6.webp","./assets/cards/espadas-7.webp","./assets/cards/oros-1.webp","./assets/cards/oros-10.webp","./assets/cards/oros-11.webp","./assets/cards/oros-12.webp","./assets/cards/oros-2.webp","./assets/cards/oros-3.webp","./assets/cards/oros-4.webp","./assets/cards/oros-5.webp","./assets/cards/oros-6.webp","./assets/cards/oros-7.webp","./assets/cubilete-generala.webp","./assets/icon-192.png","./assets/icon-512.png","./assets/icons/apple-touch-icon.png","./assets/icons/favicon-64.png","./assets/icons/icon-maskable-512.png","./assets/poker/anton-crupier-placeholder.svg","./assets/poker/anton-crupier.webp","./assets/poker/card-back.svg","./assets/poker/cards/J-c.webp","./assets/poker/cards/J-d.webp","./assets/poker/cards/J-h.webp","./assets/poker/cards/J-s.webp","./assets/poker/cards/K-c.webp","./assets/poker/cards/K-d.webp","./assets/poker/cards/K-h.webp","./assets/poker/cards/K-s.webp","./assets/poker/cards/Q-c.webp","./assets/poker/cards/Q-d.webp","./assets/poker/cards/Q-h.webp","./assets/poker/cards/Q-s.webp","./assets/poker/chips/chip-1.webp","./assets/poker/chips/chip-10.webp","./assets/poker/chips/chip-100.webp","./assets/poker/chips/chip-25.webp","./assets/poker/chips/chip-5.webp","./assets/poker/chips/chip-50.webp","./assets/poker/chips/chip-500.webp","./assets/poker/markers/bb.webp","./assets/poker/markers/ciega-grande.svg","./assets/poker/markers/ciega-pequena.svg","./assets/poker/markers/dealer.svg","./assets/poker/markers/dealer.webp","./assets/poker/markers/sb.webp","./auth.css","./auth.js","./blackjack.css","./blackjack.html","./blackjack.js","./cante-effects.css","./cante-effects.js","./card-preview.html","./career.css","./career.html","./career.js","./chao-pescao.html","./chao-pescao.js","./chinchon.html","./chinchon.js","./club.css","./club.js","./culo.css","./culo.html","./culo.js","./device-mode-boot.js","./device-mode.css","./device-mode.js","./es-un-10.css","./es-un-10.html","./es-un-10.js","./escoba.html","./escoba.js","./generala-classic.css","./generala.css","./generala.html","./generala.js","./hub-v23.css","./hub.css","./impostor.css","./impostor.html","./impostor.js","./index.html","./juicio-anton.html","./juicio-anton.js","./la-bomba.html","./la-bomba.js","./local.css","./local.html","./local.js","./manifest.webmanifest","./mentiroso-cartas.html","./mentiroso-cartas.js","./mentiroso-dados.html","./mentiroso-dados.js","./mobile-final.css","./mobile-layout.js","./mobile.css","./multi.css","./multi.html","./multi.js","./music-continuity.js","./offline.html","./password.html","./password.js","./piramide.html","./piramide.js","./poker-assets.js","./poker-core.js","./poker.css","./poker.html","./poker.js","./polish-v22.css","./polish-v22.js","./presidente.html","./presidente.js","./pwa.css","./pwa.js","./quien-mas-probable.html","./quien-mas-probable.js","./ruleta-caos.html","./ruleta-caos.js","./salon-games.css","./siete-media.html","./siete-media.js","./styles.css","./sw.js","./tabu.html","./tabu.js","./tute.html","./tutorials.css","./tutorials.js","./v23-common.js","./v23-games.css"];
+const CORE_ASSETS = ["./","./app.js","./assets/audio/casino-jazz-lite.mp3","./assets/cards/back.svg","./assets/cards/bastos-1.webp","./assets/cards/bastos-10.webp","./assets/cards/bastos-11.webp","./assets/cards/bastos-12.webp","./assets/cards/bastos-2.webp","./assets/cards/bastos-3.webp","./assets/cards/bastos-4.webp","./assets/cards/bastos-5.webp","./assets/cards/bastos-6.webp","./assets/cards/bastos-7.webp","./assets/cards/copas-1.webp","./assets/cards/copas-10.webp","./assets/cards/copas-11.webp","./assets/cards/copas-12.webp","./assets/cards/copas-2.webp","./assets/cards/copas-3.webp","./assets/cards/copas-4.webp","./assets/cards/copas-5.webp","./assets/cards/copas-6.webp","./assets/cards/copas-7.webp","./assets/cards/espadas-1.webp","./assets/cards/espadas-10.webp","./assets/cards/espadas-11.webp","./assets/cards/espadas-12.webp","./assets/cards/espadas-2.webp","./assets/cards/espadas-3.webp","./assets/cards/espadas-4.webp","./assets/cards/espadas-5.webp","./assets/cards/espadas-6.webp","./assets/cards/espadas-7.webp","./assets/cards/oros-1.webp","./assets/cards/oros-10.webp","./assets/cards/oros-11.webp","./assets/cards/oros-12.webp","./assets/cards/oros-2.webp","./assets/cards/oros-3.webp","./assets/cards/oros-4.webp","./assets/cards/oros-5.webp","./assets/cards/oros-6.webp","./assets/cards/oros-7.webp","./assets/cubilete-generala.webp","./assets/icon-192.png","./assets/icon-512.png","./assets/icons/apple-touch-icon.png","./assets/icons/favicon-64.png","./assets/icons/icon-maskable-512.png","./assets/poker/anton-crupier-placeholder.svg","./assets/poker/anton-crupier.webp","./assets/poker/card-back.svg","./assets/poker/cards/J-c.webp","./assets/poker/cards/J-d.webp","./assets/poker/cards/J-h.webp","./assets/poker/cards/J-s.webp","./assets/poker/cards/K-c.webp","./assets/poker/cards/K-d.webp","./assets/poker/cards/K-h.webp","./assets/poker/cards/K-s.webp","./assets/poker/cards/Q-c.webp","./assets/poker/cards/Q-d.webp","./assets/poker/cards/Q-h.webp","./assets/poker/cards/Q-s.webp","./assets/poker/chips/chip-1.webp","./assets/poker/chips/chip-10.webp","./assets/poker/chips/chip-100.webp","./assets/poker/chips/chip-25.webp","./assets/poker/chips/chip-5.webp","./assets/poker/chips/chip-50.webp","./assets/poker/chips/chip-500.webp","./assets/poker/markers/bb.webp","./assets/poker/markers/ciega-grande.svg","./assets/poker/markers/ciega-pequena.svg","./assets/poker/markers/dealer.svg","./assets/poker/markers/dealer.webp","./assets/poker/markers/sb.webp","./auth.css","./auth.js","./blackjack.css","./blackjack.html","./blackjack.js","./cante-effects.css","./cante-effects.js","./card-preview.html","./career.css","./career.html","./career.js","./chao-pescao.html","./chao-pescao.js","./chinchon.html","./chinchon.js","./club.css","./club.js","./culo.css","./culo.html","./culo.js","./device-mode-boot.js","./device-mode.css","./device-mode.js","./es-un-10.css","./es-un-10.html","./es-un-10.js","./escoba.html","./escoba.js","./generala-classic.css","./generala.css","./generala.html","./generala.js","./hub-v23.css","./hub.css","./impostor.css","./impostor.html","./impostor.js","./index.html","./juicio-anton.html","./juicio-anton.js","./la-bomba.html","./la-bomba.js","./local.css","./local.html","./local.js","./manifest.webmanifest","./mentiroso-cartas.html","./mentiroso-cartas.js","./mentiroso-dados.html","./mentiroso-dados.js","./mobile-final.css","./mobile-layout.js","./mobile.css","./multi.css","./multi.html","./multi.js","./music-continuity.js","./offline.html","./password.html","./password.js","./piramide.html","./piramide.js","./poker-assets.js","./poker-core.js","./poker.css","./poker.html","./poker.js","./polish-v22.css","./polish-v22.js","./presidente.html","./presidente.js","./pwa.css","./pwa.js","./quien-mas-probable.html","./quien-mas-probable.js","./ruleta-caos.html","./ruleta-caos.js","./salon-games.css","./siete-media.html","./siete-media.js","./styles.css","./sw.js","./tabu.html","./tabu.js","./tute.html","./tutorials.css","./tutorials.js","./v23-common.js","./v23-games.css","./v24-responsive.css","./v24-ui.js"];
+
+async function cacheAssets(cache, assets, concurrency = 8) {
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < assets.length) {
+      const asset = assets[cursor++];
+      try {
+        const response = await fetch(asset, { cache: "reload" });
+        if (response.ok) await cache.put(asset, response);
+      } catch (_) {}
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(concurrency, assets.length) }, worker));
+}
 
 self.addEventListener("install", event => {
   event.waitUntil((async () => {
     const cache = await caches.open(SHELL_CACHE);
-    await Promise.allSettled(CORE_ASSETS.map(async asset => {
-      const response = await fetch(asset, { cache: "reload" });
-      if (!response.ok) throw new Error(`${asset}: HTTP ${response.status}`);
-      await cache.put(asset, response);
-    }));
+    await cacheAssets(cache, CORE_ASSETS);
     await self.skipWaiting();
   })());
 });
@@ -75,7 +85,9 @@ async function cacheFirst(request, cacheName = SHELL_CACHE) {
 
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(RUNTIME_CACHE);
-  const cached = await cache.match(request, { ignoreSearch: true });
+  // Los recursos llevan versión en la query. Respetarla evita servir CSS o JS
+  // de una entrega anterior durante la primera recarga tras actualizar.
+  const cached = await cache.match(request);
   const network = fetch(request).then(response => {
     if (response.ok) cache.put(request, response.clone());
     return response;
@@ -91,20 +103,9 @@ async function networkFirstNavigation(request) {
     return response;
   } catch (_) {
     const url = new URL(request.url);
-    const path = url.pathname.toLowerCase();
-    const shellFallback = path.endsWith("/local.html") ? "./local.html"
-      : path.endsWith("/multi.html") ? "./multi.html"
-      : path.endsWith("/generala.html") ? "./generala.html"
-      : path.endsWith("/chinchon.html") ? "./chinchon.html"
-      : path.endsWith("/escoba.html") ? "./escoba.html"
-      : path.endsWith("/culo.html") ? "./culo.html"
-      : path.endsWith("/poker.html") ? "./poker.html"
-      : path.endsWith("/es-un-10.html") ? "./es-un-10.html"
-      : path.endsWith("/blackjack.html") ? "./blackjack.html"
-      : path.endsWith("/impostor.html") ? "./impostor.html"
-      : path.endsWith("/tute.html") ? "./tute.html"
-      : path.endsWith("/career.html") ? "./career.html"
-      : "./index.html";
+    const fileName = url.pathname.split("/").pop()?.toLowerCase() || "index.html";
+    const requestedPage = `./${fileName}`;
+    const shellFallback = CORE_ASSETS.includes(requestedPage) ? requestedPage : "./index.html";
     return (await cache.match(request, { ignoreSearch: true }))
       || (await caches.match(request, { ignoreSearch: true }))
       || (await caches.match(shellFallback))
