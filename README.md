@@ -1,6 +1,6 @@
-# Sala Cero v24.0
+# Sala Cero v25.0
 
-Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPhone y ordenador. La versión 24 prioriza una entrada inmediata, una navegación táctil coherente y partidas realmente utilizables en pantallas pequeñas, sin obligar a crear una cuenta.
+Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPhone y ordenador. La versión 25 reforma las mesas de juego y garantiza que las manos completas permanezcan visibles incluso con 13 o 14 cartas, tanto en vertical como en horizontal.
 
 ## Juegos incluidos
 
@@ -31,14 +31,14 @@ Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPho
 
 ## Diseño y dispositivo
 
-Las 27 páginas comparten ahora una capa responsive v24. El dispositivo se detecta automáticamente, sin selector previo; la portada incorpora buscador, filtros y navegación inferior móvil. Las mesas compactan paneles, respetan las zonas seguras de iPhone y mantienen los controles esenciales visibles. El acceso invitado queda disponible desde el primer momento.
+Las 27 páginas comparten las capas responsive v24 y v25. El dispositivo se detecta automáticamente, incluido un teléfono en horizontal; la portada incorpora buscador, filtros y navegación inferior móvil. Un motor común calcula el ancho y solapamiento de cada mano según el número de cartas y el espacio real disponible. Las mesas compactan paneles, respetan las zonas seguras de iPhone y mantienen los controles esenciales visibles. El acceso invitado queda disponible desde el primer momento.
 
 ## Offline
 
-El service worker v24.0.1 incluye las páginas, estilos y motores de los 21 juegos, además de una ruta de recuperación offline para todas las páginas. No se necesita ninguna API para los juegos: preguntas, palabras, categorías, retos y lógica se ejecutan localmente.
+El service worker v25.0.9 incluye las páginas, estilos y motores de los 21 juegos, además de una ruta de recuperación offline para todas las páginas. No se necesita ninguna API para los juegos: preguntas, palabras, categorías, retos y lógica se ejecutan localmente.
 
 ## Publicación
 
 Sube directamente todo el contenido de este paquete a la raíz del repositorio de GitHub Pages. `index.html`, `sw.js` y `manifest.webmanifest` deben quedar en la raíz.
 
-Consulta `CAMBIOS-v24.md`, `QA-v24.md` e `INSTALACION.md`.
+Consulta `CAMBIOS-v25.md`, `QA-v25.md` e `INSTALACION.md`.

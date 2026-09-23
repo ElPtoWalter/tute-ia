@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "24.0.1";
+  const VERSION = "25.0.9";
   const DB_NAME = "tute-ia-offline";
   const STORE = "saves";
   const FULL_AUDIO = "./assets/audio/casino-jazz-background.mp3";

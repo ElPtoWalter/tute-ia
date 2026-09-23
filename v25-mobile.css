@@ -1,4 +1,4 @@
-/* Sala Cero v25 â€” mesa mÃ³vil integral y manos siempre completas */
+/* Sala Cero v25 — mesa móvil integral y manos siempre completas */
 :root {
   --v25-safe-top: env(safe-area-inset-top, 0px);
   --v25-safe-right: env(safe-area-inset-right, 0px);
@@ -26,7 +26,7 @@ dialog,
 }
 
 @media (max-width: 760px) {
-  /* Una sola geometrÃ­a mÃ³vil: cabecera, mesa y controles respetan el viewport. */
+  /* Una sola geometría móvil: cabecera, mesa y controles respetan el viewport. */
   .topbar,
   .g-topbar,
   .sg-top,
@@ -63,7 +63,7 @@ dialog,
     outline-offset: 2px !important;
   }
 
-  /* Tute individual: toda la mano cabe de una vez, tambiÃ©n con 13 cartas. */
+  /* Tute individual: toda la mano cabe de una vez, también con 13 cartas. */
   .app-shell:not(.hidden) .player-hand,
   .private-hand,
   .player-multi-hand,
@@ -95,7 +95,7 @@ dialog,
     scroll-snap-align: none !important;
   }
 
-  /* Supera explÃ­citamente la antigua regla data-device-mode, mÃ¡s especÃ­fica. */
+  /* Supera explícitamente la antigua regla data-device-mode, más específica. */
   html[data-device-mode="mobile"] body .app-shell:not(.hidden) .player-hand .playing-card,
   html[data-device-mode="mobile"] body .private-hand .local-card,
   html[data-device-mode="mobile"] body .player-multi-hand .multi-card {
@@ -197,7 +197,7 @@ dialog,
     bottom: 170px !important;
   }
 
-  /* ChinchÃ³n, Escoba y Culo: tablero y mano comparten una Ãºnica pantalla. */
+  /* Chinchón, Escoba y Culo: tablero y mano comparten una única pantalla. */
   .sg-shell {
     padding: 0 !important;
   }
@@ -302,7 +302,7 @@ dialog,
     padding-bottom: max(6px, var(--v25-safe-bottom)) !important;
   }
 
-  /* Poker: mesa, cartas privadas y acciones dentro del alto Ãºtil, sin salto de scroll. */
+  /* Poker: mesa, cartas privadas y acciones dentro del alto útil, sin salto de scroll. */
   html[data-device-mode="mobile"] body .pk-game:not(.hidden) {
     height: calc(var(--mobile-vh, 100dvh) - 58px) !important;
     min-height: 0 !important;

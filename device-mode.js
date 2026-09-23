@@ -2,7 +2,7 @@
   "use strict";
 
   const root = document.documentElement;
-  const mobileQuery = window.matchMedia("(max-width: 820px)");
+  const mobileQuery = window.matchMedia("(max-width: 820px), (max-height: 520px) and (max-width: 960px)");
 
   const updateViewport = () => {
     const height = Math.round(

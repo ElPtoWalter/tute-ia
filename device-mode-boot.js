@@ -3,7 +3,7 @@
 
   const root = document.documentElement;
   const meta = document.querySelector('meta[name="viewport"]');
-  const mobileQuery = window.matchMedia("(max-width: 820px)");
+  const mobileQuery = window.matchMedia("(max-width: 820px), (max-height: 520px) and (max-width: 960px)");
 
   const applyMode = () => {
     const mode = mobileQuery.matches ? "mobile" : "desktop";
