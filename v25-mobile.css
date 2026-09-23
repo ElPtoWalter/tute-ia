@@ -1,0 +1,476 @@
+/* Sala Cero v25 â€” mesa mÃ³vil integral y manos siempre completas */
+:root {
+  --v25-safe-top: env(safe-area-inset-top, 0px);
+  --v25-safe-right: env(safe-area-inset-right, 0px);
+  --v25-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --v25-safe-left: env(safe-area-inset-left, 0px);
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+dialog,
+.modal,
+.variant-modal,
+.setup-modal,
+.custom-rules-modal,
+.local-modal,
+.multi-modal,
+.g-modal,
+.sg-modal,
+.pk-modal {
+  max-width: 100vw;
+}
+
+@media (max-width: 760px) {
+  /* Una sola geometrÃ­a mÃ³vil: cabecera, mesa y controles respetan el viewport. */
+  .topbar,
+  .g-topbar,
+  .sg-top,
+  .bj-top,
+  .pk-topbar,
+  .im-top,
+  .local-topbar,
+  .multi-topbar,
+  .ten-topbar,
+  .v23-top,
+  .career-top {
+    box-sizing: border-box !important;
+    min-height: 58px !important;
+    padding-left: max(8px, var(--v25-safe-left)) !important;
+    padding-right: max(8px, var(--v25-safe-right)) !important;
+  }
+
+  button,
+  [role="button"],
+  input,
+  select,
+  textarea,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid #f0cf83 !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Tute individual: toda la mano cabe de una vez, tambiÃ©n con 13 cartas. */
+  .app-shell:not(.hidden) .player-hand,
+  .private-hand,
+  .player-multi-hand,
+  .sg-hand,
+  .v23-card-row,
+  .bj-game .hand {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: max(10px, var(--v25-safe-left)) !important;
+    padding-right: max(10px, var(--v25-safe-right)) !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    overflow-x: visible !important;
+    scroll-snap-type: none !important;
+    overscroll-behavior-inline: none;
+  }
+
+  .app-shell:not(.hidden) .player-hand .playing-card,
+  .private-hand .local-card,
+  .player-multi-hand .multi-card,
+  .sg-hand .sg-card,
+  .v23-card-row .v23-playing-card,
+  .bj-game .hand .card {
+    width: var(--v25-card-width, 62px) !important;
+    min-width: 0 !important;
+    flex: 0 0 var(--v25-card-width, 62px) !important;
+    margin-left: var(--v25-card-overlap, -20px) !important;
+    scroll-snap-align: none !important;
+  }
+
+  /* Supera explÃ­citamente la antigua regla data-device-mode, mÃ¡s especÃ­fica. */
+  html[data-device-mode="mobile"] body .app-shell:not(.hidden) .player-hand .playing-card,
+  html[data-device-mode="mobile"] body .private-hand .local-card,
+  html[data-device-mode="mobile"] body .player-multi-hand .multi-card {
+    width: var(--v25-card-width, 62px) !important;
+    min-width: 0 !important;
+    height: calc(var(--v25-card-width, 62px) * 1.542) !important;
+    flex: 0 0 var(--v25-card-width, 62px) !important;
+    margin-left: var(--v25-card-overlap, -20px) !important;
+    aspect-ratio: 620 / 956 !important;
+  }
+
+  .app-shell:not(.hidden) .player-hand .playing-card,
+  .private-hand .local-card,
+  .player-multi-hand .multi-card {
+    height: calc(var(--v25-card-width, 62px) * 1.542) !important;
+    aspect-ratio: 620 / 956 !important;
+  }
+
+  .sg-hand .sg-card,
+  .v23-card-row .v23-playing-card {
+    height: auto !important;
+  }
+
+  .app-shell:not(.hidden) .player-hand > :first-child,
+  .private-hand > :first-child,
+  .player-multi-hand > :first-child,
+  .sg-hand > :first-child,
+  .v23-card-row > :first-child,
+  .bj-game .hand > :first-child {
+    margin-left: 0 !important;
+  }
+
+  .app-shell:not(.hidden) .player-hand {
+    height: 132px !important;
+    min-height: 132px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+
+  .app-shell:not(.hidden) .player-zone {
+    height: 180px !important;
+    min-width: 0 !important;
+  }
+
+  .app-shell:not(.hidden) .table-panel {
+    grid-template-rows: 100px minmax(0, 1fr) 180px !important;
+  }
+
+  .app-shell:not(.hidden) .action-dock {
+    bottom: calc(176px + max(5px, var(--v25-safe-bottom))) !important;
+  }
+
+  .manual-order-hint,
+  .order-helper {
+    max-width: calc(100vw - 24px) !important;
+    padding-inline: 8px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Tute local y contra varias IA. */
+  .private-zone {
+    left: max(5px, var(--v25-safe-left)) !important;
+    right: max(5px, var(--v25-safe-right)) !important;
+    width: auto !important;
+    min-width: 0 !important;
+    min-height: 168px !important;
+    padding-inline: 5px !important;
+    transform: none !important;
+  }
+
+  .private-hand,
+  .player-multi-hand {
+    height: 122px !important;
+    min-height: 122px !important;
+    padding-top: 5px !important;
+    padding-bottom: 16px !important;
+  }
+
+  .player-multi-hand {
+    padding-bottom: 30px !important;
+  }
+
+  .seat-bottom {
+    height: 166px !important;
+    left: max(4px, var(--v25-safe-left)) !important;
+    right: max(4px, var(--v25-safe-right)) !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+
+  .local-center {
+    bottom: 177px !important;
+  }
+
+  .multi-center {
+    bottom: 170px !important;
+  }
+
+  /* ChinchÃ³n, Escoba y Culo: tablero y mano comparten una Ãºnica pantalla. */
+  .sg-shell {
+    padding: 0 !important;
+  }
+
+  .sg-game:not(.hidden) {
+    height: calc(var(--mobile-vh, 100dvh) - 58px) !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html[data-device-mode="mobile"] body .sg-game:not(.hidden) {
+    height: calc(var(--mobile-vh, 100dvh) - 58px) !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .sg-game:not(.hidden) .sg-table {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(0, 1fr) auto !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    padding: 7px 5px max(6px, var(--v25-safe-bottom)) !important;
+    overflow: hidden !important;
+  }
+
+  .sg-game:not(.hidden) .sg-center {
+    min-height: 0 !important;
+    padding: 6px 1px !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+  }
+
+  .sg-game:not(.hidden) .sg-hand {
+    min-height: 112px !important;
+    height: 112px !important;
+    padding-top: 5px !important;
+    padding-bottom: 6px !important;
+    align-items: flex-end !important;
+  }
+
+  .sg-game:not(.hidden) .sg-panel.score {
+    left: auto !important;
+    right: max(7px, var(--v25-safe-right)) !important;
+    top: calc(62px + var(--v25-safe-top)) !important;
+    bottom: auto !important;
+    width: min(172px, 45vw) !important;
+    max-height: 48px !important;
+    padding: 7px !important;
+    overflow: hidden !important;
+  }
+
+  .sg-game:not(.hidden) .sg-panel.score.expanded {
+    left: max(7px, var(--v25-safe-left)) !important;
+    right: max(7px, var(--v25-safe-right)) !important;
+    width: auto !important;
+    max-height: 68dvh !important;
+    overflow: auto !important;
+  }
+
+  .sg-game:not(.hidden) .sg-controls {
+    position: static !important;
+    padding-bottom: 2px !important;
+    background: none !important;
+  }
+
+  .culo-opponents,
+  .culo-rank-strip {
+    scrollbar-width: none;
+  }
+
+  .culo-opponents::-webkit-scrollbar,
+  .culo-rank-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Motores comunes: cartas completas y controles sin recortes. */
+  .v23-card-row {
+    min-height: 140px !important;
+    padding-top: 8px !important;
+    padding-bottom: 12px !important;
+  }
+
+  .v23-actions {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Blackjack: las manos crecen hacia dentro y los botones conservan su zona. */
+  .bj-game .dealer-hand,
+  .bj-game .player .hand {
+    min-width: 0 !important;
+  }
+
+  .bj-game .hand .card {
+    height: auto !important;
+    aspect-ratio: .68;
+  }
+
+  .bj-game .controls {
+    padding-bottom: max(6px, var(--v25-safe-bottom)) !important;
+  }
+
+  /* Poker: mesa, cartas privadas y acciones dentro del alto Ãºtil, sin salto de scroll. */
+  html[data-device-mode="mobile"] body .pk-game:not(.hidden) {
+    height: calc(var(--mobile-vh, 100dvh) - 58px) !important;
+    min-height: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: hidden !important;
+  }
+
+  html[data-device-mode="mobile"] body .pk-game:not(.hidden) .pk-gamebar {
+    height: 48px !important;
+    min-height: 48px !important;
+  }
+
+  html[data-device-mode="mobile"] body .pk-game:not(.hidden) .pk-casino-stage {
+    height: calc(100% - 48px) !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 68px !important;
+    padding-bottom: 176px !important;
+    overflow: hidden !important;
+  }
+
+  html[data-device-mode="mobile"] body .pk-game:not(.hidden) .pk-table-wrap {
+    min-height: 405px !important;
+  }
+
+  /* Modales: hoja inferior legible y completamente desplazable. */
+  dialog,
+  .variant-modal,
+  .setup-modal,
+  .custom-rules-modal,
+  .local-modal,
+  .multi-modal,
+  .g-modal,
+  .sg-modal,
+  .pk-modal {
+    width: calc(100vw - 12px) !important;
+    max-height: calc(100dvh - 12px) !important;
+    margin: auto !important;
+  }
+
+  .wide-modal-card,
+  .modal-card,
+  .multi-modal-card,
+  .g-modal-card,
+  .sg-modal-card,
+  .pk-modal-card,
+  .dialog-card {
+    max-height: calc(100dvh - 12px) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    padding-bottom: calc(20px + var(--v25-safe-bottom)) !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .app-shell:not(.hidden) .player-hand,
+  .private-hand,
+  .player-multi-hand,
+  .sg-hand,
+  .v23-card-row {
+    padding-left: 7px !important;
+    padding-right: 7px !important;
+  }
+}
+
+@media (max-width: 960px) and (orientation: landscape) and (max-height: 520px) {
+  .app-shell:not(.hidden),
+  .local-layout,
+  .multi-layout {
+    display: block !important;
+    height: calc(var(--mobile-vh, 100dvh) - 48px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .side-panel,
+  .local-sidebar,
+  .multi-sidebar {
+    display: none !important;
+  }
+
+  .table-panel,
+  .local-table,
+  .multi-table {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    border: 0 !important;
+  }
+
+  .app-shell:not(.hidden) .table-panel {
+    grid-template-rows: 72px minmax(0, 1fr) 106px !important;
+  }
+
+  .app-shell:not(.hidden) .player-zone {
+    height: 106px !important;
+    padding-bottom: 22px !important;
+  }
+
+  .app-shell:not(.hidden) .player-badge {
+    position: absolute !important;
+    top: 4px !important;
+    left: max(8px, var(--v25-safe-left)) !important;
+    z-index: 3 !important;
+    max-width: 150px !important;
+    transform: scale(.78) !important;
+    transform-origin: left top !important;
+  }
+
+  .app-shell:not(.hidden) .player-hand,
+  .private-hand,
+  .player-multi-hand,
+  .sg-game:not(.hidden) .sg-hand {
+    height: 78px !important;
+    min-height: 78px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 2px max(10px, var(--v25-safe-left)) 8px max(10px, var(--v25-safe-right)) !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    overflow: visible !important;
+  }
+
+  .private-hand,
+  .player-multi-hand {
+    padding-bottom: 24px !important;
+  }
+
+  html[data-device-mode="mobile"] body .app-shell:not(.hidden) .player-hand .playing-card,
+  html[data-device-mode="mobile"] body .private-hand .local-card,
+  html[data-device-mode="mobile"] body .player-multi-hand .multi-card,
+  .sg-game:not(.hidden) .sg-hand .sg-card {
+    width: var(--v25-card-width, 50px) !important;
+    min-width: 0 !important;
+    height: calc(var(--v25-card-width, 50px) * 1.542) !important;
+    flex: 0 0 var(--v25-card-width, 50px) !important;
+    margin-left: var(--v25-card-overlap, -20px) !important;
+  }
+
+  .app-shell:not(.hidden) .player-hand > :first-child,
+  .private-hand > :first-child,
+  .player-multi-hand > :first-child,
+  .sg-game:not(.hidden) .sg-hand > :first-child {
+    margin-left: 0 !important;
+  }
+
+  .private-zone {
+    left: max(6px, var(--v25-safe-left)) !important;
+    right: max(6px, var(--v25-safe-right)) !important;
+    bottom: 4px !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+
+  .seat-bottom {
+    left: max(4px, var(--v25-safe-left)) !important;
+    right: max(4px, var(--v25-safe-right)) !important;
+    width: auto !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+
+  .app-shell:not(.hidden) .action-dock {
+    bottom: calc(102px + max(3px, var(--v25-safe-bottom))) !important;
+  }
+
+  .sg-game:not(.hidden) .sg-table {
+    grid-template-rows: auto 48px minmax(0, 1fr) 78px !important;
+  }
+}
