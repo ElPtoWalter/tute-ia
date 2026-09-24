@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<script src="device-mode-boot.js?v=26.0.1"></script>
+<meta content="#163629" name="theme-color"/>
+<meta content="Brisca con baraja española contra la IA o pasando el móvil, optimizada para móvil y disponible sin conexión." name="description"/>
+<title>Brisca — Sala Cero v26</title>
+<link href="manifest.webmanifest" rel="manifest"/>
+<link href="assets/icons/favicon-64.png" rel="icon"/>
+<link href="club.css?v=26.0.1" rel="stylesheet"/>
+<link href="brisca.css?v=26.0.1" rel="stylesheet"/>
+<link href="device-mode.css?v=26.0.1" rel="stylesheet"/>
+<link href="v24-responsive.css?v=26.0.1" rel="stylesheet"/>
+<link href="v25-mobile.css?v=26.0.1" rel="stylesheet"/>
+</head>
+<body data-game="brisca">
+<div aria-hidden="true" class="br-noise"></div>
+<header class="br-top">
+  <a class="br-brand" href="index.html" aria-label="Volver a Sala Cero"><span>B</span><div><strong>BRISCA</strong><small>SALA CERO · V26</small></div></a>
+  <div class="br-top-actions"><button id="brRulesButton" type="button">Reglas</button><a href="index.html">Juegos</a></div>
+</header>
+
+<main class="br-app">
+  <section class="br-setup" id="brSetup" aria-labelledby="brSetupTitle">
+    <div class="br-setup-copy"><small>AS · TRES · REY · CABALLO · SOTA</small><h1 id="brSetupTitle">La Brisca llega a Sala Cero</h1><p>Tres cartas, un triunfo y 120 puntos en juego. Compite contra Doña Virtud o comparte el móvil entre dos, tres o cuatro personas.</p></div>
+    <form class="br-setup-card" id="brSetupForm">
+      <label><span>Modo de juego</span><select id="brMode"><option value="solo">Contra la IA</option><option value="local">Pasa el móvil</option></select></label>
+      <label id="brCountField" hidden><span>Jugadores</span><select id="brPlayerCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option></select></label>
+      <div class="br-name-fields" id="brNameFields"></div>
+      <button class="br-primary" type="submit">Repartir cartas</button>
+      <p class="br-privacy">Las manos locales se ocultan antes de pasar el dispositivo.</p>
+    </form>
+  </section>
+
+  <section class="br-game hidden" id="brGame" aria-label="Mesa de Brisca">
+    <div class="br-scoreboard" id="brScoreboard" aria-label="Marcador"></div>
+    <div class="br-opponents" id="brOpponents" aria-label="Rivales"></div>
+    <div class="br-table">
+      <div class="br-stock-area">
+        <button class="br-stock" id="brStock" type="button" disabled aria-label="Mazo"><img alt="Mazo" src="assets/cards/back.svg"/><b id="brStockCount">34</b></button>
+        <div class="br-trump"><small>TRIUNFO</small><img id="brTrumpCard" src="assets/cards/back.svg" alt="Carta de triunfo"/><strong id="brTrumpName"></strong></div>
+      </div>
+      <div class="br-trick" id="brTrick" aria-label="Baza actual"><p>Abre la primera baza.</p></div>
+      <div class="br-round-meta"><small id="brRoundLabel">BAZA 1</small><strong id="brStatus">Tu turno</strong></div>
+    </div>
+    <div class="br-player-zone">
+      <div class="br-player-label"><span id="brCurrentBadge">TÚ</span><div><strong id="brCurrentName">Jugador</strong><small id="brCurrentScore">0 puntos</small></div></div>
+      <div class="br-hand" id="brHand" aria-label="Tu mano"></div>
+    </div>
+  </section>
+</main>
+
+<div class="br-pass hidden" id="brPass" role="dialog" aria-modal="true" aria-labelledby="brPassTitle">
+  <div><span>MANO PRIVADA</span><h2 id="brPassTitle">Turno de Jugador</h2><p>Pasa el móvil. La siguiente persona debe pulsar cuando esté preparada.</p><button class="br-primary" id="brReveal" type="button">Ver mi mano</button></div>
+</div>
+
+<dialog class="br-dialog" id="brResultDialog">
+  <div class="br-dialog-card br-result"><span class="br-result-seal">B</span><small>RESULTADO FINAL</small><h2 id="brResultTitle">Partida terminada</h2><div id="brResultRows"></div><button class="br-primary" id="brAgain" type="button">Jugar otra partida</button><a href="index.html">Volver a Sala Cero</a></div>
+</dialog>
+
+<dialog class="br-dialog" id="brRulesDialog">
+  <div class="br-dialog-card"><button class="br-close" id="brRulesClose" type="button" aria-label="Cerrar">×</button><small>CÓMO SE JUEGA</small><h2>Brisca</h2><ol><li>Cada persona recibe tres cartas y se descubre el triunfo.</li><li>No es obligatorio asistir: puedes jugar cualquier palo.</li><li>Gana la baza el triunfo más alto o, si no hay triunfos, la carta más alta del palo de salida.</li><li>As, tres, rey, caballo y sota valen 11, 10, 4, 3 y 2 puntos. El resto vale cero.</li><li>Quien gana la baza roba primero y abre la siguiente. Vence quien suma más puntos.</li></ol><button class="br-primary" id="brRulesAccept" type="button">Entendido</button></div>
+</dialog>
+
+<div aria-live="polite" class="br-toast" id="brToast"></div>
+<script src="club.js?v=26.0.1"></script>
+<script src="stats-v26.js?v=26.0.1"></script>
+<script src="brisca.js?v=26.0.1"></script>
+<script src="device-mode.js?v=26.0.1"></script>
+<script src="v25-mobile.js?v=26.0.1"></script>
+</body>
+</html>

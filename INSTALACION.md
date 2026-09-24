@@ -1,9 +1,16 @@
-# Sala Cero v25.0 — Instalación
+# Sala Cero v26.0.1 — Instalación
 
-Publica todos los archivos del paquete en la raíz del repositorio de GitHub Pages. No subas la carpeta contenedora del ZIP: `index.html` debe quedar directamente en la raíz.
+Publica todos los archivos del proyecto en la raíz del repositorio de GitHub Pages. No subas una carpeta contenedora: `index.html` debe quedar directamente en la raíz.
 
-Tras publicar, abre la web con conexión y realiza una recarga completa. El service worker `25.0.9` reemplazará la caché anterior y descargará los recursos de los 21 juegos.
+Después de publicar, abre la web con conexión y realiza una recarga completa. El service worker `26.0.1` reemplazará las cachés anteriores y preparará los 175 recursos esenciales de los 22 juegos.
 
-Los doce juegos nuevos no usan APIs externas y funcionan localmente una vez cacheados.
+La Brisca, las estadísticas y los juegos funcionan sin APIs externas. Toda la información de perfil y actividad se conserva localmente en el navegador.
 
-En móvil conviene cerrar cualquier pestaña antigua de Sala Cero después de la primera recarga para que todas las vistas usen la misma versión del shell.
+Para validar antes de publicar:
+
+```bash
+pnpm install
+pnpm run test
+```
+
+En móvil conviene cerrar cualquier pestaña antigua de Sala Cero después de la primera recarga para que todas las vistas adopten la nueva caché.

@@ -358,6 +358,12 @@ dialog,
 }
 
 @media (max-width: 380px) {
+  /* Las acciones secundarias no deben empujar la cabecera fuera del iPhone SE. */
+  .g-top-actions a.g-soft-button,
+  .pk-top-actions .pk-soft:last-child {
+    display: none !important;
+  }
+
   .app-shell:not(.hidden) .player-hand,
   .private-hand,
   .player-multi-hand,
@@ -365,6 +371,13 @@ dialog,
   .v23-card-row {
     padding-left: 7px !important;
     padding-right: 7px !important;
+  }
+}
+
+@media (max-width: 960px) and (orientation: landscape) {
+  /* El halo decorativo de Póker nunca debe ampliar el ancho del documento. */
+  .pk-dealer-showcase {
+    overflow: hidden !important;
   }
 }
 

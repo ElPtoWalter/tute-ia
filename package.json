@@ -1,0 +1,16 @@
+{
+  "name": "sala-cero",
+  "version": "26.0.1",
+  "private": true,
+  "packageManager": "pnpm@10.15.1",
+  "type": "module",
+  "scripts": {
+    "test": "npm run test:static && npm run test:e2e",
+    "test:static": "node scripts/validate.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test --grep @smoke"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}

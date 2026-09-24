@@ -1,11 +1,13 @@
-# Sala Cero v25.0
+# Sala Cero v26.0.1
 
-Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPhone y ordenador. La versión 25 reforma las mesas de juego y garantiza que las manos completas permanezcan visibles incluso con 13 o 14 cartas, tanto en vertical como en horizontal.
+Sala Cero reúne **22 juegos offline** en una sola web, diseñada para móvil, iPhone, teléfono horizontal y ordenador. La v26 añade Brisca, estadísticas comunes a todo el catálogo y una barrera automática de calidad responsive.
 
 ## Juegos incluidos
 
-### Clásicos de Sala Cero
+### Mesas clásicas y casino
+
 - Tute
+- Brisca
 - Generala
 - Chinchón
 - Escoba de 15
@@ -16,6 +18,7 @@ Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPho
 - El Impostor
 
 ### Juegos de grupo
+
 - Chao Pescao
 - Mentiroso de dados
 - 7 y Media
@@ -29,16 +32,27 @@ Sala Cero es una colección de **21 juegos offline** optimizada para móvil/iPho
 - Ruleta del Caos
 - El Juicio de Antón
 
-## Diseño y dispositivo
+## Novedades de la v26
 
-Las 27 páginas comparten las capas responsive v24 y v25. El dispositivo se detecta automáticamente, incluido un teléfono en horizontal; la portada incorpora buscador, filtros y navegación inferior móvil. Un motor común calcula el ancho y solapamiento de cada mano según el número de cartas y el espacio real disponible. Las mesas compactan paneles, respetan las zonas seguras de iPhone y mantienen los controles esenciales visibles. El acceso invitado queda disponible desde el primer momento.
+- Brisca completa contra Doña Virtud o en modo local para 2–4 personas.
+- Estadísticas globales de sesiones, partidas terminadas, victorias, racha, tiempo, juego favorito, jugadores e historial.
+- Diseño responsive revisado en `1440×900`, `390×844`, `360×800` y `844×390`.
+- Pruebas Playwright sobre los 22 juegos: errores JavaScript, imágenes rotas, desbordamiento horizontal y controles fuera del viewport.
+- GitHub Actions ejecuta la validación estructural y la matriz responsive en cada push y pull request.
+- Service worker `26.0.1` con 175 recursos esenciales para jugar sin conexión.
 
-## Offline
+## Desarrollo y QA
 
-El service worker v25.0.9 incluye las páginas, estilos y motores de los 21 juegos, además de una ruta de recuperación offline para todas las páginas. No se necesita ninguna API para los juegos: preguntas, palabras, categorías, retos y lógica se ejecutan localmente.
+Requiere Node.js 20 o superior y pnpm.
+
+```bash
+pnpm install
+pnpm run test:static
+pnpm run test:e2e
+```
+
+`pnpm run test` ejecuta ambas capas. Consulta `CAMBIOS-v26.md`, `QA-v26.md` e `INSTALACION.md`.
 
 ## Publicación
 
-Sube directamente todo el contenido de este paquete a la raíz del repositorio de GitHub Pages. `index.html`, `sw.js` y `manifest.webmanifest` deben quedar en la raíz.
-
-Consulta `CAMBIOS-v25.md`, `QA-v25.md` e `INSTALACION.md`.
+Publica el contenido de la raíz del proyecto en GitHub Pages. `index.html`, `sw.js` y `manifest.webmanifest` deben quedar directamente en la raíz publicada.

@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero — 21 juegos offline",
+  "name": "Sala Cero — 22 juegos offline",
   "short_name": "Sala Cero",
-  "description": "21 juegos offline optimizados para móvil y ordenador: cartas, casino, party, palabras, faroleo y partidas locales con un solo dispositivo.",
+  "description": "22 juegos offline optimizados para móvil y ordenador: Brisca, cartas, casino, party, palabras, faroleo y partidas locales con un solo dispositivo.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",
@@ -66,6 +66,18 @@
       "short_name": "Generala",
       "description": "Abrir la mesa de Generala",
       "url": "./generala.html",
+      "icons": [
+        {
+          "src": "assets/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Jugar a la Brisca",
+      "short_name": "Brisca",
+      "description": "Brisca contra la IA o pasando el móvil",
+      "url": "./brisca.html",
       "icons": [
         {
           "src": "assets/icon-192.png",

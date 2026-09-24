@@ -17,7 +17,7 @@
     { id: "chinchon_finish", icon: "C", title: "Mano ligada", text: "Completa una partida de Chinchón.", test: data => data.stats.chinchonGames >= 1 },
     { id: "chinchon_direct", icon: "7", title: "Chinchón perfecto", text: "Consigue un Chinchón de siete cartas.", test: data => data.stats.chinchones >= 1 },
     { id: "escoba_finish", icon: "15", title: "Suma exacta", text: "Completa una partida de Escoba.", test: data => data.stats.escobaGames >= 1 },
-    { id: "four_tables", icon: "4", title: "Maestro del salón", text: "Juega a los cuatro juegos de Sala Cero.", test: data => data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 && data.stats.chinchonGames >= 1 && data.stats.escobaGames >= 1 },
+    { id: "four_tables", icon: "4", title: "Explorador del salón", text: "Juega a cuatro títulos diferentes de Sala Cero.", test: data => (window.SalaCeroStats?.getSummary?.().uniqueGames || 0) >= 4 || (data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 && data.stats.chinchonGames >= 1 && data.stats.escobaGames >= 1) },
     { id: "culo_finish", icon: "P", title: "Cambio de poder", text: "Completa una partida de Culo / Presidente.", test: data => data.stats.culoGames >= 1 },
     { id: "president", icon: "♛", title: "Señor Presidente", text: "Termina una partida de Culo como Presidente.", test: data => data.stats.presidents >= 1 },
     { id: "five_tables", icon: "5", title: "Dueño de Sala Cero", text: "Juega a los cinco juegos clásicos de la sala.", test: data => data.stats.tuteGames >= 1 && data.stats.generalaGames >= 1 && data.stats.chinchonGames >= 1 && data.stats.escobaGames >= 1 && data.stats.culoGames >= 1 },
@@ -27,6 +27,10 @@
     { id: "blackjack_finish", icon: "21", title: "Primera mano de Blackjack", text: "Completa una ronda de Blackjack.", test: data => data.stats.blackjackGames >= 1 },
     { id: "blackjack_win", icon: "♛", title: "Veintiuno", text: "Gana una ronda de Blackjack contra Anton.", test: data => data.stats.blackjackWins >= 1 },
     { id: "impostor_finish", icon: "?", title: "Nadie es de fiar", text: "Completa una ronda de El impostor.", test: data => data.stats.impostorGames >= 1 },
+    { id: "brisca_finish", icon: "B", title: "Primera brisca", text: "Completa una partida de Brisca.", test: data => data.stats.briscaGames >= 1 },
+    { id: "brisca_win", icon: "3", title: "As y tres", text: "Gana una partida de Brisca contra la IA.", test: data => data.stats.briscaWins >= 1 },
+    { id: "catalog_ten", icon: "10", title: "Noche de catálogo", text: "Juega a diez títulos diferentes de Sala Cero.", test: () => (window.SalaCeroStats?.getSummary?.().uniqueGames || 0) >= 10 },
+    { id: "catalog_all", icon: "22", title: "Sala Cero completa", text: "Prueba los veintidós juegos del catálogo.", test: () => (window.SalaCeroStats?.getSummary?.().uniqueGames || 0) >= 22 },
     { id: "career_match", icon: "◆", title: "Competidor", text: "Disputa tu primer encuentro de carrera.", test: () => Boolean(window.SalaCeroCareer?.getData?.().history?.length) },
     { id: "career_trophy", icon: "♛", title: "Sala de trofeos", text: "Consigue tu primer trofeo de carrera.", test: () => Object.values(window.SalaCeroCareer?.getData?.().trophies || {}).some(Boolean) }
   ];
@@ -38,11 +42,11 @@
     { id: "royal", label: "Salón real", level: 5, accent: "#f7d37f", surface: "#17100a" }
   ];
 
-  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "G", "C", "15", "P", "PK", "21", "?"];
+  const AVATARS = ["♠", "♣", "♦", "★", "♛", "⚄", "T", "B", "G", "C", "15", "P", "PK", "21", "?"];
 
   function defaultData() {
     return {
-      version: 21.3,
+      version: 26,
       profile: { name: "Jugador", avatar: "♠" },
       xp: 0,
       theme: "emerald",
@@ -55,6 +59,7 @@
         pokerGames: 0, pokerWins: 0, pokerBestStack: 0, pokerChampions: 0,
         blackjackGames: 0, blackjackWins: 0, blackjackBestStack: 0, blackjackNaturals: 0,
         impostorGames: 0,
+        briscaGames: 0, briscaWins: 0, briscaBestScore: 0,
         generalaBestScore: 0, generalaServed: 0, localGames: 0
       },
       achievements: {},
@@ -88,7 +93,7 @@
     output.daily.counters = { ...(incoming.daily?.counters || {}) };
     output.daily.claimed = { ...(incoming.daily?.claimed || {}) };
     output.history = Array.isArray(incoming.history) ? incoming.history : [];
-    output.version = 21.3;
+    output.version = 26;
     return output;
   }
 
@@ -117,15 +122,16 @@
   function resetDaily(data) {
     const key = todayKey();
     if (data.daily.date === key) return;
-    data.daily = { date: key, counters: { games: 0, wins: 0, tute: 0, generala: 0, chinchon: 0, escoba: 0, culo: 0, poker: 0, blackjack: 0, impostor: 0 }, claimed: {} };
+    data.daily = { date: key, counters: { games: 0, wins: 0, tute: 0, brisca: 0, generala: 0, chinchon: 0, escoba: 0, culo: 0, poker: 0, blackjack: 0, impostor: 0 }, claimed: {} };
   }
 
   function dailyDefinitions(data) {
     const dayNumber = Math.floor(new Date(`${data.daily.date}T12:00:00`).getTime() / 86400000);
-    const games = ["tute", "generala", "chinchon", "escoba", "culo", "poker", "blackjack", "impostor"];
+    const games = ["tute", "brisca", "generala", "chinchon", "escoba", "culo", "poker", "blackjack", "impostor"];
     const game = games[((dayNumber % games.length) + games.length) % games.length];
     const gameText = {
       tute: ["Noche de cartas", "Juega una partida de Tute."],
+      brisca: ["As y tres", "Completa una partida de Brisca."],
       generala: ["Cinco dados", "Completa una partida de Generala."],
       chinchon: ["Mano ligada", "Completa una partida de Chinchón."],
       escoba: ["Suma quince", "Completa una partida de Escoba."],
@@ -146,7 +152,7 @@
 
   function recordMatch(event = {}) {
     const data = read();
-    const game = ["tute", "generala", "chinchon", "escoba", "culo", "poker", "blackjack", "impostor"].includes(event.game) ? event.game : "tute";
+    const game = ["tute", "brisca", "generala", "chinchon", "escoba", "culo", "poker", "blackjack", "impostor"].includes(event.game) ? event.game : "tute";
     const local = Boolean(event.local || event.mode === "local");
     const won = Boolean(event.won) && !local;
     const score = Math.max(0, Number(event.score) || 0);
@@ -192,6 +198,7 @@
       data.stats.blackjackBestStack = Math.max(data.stats.blackjackBestStack, score);
       if (event.special === "blackjack") data.stats.blackjackNaturals += 1;
     }
+    if (game === "brisca") data.stats.briscaBestScore = Math.max(data.stats.briscaBestScore, score);
 
     let xp = 25;
     if (won) xp += 45;
@@ -212,11 +219,12 @@
     });
     data.history = data.history.slice(0, 30);
 
+    window.SalaCeroStats?.recordResult?.({ ...event, game, won, local, score });
     const unlocked = unlockAchievements(data, true);
     write(data);
     applyTheme(data.theme);
     renderAll();
-    showClubToast(`+${xp} XP · ${{tute:"Tute",generala:"Generala",chinchon:"Chinchón",escoba:"Escoba",culo:"Culo",poker:"Póker",blackjack:"Blackjack",impostor:"Impostor"}[game]}`, unlocked);
+    showClubToast(`+${xp} XP · ${{tute:"Tute",brisca:"Brisca",generala:"Generala",chinchon:"Chinchón",escoba:"Escoba",culo:"Culo",poker:"Póker",blackjack:"Blackjack",impostor:"Impostor"}[game]}`, unlocked);
     window.dispatchEvent(new CustomEvent("sala-cero:updated", { detail: { data, unlocked, event } }));
     const careerSummary = window.SalaCeroCareer?.consumeMatch?.(event) || null;
     return { data, xp, unlocked, careerSummary };
@@ -323,7 +331,7 @@
         const claimed = Boolean(data.daily.claimed[item.id]);
         const pct = Math.min(100, Math.round(item.value / item.target * 100));
         return `<article class="club-challenge ${complete ? "complete" : ""} ${claimed ? "claimed" : ""}">
-          <span class="club-challenge-icon">${claimed ? "✓" : item.id === "win" ? "★" : ({tute:"T",generala:"G",chinchon:"C",escoba:"15",culo:"P",poker:"♠"}[item.id] || "◆")}</span>
+          <span class="club-challenge-icon">${claimed ? "✓" : item.id === "win" ? "★" : ({tute:"T",brisca:"B",generala:"G",chinchon:"C",escoba:"15",culo:"P",poker:"♠",blackjack:"21",impostor:"?"}[item.id] || "◆")}</span>
           <div><small>RETO DIARIO</small><strong>${item.title}</strong><p>${item.text}</p><div class="club-mini-progress"><i style="width:${pct}%"></i></div><em>${Math.min(item.value, item.target)} / ${item.target}</em></div>
           <button type="button" data-claim-daily="${item.id}" ${!complete || claimed ? "disabled" : ""}>${claimed ? "Cobrado" : `+${item.reward} XP`}</button>
         </article>`;
@@ -361,7 +369,7 @@
         container.innerHTML = `<div class="club-empty">Todavía no hay partidas registradas en el club.</div>`;
         return;
       }
-      const meta = { tute:["T","Tute"], generala:["G","Generala"], chinchon:["C","Chinchón"], escoba:["15","Escoba"], culo:["P","Culo"], poker:["♠","Póker"] };
+      const meta = { tute:["T","Tute"], brisca:["B","Brisca"], generala:["G","Generala"], chinchon:["C","Chinchón"], escoba:["15","Escoba"], culo:["P","Culo"], poker:["♠","Póker"], blackjack:["21","Blackjack"], impostor:["?","Impostor"] };
       container.innerHTML = data.history.slice(0, 8).map(item => { const m=meta[item.game]||["◆",item.game]; return `<div class="club-history-row"><span>${m[0]}</span><div><strong>${m[1]}</strong><small>${item.local ? "Partida local" : item.won ? "Victoria" : "Derrota"}${item.score ? ` · ${item.score} puntos` : ""}</small></div><time>${formatDate(item.at)}</time></div>`; }).join("");
     });
   }
