@@ -1,4 +1,4 @@
-const VERSION = "26.0.1";
+const VERSION = "26.0.2";
 const SHELL_CACHE = `tute-ia-shell-${VERSION}`;
 const RUNTIME_CACHE = `tute-ia-runtime-${VERSION}`;
 const MEDIA_CACHE = `tute-ia-media-${VERSION}`;

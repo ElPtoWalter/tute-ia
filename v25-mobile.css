@@ -357,7 +357,7 @@ dialog,
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 420px) {
   /* Las acciones secundarias no deben empujar la cabecera fuera del iPhone SE. */
   .g-top-actions a.g-soft-button,
   .pk-top-actions .pk-soft:last-child {

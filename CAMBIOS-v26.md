@@ -1,4 +1,4 @@
-# Sala Cero v26.0.1 — Cambios
+# Sala Cero v26.0.2 — Cambios
 
 ## Brisca
 
@@ -22,7 +22,7 @@
 - Corrección de cabeceras estrechas en Generala y Póker.
 - Corrección del halo decorativo de Póker en teléfono horizontal.
 - Mano de Brisca completamente visible en vertical y horizontal.
-- Caché PWA renovada a `26.0.1` e inclusión de los recursos nuevos.
+- Caché PWA renovada a `26.0.2` e inclusión de los recursos nuevos.
 - Corrección de textos que todavía describían un catálogo de cuatro juegos.
 
 ## Calidad continua
