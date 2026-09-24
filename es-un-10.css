@@ -78,6 +78,7 @@ button,a{font:inherit}
   .ten-copy p{max-width:340px;margin:10px auto 0;font-size:9px;line-height:1.5}
   .ten-table{min-height:calc(100dvh - 192px);padding:18px 8px max(18px,var(--safe-bottom));border-width:7px;border-radius:27px}
   .ten-deck-wrap{--card-w:min(70vw,280px);width:calc(var(--card-w) + 30px);height:calc(var(--card-w) * 1.542 + 30px)}
+  .ten-deck-wrap.shuffling .ten-card{animation-name:tenTopShuffleMobile}
   .ten-round{top:10px;right:10px;min-width:58px;padding:6px 8px}
   .ten-round strong{font-size:17px}
   .ten-status{font-size:8px;margin-top:0}
@@ -89,6 +90,7 @@ button,a{font:inherit}
   .ten-brand small{font-size:5px}
   .ten-home{min-height:36px;padding:0 10px;font-size:6px}
 }
+@keyframes tenTopShuffleMobile{0%,100%{transform:translate(0,0) rotate(0)}25%{transform:translate(-8%,1px) rotate(-2deg)}50%{transform:translate(8%,-3px) rotate(2deg)}75%{transform:translate(-4%,2px) rotate(-1deg)}}
 @media(max-width:360px){
   .ten-copy h1{font-size:38px}
   .ten-copy p{font-size:8px}

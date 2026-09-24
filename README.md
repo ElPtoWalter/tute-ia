@@ -1,4 +1,4 @@
-# Sala Cero v26.0.2
+# Sala Cero v26.0.3
 
 Sala Cero reúne **22 juegos offline** en una sola web, diseñada para móvil, iPhone, teléfono horizontal y ordenador. La v26 añade Brisca, estadísticas comunes a todo el catálogo y una barrera automática de calidad responsive.
 
@@ -39,7 +39,7 @@ Sala Cero reúne **22 juegos offline** en una sola web, diseñada para móvil, i
 - Diseño responsive revisado en `1440×900`, `390×844`, `360×800` y `844×390`.
 - Pruebas Playwright sobre los 22 juegos: errores JavaScript, imágenes rotas, desbordamiento horizontal y controles fuera del viewport.
 - GitHub Actions ejecuta la validación estructural y la matriz responsive en cada push y pull request.
-- Service worker `26.0.2` con 175 recursos esenciales para jugar sin conexión.
+- Service worker `26.0.3` con 175 recursos esenciales para jugar sin conexión.
 
 ## Desarrollo y QA
 

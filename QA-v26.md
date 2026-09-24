@@ -1,4 +1,4 @@
-# QA Sala Cero v26.0.2
+# QA Sala Cero v26.0.3
 
 ## Matriz responsive
 

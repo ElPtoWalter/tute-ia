@@ -21,7 +21,7 @@ function localTarget(reference) {
 for (const file of htmlFiles) {
   const source = readFileSync(join(root, file), "utf8");
   if (!/name=["']viewport["']/.test(source)) report.bad.push(`${file}:viewport`);
-  if (!source.includes("26.0.2")) report.bad.push(`${file}:version`);
+  if (!source.includes("26.0.3")) report.bad.push(`${file}:version`);
   if ((source.match(/v25-mobile\.css/g) || []).length !== 1) report.bad.push(`${file}:mobile-css`);
   if ((source.match(/v25-mobile\.js/g) || []).length !== 1) report.bad.push(`${file}:mobile-js`);
   if ((source.match(/stats-v26\.js/g) || []).length !== 1) report.bad.push(`${file}:global-stats`);
