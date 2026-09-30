@@ -247,7 +247,7 @@
     if (state.phase !== "handoff") return;
     state.phase = "active";
     state.revealed = true;
-    navigator.vibrate?.(8);
+    window.SalaCeroPrefs?.haptic?.(8);
     render();
   }
 
@@ -566,7 +566,7 @@
     const legal = getLegalCards(playerId);
     if (!legal.some(card => card.id === cardId)) {
       toast(getIllegalPlayReason(cardId));
-      navigator.vibrate?.([20, 25, 20]);
+      window.SalaCeroPrefs?.haptic?.([20, 25, 20]);
       return;
     }
 
@@ -694,7 +694,7 @@
     player.hand[index] = oldTrump;
     state.trumpCard = option.card;
     addLog(`<strong>${player.name}</strong> cambia el pinte: ${cardName(option.card)} por ${cardName(oldTrump)}.`);
-    navigator.vibrate?.(10);
+    window.SalaCeroPrefs?.haptic?.(10);
     render();
   }
 
@@ -977,7 +977,7 @@
     }
     if (gesture.mode === "play") {
       cleanupHandGesture();
-      navigator.vibrate?.(10);
+      window.SalaCeroPrefs?.haptic?.(10);
       playCard(state.current, gesture.cardId);
       return;
     }
@@ -994,7 +994,7 @@
       cleanupHandGesture();
       const [card] = player.hand.splice(from, 1);
       player.hand.splice(Math.min(insert, player.hand.length), 0, card);
-      navigator.vibrate?.(6);
+      window.SalaCeroPrefs?.haptic?.(6);
       renderPrivateHand();
       return;
     }
@@ -1178,7 +1178,7 @@
       const key = state.config.count === 4 && state.config.teams ? "local4pairs" : `local${state.config.count}`;
       stats.variantPlays[key] = (stats.variantPlays[key] || 0) + 1;
       localStorage.setItem("tuteIaStats", JSON.stringify(stats));
-      window.SalaCeroClub?.recordMatch({ game: "tute", mode: "local", local: true, variant: key });
+      window.SalaCeroPrefs?.noteResult?.({ game: "tute", mode: "local", local: true, variant: key });
     } catch (_) {}
   }
 

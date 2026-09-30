@@ -29,7 +29,7 @@
     active = overlay;
     document.body.classList.add("cante-fx-active");
     if (legendary) document.body.classList.add("cante-fx-legendary");
-    navigator.vibrate?.(legendary ? [45,45,90,45,140] : [25,35,55]);
+    window.SalaCeroPrefs?.haptic?.(legendary ? [45,45,90,45,140] : [25,35,55]);
     const duration = legendary ? 2550 : 1550;
     return new Promise(resolve => {
       const finish = () => { if (active === overlay) closeActive(); resolve(); };

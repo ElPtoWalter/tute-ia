@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#071c17">
+<meta name="description" content="Pictionary táctil con palabra secreta, categorías, lápiz, goma, grosor, deshacer y lienzo para móvil y tablet.">
+<title>Dibuja — Sala Cero</title>
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icons/favicon-64.png">
+<link rel="stylesheet" href="game-core.css?v=26.1.0"><link rel="stylesheet" href="pictionary.css?v=26.1.0">
+<script src="casual.js?v=26.1.0"></script>
+</head>
+<body class="sc-game-page" data-game="pictionary" data-game-title="Dibuja">
+<header class="game-top"><a class="game-brand" href="index.html"><span>✎</span><div><strong>DIBUJA</strong><small>SALA CERO · V26.1</small></div></a><div class="game-top-actions"><button id="piRulesButton" type="button">Cómo jugar</button><a href="index.html">Juegos</a></div></header>
+<main class="game-shell">
+  <section class="game-setup" id="piSetup" aria-labelledby="piTitle"><div class="setup-copy"><small>PICTIONARY EN TU PANTALLA</small><h1 id="piTitle">Dibuja</h1><p>Una persona ve la palabra secreta y la dibuja con el dedo. El resto intenta adivinarla antes de pedir la siguiente.</p></div>
+    <form class="setup-card form-grid" id="piSetupForm"><label class="field"><span>Categoría</span><select id="piCategory"><option value="general">Mezcla general</option><option value="animales">Animales</option><option value="objetos">Objetos</option><option value="lugares">Lugares</option><option value="acciones">Acciones</option><option value="comida">Comida</option></select></label><label class="field"><span>Nombre del dibujante</span><input id="piDrawer" maxlength="18" value="Jugador"></label><button class="primary-action" type="submit">Recibir palabra</button><p class="setup-note">El lienzo funciona con dedo, lápiz táctil o ratón. No se sube ningún dibujo.</p></form>
+  </section>
+  <section class="pi-game hidden" id="piGame" aria-label="Lienzo de dibujo">
+    <div class="pi-game-head"><div><small>DIBUJANTE</small><strong id="piDrawerLabel">Jugador</strong></div><button id="piWordButton" type="button"><small>PALABRA</small><strong id="piWordLabel">Oculta</strong></button><div><small>ACIERTOS</small><strong id="piScore">0</strong></div></div>
+    <div class="pi-canvas-wrap" id="piCanvasWrap"><canvas id="piCanvas" aria-label="Lienzo para dibujar"></canvas></div>
+    <div class="pi-toolbar" role="toolbar" aria-label="Herramientas de dibujo"><button id="piPencil" class="active" type="button" aria-pressed="true">✎ <span>Lápiz</span></button><button id="piEraser" type="button" aria-pressed="false">◯ <span>Goma</span></button><label><span>Grosor</span><input id="piWidth" type="range" min="2" max="28" value="7"></label><button id="piUndo" type="button">↶ <span>Deshacer</span></button><button id="piClear" type="button">× <span>Limpiar</span></button></div>
+    <div class="pi-actions"><button class="secondary-action" id="piSkip" type="button">Otra palabra</button><button class="primary-action" id="piCorrect" type="button">✓ Acertado</button></div>
+  </section>
+</main>
+<dialog class="game-dialog" id="piSecretDialog"><div class="dialog-card pi-secret"><span class="section-kicker">SOLO EL DIBUJANTE</span><h2 id="piSecretTitle">Pasa el móvil</h2><p>Asegúrate de que el resto no mira la pantalla.</p><strong id="piSecretWord">Pulsa para revelar</strong><div class="dialog-actions"><button class="primary-action" id="piReveal" type="button">Revelar palabra</button></div></div></dialog>
+<dialog class="game-dialog" id="piRules"><div class="dialog-card"><button class="dialog-close" type="button" data-close aria-label="Cerrar">×</button><span class="section-kicker">CÓMO SE JUEGA</span><h2>Dibuja</h2><ol><li>El dibujante mira la palabra en privado y oculta la pantalla antes de volver al grupo.</li><li>Dibuja sin escribir letras ni números. Usa lápiz, goma, grosor, deshacer o limpiar.</li><li>Cuando el grupo acierte, pulsa «Acertado». Si la palabra se atasca, pide otra.</li></ol><div class="dialog-actions"><button class="primary-action" type="button" data-close>Entendido</button></div></div></dialog>
+<script src="pictionary.js?v=26.1.0"></script>
+</body>
+</html>

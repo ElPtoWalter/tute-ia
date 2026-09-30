@@ -115,7 +115,7 @@
 
   function init() {
     cacheUI();
-    const clubName = window.SalaCeroClub?.getData()?.profile?.name;
+    const clubName = window.SalaCeroPrefs?.getName?.();
     if (clubName) mode.names[0] = clubName;
     configureMode();
     bindUI();
@@ -506,7 +506,7 @@
     }
     if (gesture.mode === "play") {
       cleanupMultiGesture();
-      navigator.vibrate?.(10);
+      window.SalaCeroPrefs?.haptic?.(10);
       humanPlay(gesture.cardId);
       return;
     }
@@ -524,7 +524,7 @@
       if (from >= 0) {
         const [card] = hand.splice(from, 1);
         hand.splice(Math.min(insert, hand.length), 0, card);
-        navigator.vibrate?.(6);
+        window.SalaCeroPrefs?.haptic?.(6);
         renderHands();
         queueMultiAutosave();
       }
@@ -1009,7 +1009,7 @@
       if (humanWon) stats.matchesWon=(stats.matchesWon||0)+1;
       stats.variantPlays||={};stats.variantPlays[mode.id]=(stats.variantPlays[mode.id]||0)+1;
       localStorage.setItem("tuteIaStats",JSON.stringify(stats));
-      window.SalaCeroClub?.recordMatch({ game:"tute", mode:"multi", won:Boolean(humanWon), variant:mode.id, score:totalPlayer(0) });
+      window.SalaCeroPrefs?.noteResult?.({ game:"tute", mode:"multi", won:Boolean(humanWon), variant:mode.id, score:totalPlayer(0) });
     } catch(_) {}
   }
 

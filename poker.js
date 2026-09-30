@@ -61,9 +61,7 @@ const AI_PROFILES = [
   }
 
   function hydrateProfile(){
-    const club=window.SalaCeroClub?.getData?.();
-    const profile=window.SalaCeroAuth?.getActiveProfile?.();
-    UI.pkPlayerName.value=club?.profile?.name||profile?.name||'Jugador';
+    UI.pkPlayerName.value=window.SalaCeroPrefs?.getName?.()||'Jugador';
   }
 
   function applyDealerAsset(){
@@ -79,7 +77,7 @@ const AI_PROFILES = [
 
   function populateLocalNames(count){
     const existing=[...UI.pkLocalNames.querySelectorAll('input')].map(input=>input.value);
-    const profile=window.SalaCeroClub?.getData?.().profile?.name||'Jugador 1';
+    const profile=window.SalaCeroPrefs?.getName?.()||'Jugador 1';
     UI.pkLocalNames.innerHTML=Array.from({length:count},(_,index)=>`<input maxlength="18" data-local-name="${index}" value="${escapeHtml(existing[index]|| (index===0?profile:`Jugador ${index+1}`))}" aria-label="Nombre del jugador ${index+1}">`).join('');
   }
 
@@ -310,7 +308,7 @@ const AI_PROFILES = [
     UI.pkGameResultText.textContent=`Anton cierra el casino después de ${state.handNumber} manos. ${champion.name} reúne ${formatChips(champion.stack)} fichas.`;
     UI.pkFinalRanking.innerHTML=ranking.map((player,index)=>`<div class="pk-result-row ${index===0?'winner':''}"><span>${index+1}. ${escapeHtml(player.name)}</span><strong>${formatChips(player.stack)}</strong></div>`).join('');
     if(!state.recorded){
-      const human=state.players[0];window.SalaCeroClub?.recordMatch?.({game:'poker',won:state.mode==='ai'&&champion.seat===human.seat,local:state.mode==='local',mode:state.mode,score:human?.stack||0,special:champion.seat===human?.seat?'champion':''});state.recorded=true;
+      const human=state.players[0];window.SalaCeroPrefs?.noteResult?.({game:'poker',won:state.mode==='ai'&&champion.seat===human.seat,local:state.mode==='local',mode:state.mode,score:human?.stack||0,special:champion.seat===human?.seat?'champion':''});state.recorded=true;
     }
     clearSave();render();if(!UI.pkGameResult.open)UI.pkGameResult.showModal();
   }

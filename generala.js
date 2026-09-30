@@ -37,16 +37,12 @@
     instantWinner: null
   };
 
-  function careerAiConfig() {
-    return window.SalaCeroCareer?.getAiConfig?.("generala") || null;
-  }
-
   function aiDisplayName() {
-    return careerAiConfig()?.name || "Doña Fortuna";
+    return "Doña Fortuna";
   }
 
   function aiPersonality() {
-    return careerAiConfig()?.personality || "balanced";
+    return "balanced";
   }
 
   document.addEventListener("DOMContentLoaded", init);
@@ -55,12 +51,11 @@
     cacheUI();
     bindUI();
     loadPreferences();
-    const clubName = window.SalaCeroClub?.getData()?.profile?.name;
+    const clubName = window.SalaCeroPrefs?.getName?.();
     if (clubName) UI.gPlayerName.value = clubName;
     refreshContinue();
     renderSetupNames();
     window.TuteMusicContinuity?.sync();
-    applyCareerLaunch();
   }
 
   function cacheUI() {
@@ -103,20 +98,6 @@
     UI.gDifficultyGroup.classList.toggle("hidden", mode !== "solo");
     renderSetupNames();
     UI.gSetupModal.showModal();
-  }
-
-  function applyCareerLaunch() {
-    const config = careerAiConfig();
-    if (!config || !new URLSearchParams(location.search).has("career")) return;
-    const radio = document.querySelector(`input[name="gDifficulty"][value="${config.difficulty || "normal"}"]`);
-    if (radio) radio.checked = true;
-    const soloTitle = UI.gSoloMode?.querySelector("strong");
-    if (soloTitle) soloTitle.textContent = `Contra ${config.name}`;
-    setTimeout(() => {
-      openSetup("solo");
-      UI.gSetupKicker.textContent = config.competitionTitle?.toUpperCase() || "ENCUENTRO DE CARRERA";
-      UI.gSetupTitle.textContent = `${config.matchLabel} · ${config.name}`;
-    }, 180);
   }
 
   function renderSetupNames() {
@@ -241,7 +222,7 @@
     state.held[index] = !state.held[index];
     renderDice();
     saveGame();
-    navigator.vibrate?.(7);
+    window.SalaCeroPrefs?.haptic?.(7);
   }
 
   function scoreFor(categoryKey, dice = state.dice, rollCount = state.rollCount, player = currentPlayer()) {
@@ -533,7 +514,7 @@
     const winnerIndex = state.instantWinner !== null ? state.instantWinner : ranking[0].index;
     const winner = state.players[winnerIndex];
     const profileScore = totalScore(state.players[0]);
-    window.SalaCeroClub?.recordMatch({
+    window.SalaCeroPrefs?.noteResult?.({
       game: "generala",
       mode: state.mode,
       local: state.mode === "local",
@@ -667,7 +648,7 @@
 
   function celebrateGenerala() {
     document.body.classList.add("generala-celebration");
-    navigator.vibrate?.([80,45,120,45,180]);
+    window.SalaCeroPrefs?.haptic?.([80,45,120,45,180]);
     showToast("¡GENERALA SERVIDA!");
     for(let i=0;i<28;i+=1){const particle=document.createElement("span");particle.style.cssText=`position:fixed;z-index:4900;left:${Math.random()*100}vw;top:-20px;width:8px;height:14px;background:${i%2?'#ffd98b':'#8f69d4'};transform:rotate(${Math.random()*180}deg);pointer-events:none;`;document.body.appendChild(particle);particle.animate([{translate:"0 0",rotate:"0deg"},{translate:`${(Math.random()-.5)*160}px 105vh`,rotate:"720deg"}],{duration:1100+Math.random()*900,easing:"cubic-bezier(.2,.7,.2,1)"}).finished.finally(()=>particle.remove());}
     setTimeout(()=>document.body.classList.remove("generala-celebration"),1800);

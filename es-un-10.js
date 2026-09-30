@@ -129,7 +129,7 @@
     await preload(selected.src);
     previousCardId = cardId(selected);
     deckWrap.classList.add('revealed');
-    navigator.vibrate?.(18);
+    window.SalaCeroPrefs?.haptic?.(18);
     mode = 'revealed';
     busy = false;
     setAction('Terminar ronda y barajar', '↻');

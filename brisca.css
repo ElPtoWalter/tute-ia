@@ -103,6 +103,7 @@ button, a, select, input { -webkit-tap-highlight-color: transparent; }
   color: var(--br-ink);
   background: rgba(0,0,0,.22);
 }
+.br-field-note { color: var(--br-muted); font-size: 10px; line-height: 1.45; }
 .br-name-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
 .br-primary {
   width: 100%;

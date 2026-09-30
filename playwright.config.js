@@ -2,6 +2,7 @@ import { defineConfig } from "@playwright/test";
 
 const viewports = [
   { name: "desktop-1440x900", viewport: { width: 1440, height: 900 } },
+  { name: "tablet-768x1024", viewport: { width: 768, height: 1024 }, hasTouch: true },
   { name: "mobile-390x844", viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
   { name: "compact-360x800", viewport: { width: 360, height: 800 }, isMobile: true, hasTouch: true },
   { name: "landscape-844x390", viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true }

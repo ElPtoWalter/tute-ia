@@ -3,19 +3,19 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
-<script src="device-mode-boot.js?v=26.0.3"></script>
+<script src="device-mode-boot.js?v=26.1.0"></script>
+<script src="casual.js?v=26.1.0"></script>
 <meta content="#163629" name="theme-color"/>
 <meta content="Brisca con baraja española contra la IA o pasando el móvil, optimizada para móvil y disponible sin conexión." name="description"/>
 <title>Brisca — Sala Cero v26</title>
 <link href="manifest.webmanifest" rel="manifest"/>
 <link href="assets/icons/favicon-64.png" rel="icon"/>
-<link href="club.css?v=26.0.3" rel="stylesheet"/>
-<link href="brisca.css?v=26.0.3" rel="stylesheet"/>
-<link href="device-mode.css?v=26.0.3" rel="stylesheet"/>
-<link href="v24-responsive.css?v=26.0.3" rel="stylesheet"/>
-<link href="v25-mobile.css?v=26.0.3" rel="stylesheet"/>
+<link href="brisca.css?v=26.1.0" rel="stylesheet"/>
+<link href="device-mode.css?v=26.1.0" rel="stylesheet"/>
+<link href="v24-responsive.css?v=26.1.0" rel="stylesheet"/>
+<link href="v25-mobile.css?v=26.1.0" rel="stylesheet"/>
 </head>
-<body data-game="brisca">
+<body data-game="brisca" data-game-title="Brisca">
 <div aria-hidden="true" class="br-noise"></div>
 <header class="br-top">
   <a class="br-brand" href="index.html" aria-label="Volver a Sala Cero"><span>B</span><div><strong>BRISCA</strong><small>SALA CERO · V26</small></div></a>
@@ -28,6 +28,7 @@
     <form class="br-setup-card" id="brSetupForm">
       <label><span>Modo de juego</span><select id="brMode"><option value="solo">Contra la IA</option><option value="local">Pasa el móvil</option></select></label>
       <label id="brCountField" hidden><span>Jugadores</span><select id="brPlayerCount"><option value="2">2 jugadores</option><option value="3">3 jugadores</option><option value="4">4 jugadores</option></select></label>
+      <label id="brDifficultyField"><span>Dificultad de la IA</span><select id="brDifficulty"><option value="casual">Casual</option><option value="normal" selected>Normal</option><option value="hard">Difícil</option></select><small class="br-field-note" id="brDifficultyNote">Equilibra riesgo, triunfo y puntos.</small></label>
       <div class="br-name-fields" id="brNameFields"></div>
       <button class="br-primary" type="submit">Repartir cartas</button>
       <p class="br-privacy">Las manos locales se ocultan antes de pasar el dispositivo.</p>
@@ -65,10 +66,8 @@
 </dialog>
 
 <div aria-live="polite" class="br-toast" id="brToast"></div>
-<script src="club.js?v=26.0.3"></script>
-<script src="stats-v26.js?v=26.0.3"></script>
-<script src="brisca.js?v=26.0.3"></script>
-<script src="device-mode.js?v=26.0.3"></script>
-<script src="v25-mobile.js?v=26.0.3"></script>
+<script src="brisca.js?v=26.1.0"></script>
+<script src="device-mode.js?v=26.1.0"></script>
+<script src="v25-mobile.js?v=26.1.0"></script>
 </body>
 </html>

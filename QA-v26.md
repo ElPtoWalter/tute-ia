@@ -1,42 +1,60 @@
-# QA Sala Cero v26.0.3
+# QA Sala Cero v26.1.0
 
 ## Matriz responsive
 
-Los 22 juegos se comprueban en:
+Los 27 juegos se prueban en:
 
-- Escritorio: `1440×900`
-- Móvil: `390×844`
-- Móvil compacto: `360×800`
-- Móvil horizontal: `844×390`
+- escritorio: `1440×900`;
+- tablet táctil: `768×1024`;
+- móvil: `390×844`;
+- móvil compacto: `360×800`;
+- móvil horizontal: `844×390`.
 
-Total: **88 combinaciones de página y viewport**.
+Son **135 combinaciones de juego y viewport**. En cada una se comprueban:
 
-En cada combinación se revisan carga, errores JavaScript, imágenes rotas, desbordamiento horizontal y controles visibles fuera del viewport. La comprobación manual automatizada de la v26 terminó con 88/88 combinaciones limpias y sin errores de consola.
+- carga HTML y título;
+- errores JavaScript, consola y peticiones fallidas;
+- imágenes rotas y recursos HTTP con error;
+- desbordamiento horizontal del documento;
+- controles visibles fuera del viewport;
+- enlace de vuelta a `index.html`.
+
+La portada se prueba también en los cinco proyectos. La suite enumera 205 casos Playwright: 153 comprobaciones activas y 52 omisiones deliberadas porque los flujos completos se ejecutan una sola vez en `390×844`.
 
 ## Flujos smoke
 
-- Brisca reparte tres cartas, muestra el triunfo y conserva la mano completa.
-- La mano de Doña Virtud permanece privada durante su turno.
-- Tute inicia la variante clásica.
-- Generala, Chinchón y Blackjack abren una mesa individual.
-- El catálogo de estadísticas contiene los 22 juegos y las reglas numéricas de Brisca se validan.
+- Tute inicia una variante y mantiene la mano completa.
+- Generala, Chinchón, Escoba, Culo, Póker y Blackjack abren una partida.
+- Brisca difícil reparte tres cartas, abre reglas y conserva la mano al rotar a `844×390`.
+- Cinquillo crea cuatro secuencias y muestra la mano completa.
+- Pocha abre apuestas, triunfo, mano y marcador para cuatro jugadores.
+- Burro muestra la pantalla privada antes de la primera mano.
+- Charadas expone siempre Pasar y Acertado.
+- Dibuja protege la palabra y abre el canvas táctil.
+- Se validan los valores de Brisca y los contratos de reglas de Cinquillo y Pocha.
 
 ## Validación estructural
 
-- 28 páginas HTML.
-- 22 juegos catalogados.
-- 656 referencias locales comprobadas.
-- 175 recursos esenciales del service worker.
-- 0 archivos ausentes.
-- 0 recursos offline ausentes.
-- 0 IDs duplicados.
+`scripts/validate.mjs` exige:
+
+- 32 páginas HTML y 27 juegos catalogados;
+- 27 enlaces e identificadores únicos;
+- identidad `data-game` coherente en cada página;
+- viewport, versión, runtime común y enlace de inicio;
+- referencias locales e IDs sin duplicados;
+- ausencia de runtimes y textos visibles de la progresión antigua;
+- manifiesto, accesos directos y caché offline coherentes;
+- sintaxis válida de todos los scripts clásicos.
+
+Estado de la validación estática de v26.1.0: **32 HTML, 27 juegos, 575 referencias, 188 recursos offline y 0 incidencias**.
 
 ## Ejecución
 
 ```bash
-pnpm install
+pnpm install --frozen-lockfile
 pnpm run test:static
 pnpm run test:e2e
+pnpm run test:e2e:smoke
 ```
 
-GitHub Actions repite estas pruebas en cada push a `main`, en cada pull request y bajo ejecución manual.
+GitHub Actions instala Chromium y repite la validación estructural y Playwright en cada push a `main`, pull request o ejecución manual. Si falla, conserva el informe HTML durante 14 días.

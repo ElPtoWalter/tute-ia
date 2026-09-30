@@ -10,8 +10,8 @@
   const cardButton=(card,cls='')=>`<button type="button" class="v23-playing-card ${cls}" data-card="${card.id}" aria-label="${card.rank} de ${card.suit}" style="background-image:url('${card.src}')"></button>`;
   let toastTimer=null;
   const toast=(msg)=>{let el=q('.v23-toast');if(!el){el=document.createElement('div');el.className='v23-toast';document.body.append(el)}el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2200)};
-  const beep=(freq=620,dur=.09,type='sine',vol=.05)=>{try{const C=window.AudioContext||window.webkitAudioContext;const ctx=window.__v23Audio||(window.__v23Audio=new C());const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=vol;o.connect(g);g.connect(ctx.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,ctx.currentTime+dur);o.stop(ctx.currentTime+dur)}catch(_){}};
-  const haptic=pattern=>{try{navigator.vibrate?.(pattern)}catch(_){}};
+  const beep=(freq=620,dur=.09)=>{try{window.SalaCeroPrefs?.beep?.(freq,dur)}catch(_){}};
+  const haptic=pattern=>{try{window.SalaCeroPrefs?.haptic?.(pattern)}catch(_){}};
   const show=(el)=>{if(typeof el==='string')el=q(el);el?.classList.remove('hidden');if(el)el.hidden=false};
   const hide=(el)=>{if(typeof el==='string')el=q(el);el?.classList.add('hidden');if(el)el.hidden=true};
   const passScreen=(title,subtitle,onReveal,icon='📱')=>{let el=q('#v23Pass');if(!el){el=document.createElement('div');el.id='v23Pass';el.className='v23-pass hidden';el.innerHTML=`<div class="v23-pass-card"><div class="v23-icon" data-pass-icon></div><h2 data-pass-title></h2><p data-pass-sub></p><button class="v23-btn primary big" type="button" data-pass-reveal>Ver mi pantalla</button></div>`;document.body.append(el)}q('[data-pass-icon]',el).textContent=icon;q('[data-pass-title]',el).textContent=title;q('[data-pass-sub]',el).textContent=subtitle||'Asegúrate de que solo tú ves la pantalla.';show(el);const btn=q('[data-pass-reveal]',el);const next=()=>{hide(el);btn.removeEventListener('click',next);onReveal?.()};btn.addEventListener('click',next)};

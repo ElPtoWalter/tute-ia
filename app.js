@@ -221,16 +221,12 @@
     round: null
   };
 
-  function careerAiConfig() {
-    return window.SalaCeroCareer?.getAiConfig?.("tute") || null;
-  }
-
   function aiDisplayName() {
-    return careerAiConfig()?.name || "Doña Virtud";
+    return "Doña Virtud";
   }
 
   function aiPersonality() {
-    return careerAiConfig()?.personality || "calculating";
+    return "calculating";
   }
 
   const BASE_TUTORIAL_STEPS = [
@@ -611,7 +607,6 @@
     showHome();
     refreshSoloSaveCard();
     handleLaunchShortcut();
-    applyCareerLaunch();
     window.addEventListener("resize", () => state.round && renderHands(), { passive: true });
   }
 
@@ -770,26 +765,6 @@
 
   function openClassicSetup() {
     openSetupForVariant(selectedVariantId || "house");
-  }
-
-  function applyCareerLaunch() {
-    const config = careerAiConfig();
-    if (!config || !new URLSearchParams(location.search).has("career")) return;
-    const variantId = VARIANTS[config.variant] ? config.variant : "house";
-    selectedVariantId = variantId;
-    saveSelectedVariant(variantId);
-    const radio = document.querySelector(`input[name="difficulty"][value="${config.difficulty || "normal"}"]`);
-    if (radio) {
-      radio.checked = true;
-      document.querySelectorAll(".choice-card").forEach(card => card.classList.toggle("selected", card.contains(radio)));
-    }
-    UI.aiName.textContent = aiDisplayName();
-    setTimeout(() => {
-      openSetupForVariant(variantId);
-      UI.setupEyebrow.textContent = config.competitionTitle?.toUpperCase() || UI.setupEyebrow.textContent;
-      UI.setupTitle.textContent = `${config.matchLabel} · ${config.name}`;
-      UI.setupCopy.textContent = `${config.label || "Rival de carrera"}. ${config.motto || "Encuentro oficial de Sala Cero."}`;
-    }, 180);
   }
 
   function setMobileInfoOpen(open) {
@@ -1937,7 +1912,7 @@
 
     if (gesture.mode === "play") {
       cleanupHandGesture();
-      navigator.vibrate?.(12);
+      window.SalaCeroPrefs?.haptic?.(12);
       playCard("player", gesture.cardId);
       return;
     }
@@ -1961,7 +1936,7 @@
       round.hands.player.splice(Math.min(insertIndex, round.hands.player.length), 0, movedCard);
       round.pendingHandFlip = previousRects;
       playSound("card");
-      navigator.vibrate?.(7);
+      window.SalaCeroPrefs?.haptic?.(7);
       render();
       if (state.tutorial.active && currentTutorialStep().action === "reorder" && fromIndex !== insertIndex) {
         notifyTutorialAction("reorder");
@@ -2665,7 +2640,7 @@
     playSound(option.points === 40 ? "song40" : "song");
     render();
     if (window.TuteCanteFX) {
-      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroClub?.getData()?.profile?.name || "Jugador") : aiDisplayName() });
+      await window.TuteCanteFX.play({ points: option.points, suit: option.suit, actorName: actor === "player" ? (window.SalaCeroPrefs?.getName?.() || "Jugador") : aiDisplayName() });
     }
     continueAfterTrick();
   }
@@ -2934,8 +2909,6 @@
 
       if (songPairs.has(card.id)) score -= 20;
 
-      score += careerPersonalityAdjustment(card, opponentCard, wins, trickValue, personality);
-
       if (state.settings.difficulty === "hard") {
         score += expertAdjustment(card, opponentCard, wins);
       }
@@ -2946,29 +2919,6 @@
 
     scored.sort((a, b) => b.score - a.score);
     return scored[0].card;
-  }
-
-  function careerPersonalityAdjustment(card, opponentCard, wins, trickValue, personality) {
-    const round = state.round;
-    let score = 0;
-    if (personality === "conservative") {
-      score -= card.points * (wins ? 0.4 : 1.7);
-      if (!opponentCard && card.points === 0) score += 7;
-      if (card.suit === round.trumpSuit) score -= wins ? 3 : 8;
-      if (wins && trickValue < 10) score -= 4;
-    } else if (personality === "aggressive") {
-      if (wins) score += 10 + trickValue * 0.55;
-      if (!opponentCard && card.strength >= 8) score += 8;
-      if (card.suit === round.trumpSuit && wins) score += 5;
-      if (card.points >= 10 && !wins) score -= 5;
-    } else if (personality === "unpredictable") {
-      score += (Math.random() - 0.5) * 22;
-    } else if (personality === "master") {
-      score += expertAdjustment(card, opponentCard, wins) * 0.7;
-      if (wins && trickValue >= 15) score += 8;
-      if (!opponentCard && countUnknownHigher(card) === 0) score += 10;
-    }
-    return score;
   }
 
   function getProtectedSongCards(actor) {
@@ -3299,7 +3249,7 @@
       localStorage.setItem("tuteIaStats", JSON.stringify(current));
       if (matchWinner) {
         const pointMode = state.settings.rules.matchMode === "points";
-        window.SalaCeroClub?.recordMatch({
+        window.SalaCeroPrefs?.noteResult?.({
           game: "tute",
           mode: "solo",
           variant: state.settings.variantId,

@@ -7,7 +7,7 @@
   const POWER = { 1: 10, 3: 9, 12: 8, 11: 7, 10: 6, 7: 5, 6: 4, 5: 3, 4: 2, 2: 1 };
   const NAMES = { 1: "As", 2: "Dos", 3: "Tres", 4: "Cuatro", 5: "Cinco", 6: "Seis", 7: "Siete", 10: "Sota", 11: "Caballo", 12: "Rey" };
   const UI = Object.fromEntries([
-    "brSetup", "brSetupForm", "brMode", "brCountField", "brPlayerCount", "brNameFields", "brGame", "brScoreboard", "brOpponents",
+    "brSetup", "brSetupForm", "brMode", "brCountField", "brPlayerCount", "brDifficultyField", "brDifficulty", "brDifficultyNote", "brNameFields", "brGame", "brScoreboard", "brOpponents",
     "brStockCount", "brTrumpCard", "brTrumpName", "brTrick", "brRoundLabel", "brStatus", "brCurrentBadge", "brCurrentName", "brCurrentScore",
     "brHand", "brPass", "brPassTitle", "brReveal", "brResultDialog", "brResultTitle", "brResultRows", "brAgain", "brRulesDialog",
     "brRulesButton", "brRulesClose", "brRulesAccept", "brToast"
@@ -16,6 +16,7 @@
   const state = {
     active: false,
     mode: "solo",
+    difficulty: "normal",
     players: [],
     hands: [],
     scores: [],
@@ -28,7 +29,8 @@
     trickNo: 1,
     resolving: false,
     revealed: false,
-    recorded: false
+    recorded: false,
+    played: []
   };
   let toastTimer = 0;
 
@@ -49,7 +51,7 @@
   function startMatch() {
     const mode = UI.brMode.value;
     const count = mode === "solo" ? 2 : Number(UI.brPlayerCount.value);
-    const profile = window.SalaCeroClub?.getData?.().profile?.name || "Jugador";
+    const profile = window.SalaCeroPrefs?.getName?.() || "Jugador";
     const names = mode === "solo"
       ? [document.getElementById("brName0")?.value.trim() || profile, "Doña Virtud"]
       : Array.from({ length: count }, (_, index) => document.getElementById(`brName${index}`)?.value.trim() || `Jugador ${index + 1}`);
@@ -63,6 +65,7 @@
     Object.assign(state, {
       active: true,
       mode,
+      difficulty: UI.brDifficulty.value,
       players: names.map((name, index) => ({ name, ai: mode === "solo" && index === 1 })),
       hands,
       scores: Array(count).fill(0),
@@ -75,11 +78,11 @@
       trickNo: 1,
       resolving: false,
       revealed: mode === "solo",
-      recorded: false
+      recorded: false,
+      played: []
     });
     UI.brSetup.classList.add("hidden");
     UI.brGame.classList.remove("hidden");
-    window.SalaCeroStats?.markStarted?.();
     render();
     scheduleTurn();
   }
@@ -118,8 +121,9 @@
     const [card] = state.hands[player].splice(index, 1);
     if (!card) return;
     state.trick.push({ player, card });
+    state.played.push(card);
     state.revealed = false;
-    beep(520 + cardPower(card) * 24, .06);
+    window.SalaCeroPrefs?.beep?.(520 + cardPower(card) * 24, .06);
     if (state.trick.length === state.players.length) {
       state.resolving = true;
       UI.brStatus.textContent = "Resolviendo baza";
@@ -150,7 +154,7 @@
     state.trickNo += 1;
     state.resolving = false;
     toast(`${winnerName} gana la baza${points ? ` · ${points} puntos` : ""}`);
-    haptic(points ? 55 : 25);
+    window.SalaCeroPrefs?.haptic?.(points ? 55 : 25);
     if (!state.stock.length && state.hands.every(hand => hand.length === 0)) {
       finishMatch();
       return;
@@ -179,15 +183,51 @@
   function aiTurn() {
     if (!state.active || state.current !== 1 || state.resolving) return;
     const hand = state.hands[1];
-    const ranked = hand.map((card, index) => ({ card, index, cost: cardPoints(card) * 20 + cardPower(card) + (card.suit === state.trumpSuit ? 6 : 0) }));
     let choice;
-    if (!state.trick.length) {
-      choice = ranked.sort((a, b) => a.cost - b.cost)[0];
+    if (state.difficulty === "casual") {
+      choice = { index: Math.floor(Math.random() * hand.length) };
     } else {
-      const winners = ranked.filter(candidate => trickWinner([...state.trick, { player: 1, card: candidate.card }]) === 1);
-      choice = (winners.length ? winners : ranked).sort((a, b) => a.cost - b.cost)[0];
+      const trickValue = state.trick.reduce((sum, entry) => sum + cardPoints(entry.card), 0);
+      const ranked = hand.map((card, index) => {
+        const wins = state.trick.length && trickWinner([...state.trick, { player: 1, card }]) === 1;
+        let cost = cardPoints(card) * 20 + cardPower(card) + (card.suit === state.trumpSuit ? 16 : 0);
+        let score = -cost;
+        if (state.trick.length) {
+          if (wins) score += 55 + trickValue * 8;
+          if (!wins && cardPoints(card)) score -= 45;
+          if (wins && card.suit === state.trumpSuit && trickValue < 8) score -= 28;
+        } else {
+          score += safeLeadScore(card);
+        }
+        if (state.difficulty === "hard") score += hardMemoryScore(card, wins, trickValue);
+        return { card, index, score };
+      });
+      choice = ranked.sort((a, b) => b.score - a.score)[0];
     }
     commitCard(1, choice.index);
+  }
+
+  function safeLeadScore(card) {
+    const unknown = SUITS.flatMap(suit => RANKS.map(rank => ({ suit, rank })))
+      .filter(item => !state.played.some(played => played.suit === item.suit && played.rank === item.rank))
+      .filter(item => !state.hands[1].some(held => held.suit === item.suit && held.rank === item.rank));
+    const higher = unknown.filter(item => item.suit === card.suit && cardPower(item) > cardPower(card)).length;
+    if (!higher) return 28 + cardPoints(card);
+    return cardPoints(card) ? -34 : 12 - higher * 2;
+  }
+
+  function hardMemoryScore(card, wins, trickValue) {
+    const remainingTrumps = RANKS.filter(rank =>
+      !state.played.some(played => played.suit === state.trumpSuit && played.rank === rank) &&
+      !state.hands[1].some(held => held.suit === state.trumpSuit && held.rank === rank)
+    ).length;
+    let score = 0;
+    if (wins && trickValue >= 10) score += 34;
+    if (wins && cardPoints(card) === 0) score += 12;
+    if (!wins && cardPoints(card) === 0) score += 18;
+    if (card.suit === state.trumpSuit && remainingTrumps > 2 && trickValue < 10) score -= 24;
+    if (!state.trick.length) score += safeLeadScore(card) * .7;
+    return score;
   }
 
   function finishMatch() {
@@ -198,7 +238,7 @@
     UI.brResultTitle.textContent = winners.length > 1 ? "Empate en la mesa" : `${winners[0].name} gana la Brisca`;
     UI.brResultRows.innerHTML = ranking.map((item, index) => `<div class="br-result-row"><span>${index + 1}. ${escapeHtml(item.name)}</span><strong>${item.score} puntos</strong></div>`).join("");
     UI.brResultDialog.showModal();
-    haptic([80, 50, 110]);
+    window.SalaCeroPrefs?.haptic?.([80, 50, 110]);
 
     if (!state.recorded) {
       const won = state.mode === "solo" && winners.length === 1 && winners[0].index === 0;
@@ -212,8 +252,7 @@
         special: won && state.scores[0] >= 101 ? "paliza" : "",
         players: state.players.map((player, index) => ({ name: player.name, won: winners.some(winner => winner.index === index) }))
       };
-      if (window.SalaCeroClub?.recordMatch) window.SalaCeroClub.recordMatch(event);
-      else window.SalaCeroStats?.recordResult?.(event);
+      window.SalaCeroPrefs?.noteResult?.(event);
       state.recorded = true;
     }
   }
@@ -245,9 +284,19 @@
   function renderNameFields() {
     const mode = UI.brMode.value;
     const count = mode === "solo" ? 1 : Number(UI.brPlayerCount.value);
-    const profile = window.SalaCeroClub?.getData?.().profile?.name || "Jugador";
+    const profile = window.SalaCeroPrefs?.getName?.() || "Jugador";
     UI.brCountField.hidden = mode !== "local";
+    UI.brDifficultyField.hidden = mode !== "solo";
     UI.brNameFields.innerHTML = Array.from({ length: count }, (_, index) => `<label><span>${mode === "solo" ? "Tu nombre" : `Jugador ${index + 1}`}</span><input id="brName${index}" maxlength="18" autocomplete="off" value="${escapeHtml(index === 0 ? profile : `Jugador ${index + 1}`)}"/></label>`).join("");
+  }
+
+  function renderDifficultyNote() {
+    const notes = {
+      casual: "Juega ligera y no castiga cada error.",
+      normal: "Equilibra riesgo, triunfo y puntos.",
+      hard: "Recuerda cartas y calcula cada baza."
+    };
+    UI.brDifficultyNote.textContent = notes[UI.brDifficulty.value];
   }
 
   function toast(message) {
@@ -257,28 +306,11 @@
     toastTimer = window.setTimeout(() => UI.brToast.classList.remove("visible"), 2200);
   }
 
-  function beep(frequency = 520, duration = .06) {
-    try {
-      const Context = window.AudioContext || window.webkitAudioContext;
-      if (!Context) return;
-      const context = new Context();
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.frequency.value = frequency;
-      gain.gain.setValueAtTime(.025, context.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.0001, context.currentTime + duration);
-      oscillator.connect(gain).connect(context.destination);
-      oscillator.start();
-      oscillator.stop(context.currentTime + duration);
-      oscillator.addEventListener("ended", () => context.close());
-    } catch (_) {}
-  }
-
-  function haptic(pattern) { try { navigator.vibrate?.(pattern); } catch (_) {} }
   function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[char])); }
 
   UI.brMode.addEventListener("change", renderNameFields);
   UI.brPlayerCount.addEventListener("change", renderNameFields);
+  UI.brDifficulty.addEventListener("change", renderDifficultyNote);
   UI.brSetupForm.addEventListener("submit", event => { event.preventDefault(); startMatch(); });
   UI.brReveal.addEventListener("click", () => { state.revealed = true; UI.brPass.classList.add("hidden"); render(); });
   UI.brAgain.addEventListener("click", () => location.reload());
@@ -286,12 +318,14 @@
   UI.brRulesClose.addEventListener("click", () => UI.brRulesDialog.close());
   UI.brRulesAccept.addEventListener("click", () => UI.brRulesDialog.close());
   renderNameFields();
+  renderDifficultyNote();
 
   window.SalaCeroBriscaDebug = Object.freeze({
     points: rank => POINTS[rank] || 0,
     power: rank => POWER[rank] || 0,
     beats: (challenger, incumbent, lead, trump) => beats(challenger, incumbent, lead, trump),
     winner: entries => trickWinner(entries),
+    chooseAi: aiTurn,
     deckFor: count => deckFor(count).map(card => ({ ...card })),
     state
   });

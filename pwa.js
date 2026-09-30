@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "26.0.3";
+  const VERSION = "26.1.0";
   const DB_NAME = "tute-ia-offline";
   const STORE = "saves";
   const FULL_AUDIO = "./assets/audio/casino-jazz-background.mp3";
@@ -95,15 +95,15 @@
     dialog.innerHTML = `
       <div class="pwa-panel-card">
         <button class="pwa-panel-close" id="pwaPanelClose" type="button" aria-label="Cerrar">×</button>
-        <span class="pwa-panel-kicker">TUTE IA · V${VERSION}</span>
+        <span class="pwa-panel-kicker">SALA CERO · V${VERSION}</span>
         <h2>Aplicación offline</h2>
-        <p id="pwaPanelLead">Instala Tute IA y juega sin depender de la conexión.</p>
+        <p id="pwaPanelLead">Instala Sala Cero y juega sin depender de la conexión.</p>
         <div class="pwa-readiness">
           <article><span>APLICACIÓN</span><strong id="pwaInstallState">Comprobando</strong><small>Icono y pantalla completa</small></article>
           <article><span>JUEGO OFFLINE</span><strong id="pwaOfflineState">Preparando</strong><small>Cartas, reglas y tutoriales</small></article>
           <article><span>ALMACENAMIENTO</span><strong id="pwaStorageState">Normal</strong><small>Protección de partidas guardadas</small></article>
         </div>
-        <button class="pwa-main-action" id="pwaInstallAction" type="button">Instalar Tute IA</button>
+        <button class="pwa-main-action" id="pwaInstallAction" type="button">Instalar Sala Cero</button>
         <div class="pwa-panel-actions">
           <button id="pwaFullscreenAction" type="button">Pantalla completa</button>
           <button id="pwaAudioAction" type="button">Descargar música completa</button>
@@ -153,7 +153,7 @@
   }
 
   async function installApp() {
-    if (isStandalone()) return toast("Tute IA ya está instalada.");
+    if (isStandalone()) return toast("Sala Cero ya está instalada.");
     if (deferredInstallPrompt) {
       deferredInstallPrompt.prompt();
       const choice = await deferredInstallPrompt.userChoice;
@@ -297,11 +297,11 @@
       });
       toast("Copia importada correctamente.");
       setTimeout(() => location.reload(), 800);
-    } catch (_) { toast("El archivo no es una copia válida de Tute IA."); }
+    } catch (_) { toast("El archivo no es una copia válida de Sala Cero."); }
   }
 
   async function clearAppData() {
-    const confirmed = window.confirm("Se borrarán las partidas guardadas, estadísticas y ajustes de Tute IA en este dispositivo. ¿Continuar?");
+    const confirmed = window.confirm("Se borrarán las partidas guardadas y los ajustes de Sala Cero en este dispositivo. ¿Continuar?");
     if (!confirmed) return;
     await window.TuteDB.clear().catch(() => {});
     Object.keys(localStorage).filter(key => key.startsWith("tute")).forEach(key => localStorage.removeItem(key));
@@ -318,7 +318,7 @@
     const audioAction = document.getElementById("pwaAudioAction");
     if (installState) installState.textContent = installed ? "Instalada" : deferredInstallPrompt || isIos() ? "Disponible" : "Desde navegador";
     if (installAction) {
-      installAction.textContent = installed ? "Aplicación instalada" : isIos() && !deferredInstallPrompt ? "Ver cómo instalar" : "Instalar Tute IA";
+      installAction.textContent = installed ? "Aplicación instalada" : isIos() && !deferredInstallPrompt ? "Ver cómo instalar" : "Instalar Sala Cero";
       installAction.disabled = installed;
     }
     if (offlineState) offlineState.textContent = navigator.serviceWorker?.controller ? "Lista" : "Instalando…";
@@ -413,7 +413,7 @@
   window.addEventListener("appinstalled", () => {
     deferredInstallPrompt = null;
     document.body.classList.add("pwa-installed");
-    toast("Tute IA instalada correctamente.");
+    toast("Sala Cero instalada correctamente.");
     refreshPanelState();
   });
   window.addEventListener("online", updateNetworkUi);

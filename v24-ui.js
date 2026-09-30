@@ -79,14 +79,8 @@
     dock.innerHTML = `
       <a href="#main-content" data-v24-dock="top"><span>⌂</span><b>Inicio</b></a>
       <a href="#clasicos" data-v24-dock="games"><span>♣</span><b>Juegos</b></a>
-      <a href="career.html"><span>♛</span><b>Carrera</b></a>
-      <button type="button" data-v24-profile><span>♠</span><b>Perfil</b></button>`;
+      <a href="index.html"><span>0</span><b>Sala Cero</b></a>`;
     document.body.prepend(dock);
-    dock.querySelector("[data-v24-profile]")?.addEventListener("click", () => {
-      const trigger = document.querySelector("[data-club-open]");
-      if (trigger) trigger.click();
-      else location.hash = "personalizacion";
-    });
   }
 
   function enhanceLandmarks() {
