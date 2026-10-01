@@ -119,7 +119,13 @@
       filters.forEach(item => item.setAttribute("aria-pressed", String(item === button)));
       update();
     }));
-    search?.addEventListener("input", update);
+    search?.addEventListener("input", () => {
+      if (search.value.trim() && active !== "todos") {
+        active = "todos";
+        filters.forEach(item => item.setAttribute("aria-pressed", String(item.dataset.filter === "todos")));
+      }
+      update();
+    });
     cards.forEach(card => card.addEventListener("click", () => rememberGame({
       id: card.dataset.gameCard,
       title: card.dataset.title,
@@ -198,7 +204,7 @@
   }
 
   window.SalaCeroPrefs = Object.freeze({
-    version: "26.1.0",
+    version: "26.1.1",
     get: read,
     getName: () => read().name,
     save: savePreferences,

@@ -43,7 +43,18 @@
   function renderOpponents(){UI.pOpponents.innerHTML=state.players.map((p,i)=>`<div class="culo-opponent ${i===state.current?"active":""} ${p.finished?"finished":""}"><span>${initials(p.name)}</span><div><strong>${escapeHtml(p.name)}</strong><small>${p.finished?p.role:`${p.hand.length} cartas`}</small></div></div>`).join("");}
   function renderRanks(){UI.pRankStrip.classList.toggle("reversed",state.revolution);UI.pRankStrip.innerHTML=ORDER.map((r,i)=>`<span class="${(!state.revolution&&i===ORDER.length-1)||(state.revolution&&i===0)?"high":""}">${rankLabel(r)}</span>`).join("");}
   function renderTrick(){if(!state.trick){UI.pTrick.innerHTML="<span>Mesa limpia</span>";return;}UI.pTrick.innerHTML=state.trick.cards.map(c=>`<img src="${img(c)}" alt="${cardName(c)}">`).join("");}
-  function renderHand(){UI.pHand.innerHTML="";if(!state.revealed||current().isAI||current().finished)return;current().hand.forEach((c,i)=>{const b=document.createElement("button"),same=!state.selected.length||current().hand[state.selected[0]]?.rank===c.rank;b.className=`sg-card ${state.selected.includes(i)?"selected":""} ${same?"":"illegal"}`;b.style.setProperty("--card-index",i);b.innerHTML=`<img src="${img(c)}" alt="${cardName(c)}">`;b.onclick=()=>toggleCard(i);UI.pHand.appendChild(b);});}
+  function renderHand(){
+    UI.pHand.innerHTML="";
+    const owner=state.mode==="solo"?state.players[0]:current();
+    if((state.mode!=="solo"&&!state.revealed)||owner.finished)return;
+    const canUse=state.revealed&&!current().isAI&&owner===current();
+    owner.hand.forEach((c,i)=>{
+      const b=document.createElement("button"),same=!canUse||!state.selected.length||owner.hand[state.selected[0]]?.rank===c.rank;
+      b.className=`sg-card ${canUse&&state.selected.includes(i)?"selected":""} ${same?"":"illegal"}`;
+      b.style.setProperty("--card-index",i);b.disabled=!canUse;
+      b.innerHTML=`<img src="${img(c)}" alt="${cardName(c)}">`;b.onclick=()=>{if(canUse)toggleCard(i);};UI.pHand.appendChild(b);
+    });
+  }
   function message(){if(!state.revealed)return"Turno oculto.";if(current().isAI)return"La IA está valorando si superar la mesa o pasar.";if(current().finished)return"Ya has terminado esta mano.";if(!state.trick)return"Abre con una o varias cartas iguales.";const legal=legalGroups(current().hand);return legal.length?"Selecciona una combinación superior o pasa.":"No tienes una respuesta legal: debes pasar.";}
   function showHandoff(){if(state.mode!=="local"||!state.active||current().finished)return;state.revealed=false;state.selected=[];UI.pHandoffName.textContent=current().name;UI.pHandoff.classList.remove("hidden");render();}
   function revealTurn(){state.revealed=true;UI.pHandoff.classList.add("hidden");render();save();}

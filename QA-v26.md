@@ -1,4 +1,4 @@
-# QA Sala Cero v26.1.0
+# QA Sala Cero v26.1.1
 
 ## Matriz responsive
 
@@ -19,7 +19,7 @@ Son **135 combinaciones de juego y viewport**. En cada una se comprueban:
 - controles visibles fuera del viewport;
 - enlace de vuelta a `index.html`.
 
-La portada se prueba también en los cinco proyectos. La suite enumera 205 casos Playwright: 153 comprobaciones activas y 52 omisiones deliberadas porque los flujos completos se ejecutan una sola vez en `390×844`.
+La portada se prueba también en los cinco proyectos. La suite enumera 210 casos Playwright: 154 comprobaciones activas y 56 omisiones deliberadas porque los flujos completos y offline se ejecutan una sola vez en `390×844`.
 
 ## Flujos smoke
 
@@ -32,6 +32,8 @@ La portada se prueba también en los cinco proyectos. La suite enumera 205 casos
 - Charadas expone siempre Pasar y Acertado.
 - Dibuja protege la palabra y abre el canvas táctil.
 - Se validan los valores de Brisca y los contratos de reglas de Cinquillo y Pocha.
+- La PWA precarga los 187 recursos, abre los 27 juegos con la red desactivada y comienza una partida de Cinquillo offline.
+- Las cancelaciones normales de precarga de audio se distinguen de peticiones realmente fallidas.
 
 ## Validación estructural
 
@@ -46,7 +48,7 @@ La portada se prueba también en los cinco proyectos. La suite enumera 205 casos
 - manifiesto, accesos directos y caché offline coherentes;
 - sintaxis válida de todos los scripts clásicos.
 
-Estado de la validación estática de v26.1.0: **32 HTML, 27 juegos, 575 referencias, 188 recursos offline y 0 incidencias**.
+Estado de la validación estática de v26.1.1: **32 HTML, 27 juegos, 575 referencias, 187 recursos offline y 0 incidencias**.
 
 ## Ejecución
 

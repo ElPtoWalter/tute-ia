@@ -1,4 +1,4 @@
-# Sala Cero v26.1.0 — Reforma integral
+# Sala Cero v26.1.1 — Reforma integral
 
 ## Nueva experiencia
 
@@ -6,6 +6,15 @@
 - Catálogo de 27 enlaces únicos con búsqueda, seis filtros compatibles entre sí, elección aleatoria y acceso reciente.
 - Dirección visual verde oscuro, marfil y dorado, con tarjetas más limpias y controles táctiles de al menos 44 px.
 - Cabeceras compactas y enlace de vuelta a Sala Cero en todos los juegos.
+
+### Revisión de estabilidad 26.1.1
+
+- La búsqueda encuentra juegos en todo el catálogo y restablece el filtro Todos.
+- Chinchón y Culo mantienen la mano propia visible, sin permitir jugar durante el turno de la IA.
+- El halo decorativo de Póker ya no desborda en tablet.
+- Dibuja vuelve a ocultar la palabra cuando el dibujante cierra la entrega privada.
+- Los recursos versionados recuperan el shell de su misma versión cuando no hay conexión.
+- Se añade una prueba real de navegación offline por los 27 juegos.
 
 ## Retirada del sistema de progresión
 
@@ -62,7 +71,7 @@ Se retiraron los runtimes dedicados `career.*`, `club.*`, `auth.*` y `stats-v26.
 - Vibración opcional centralizada y degradación segura cuando `navigator.vibrate` no existe.
 - Sonido y música de los juegos anteriores se conservan.
 - Estados de foco visibles, etiquetas accesibles, avisos `aria-live` y diálogos nativos.
-- Service worker `26.1.0`, manifiesto actualizado y 188 recursos precargados.
+- Service worker `26.1.1`, manifiesto actualizado y 187 recursos precargados.
 
 ## Limpieza técnica
 

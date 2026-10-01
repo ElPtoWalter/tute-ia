@@ -12,7 +12,11 @@ async function openWithoutRuntimeErrors(page, path) {
   const errors = [];
   const onPageError = error => errors.push(`pageerror: ${error.message}`);
   const onConsole = message => { if (message.type() === "error") errors.push(`console: ${message.text()}`); };
-  const onFailed = request => errors.push(`requestfailed: ${request.url()} · ${request.failure()?.errorText}`);
+  const onFailed = request => {
+    const reason = request.failure()?.errorText || "unknown";
+    if (reason.includes("ERR_ABORTED") && request.resourceType() === "media") return;
+    errors.push(`requestfailed: ${request.url()} · ${reason}`);
+  };
   const onResponse = response => {
     if (response.url().startsWith("http://127.0.0.1:4173") && response.status() >= 400) errors.push(`response: ${response.status()} ${response.url()}`);
   };
@@ -52,6 +56,7 @@ async function expectResponsiveLayout(page, path) {
 }
 
 async function expectHandVisible(page, selector) {
+  await expect.poll(() => page.locator(selector).count(), { timeout: 8_000, message: `${selector} debe mostrar cartas` }).toBeGreaterThan(0);
   const result = await page.locator(selector).evaluateAll(cards => cards.map(card => {
     const rect = card.getBoundingClientRect();
     return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
@@ -104,6 +109,7 @@ test("@smoke Tute inicia y muestra la mano completa", async ({ page }, testInfo)
   await page.locator('#variantGrid [data-variant-id="house"]').click();
   await page.locator("#startButton").click();
   await expect(page.locator("#appShell")).toBeVisible();
+  await expect(page.locator("#playerHand .playing-card")).toHaveCount(8, { timeout: 15_000 });
   await expectHandVisible(page, "#playerHand .playing-card");
 });
 
@@ -168,7 +174,7 @@ test("@smoke Burro, Charadas y Dibuja arrancan sus controles principales", async
   onlyPrimaryMobile(testInfo);
   await openWithoutRuntimeErrors(page, "burro.html"); await page.locator("#buSetupForm").evaluate(form => form.requestSubmit()); await expect(page.locator("#passScreen")).toBeVisible();
   await openWithoutRuntimeErrors(page, "charadas.html"); await page.locator("#chSetupForm").evaluate(form => form.requestSubmit()); await expect(page.locator("#chCorrect")).toBeVisible(); await expect(page.locator("#chPass")).toBeVisible();
-  await openWithoutRuntimeErrors(page, "pictionary.html"); await page.locator("#piSetupForm").evaluate(form => form.requestSubmit()); await expect(page.locator("#piSecretDialog")).toBeVisible(); await page.locator("#piReveal").click(); await page.locator("#piReveal").click(); await expect(page.locator("#piCanvas")).toBeVisible();
+  await openWithoutRuntimeErrors(page, "pictionary.html"); await page.locator("#piSetupForm").evaluate(form => form.requestSubmit()); await expect(page.locator("#piSecretDialog")).toBeVisible(); await page.locator("#piReveal").click(); await page.locator("#piReveal").click(); await expect(page.locator("#piCanvas")).toBeVisible(); await expect(page.locator("#piWordLabel")).toHaveText("Oculta");
 });
 
 test("Brisca conserva las tres cartas al cambiar de orientación", async ({ page }, testInfo) => {
@@ -183,4 +189,26 @@ test("las reglas numéricas de Brisca y los contratos de los juegos nuevos son c
   expect(brisca).toEqual({ points: { 1:11, 3:10, 10:2, 11:3, 12:4 }, two:40, three:39 });
   await openWithoutRuntimeErrors(page, "cinquillo.html"); expect(await page.evaluate(() => typeof window.SalaCeroCinquilloDebug.isLegal)).toBe("function");
   await openWithoutRuntimeErrors(page, "pocha.html"); expect(await page.evaluate(() => typeof window.SalaCeroPochaDebug.validBids)).toBe("function");
+});
+
+test.describe("PWA offline", () => {
+  test.use({ serviceWorkers: "allow" });
+  test("precarga y abre los 27 juegos sin conexión", async ({ page, context }, testInfo) => {
+    onlyPrimaryMobile(testInfo);
+    test.setTimeout(120_000);
+    await page.goto("/index.html");
+    await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)), { timeout: 45_000 }).toBe(true);
+    await expect.poll(() => page.evaluate(async () => (await (await caches.open("tute-ia-shell-26.1.1")).keys()).length), { timeout: 45_000 }).toBe(187);
+    await context.setOffline(true);
+    await openWithoutRuntimeErrors(page, "index.html");
+    await expect(page.locator("[data-game-card]")).toHaveCount(27);
+    for (const path of gamePages) {
+      await openWithoutRuntimeErrors(page, path);
+      await expect(page.locator("body")).toHaveAttribute("data-game", path.replace(".html", ""));
+      expect(await page.evaluate(() => typeof window.SalaCeroPrefs)).toBe("object");
+    }
+    await page.goto("/cinquillo.html");
+    await page.locator("#cqSetupForm").evaluate(form => form.requestSubmit());
+    await expectHandVisible(page, "#cqHand .sc-card");
+  });
 });

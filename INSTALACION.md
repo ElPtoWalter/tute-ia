@@ -1,4 +1,4 @@
-# Sala Cero v26.1.0 — Instalación y publicación
+# Sala Cero v26.1.1 — Instalación y publicación
 
 ## GitHub Pages
 
@@ -8,12 +8,12 @@ La web no necesita API, base de datos ni proceso de compilación. Las preferenci
 
 ## Actualización desde una versión anterior
 
-1. Publica todos los archivos de v26.1.0, incluidas las carpetas `assets`, `scripts` y `tests`.
+1. Publica todos los archivos de v26.1.1, incluidas las carpetas `assets`, `scripts` y `tests`.
 2. Abre la web con conexión y realiza una recarga completa.
 3. Espera a que el control `APP` indique que la versión offline está preparada.
 4. Cierra pestañas antiguas de Sala Cero y vuelve a abrir la aplicación instalada.
 
-El service worker `26.1.0` elimina las cachés de versiones anteriores y prepara 188 recursos esenciales. El nombre antiguo puede migrarse como preferencia; la carrera y sus estadísticas no se importan.
+El service worker `26.1.1` elimina las cachés de versiones anteriores y prepara 187 recursos esenciales. El nombre antiguo puede migrarse como preferencia; la carrera y sus estadísticas no se importan.
 
 ## Instalación en el dispositivo
 

@@ -17,7 +17,7 @@
   }
   function reveal(){
     if(!state.revealed){state.revealed=true;ui.piSecretWord.textContent=state.word;ui.piReveal.textContent="Ocultar y dibujar";return}
-    ui.piSecretDialog.close();ui.piWordLabel.textContent=state.word;window.SalaCeroPrefs.haptic(18);
+    ui.piSecretDialog.close();ui.piWordLabel.textContent="Oculta";window.SalaCeroPrefs.haptic(18);
   }
   function correct(){if(!state.active)return;state.score+=1;ui.piScore.textContent=state.score;window.SalaCeroPrefs.haptic([25,30,50]);window.SalaCeroPrefs.beep(740,.08);window.SalaCeroPrefs.noteResult({game:"pictionary"});newWord()}
   function setTool(tool){state.tool=tool;ui.piPencil.classList.toggle("active",tool==="pencil");ui.piEraser.classList.toggle("active",tool==="eraser");ui.piPencil.setAttribute("aria-pressed",String(tool==="pencil"));ui.piEraser.setAttribute("aria-pressed",String(tool==="eraser"))}

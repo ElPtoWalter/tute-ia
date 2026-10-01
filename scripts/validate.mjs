@@ -24,7 +24,7 @@ function localTarget(reference) {
 for (const file of htmlFiles) {
   const source = readFileSync(join(root, file), "utf8");
   if (!/name=["']viewport["']/.test(source)) report.bad.push(`${file}:viewport`);
-  if (!source.includes("26.1.0")) report.bad.push(`${file}:version`);
+  if (!source.includes("26.1.1")) report.bad.push(`${file}:version`);
   if ((source.match(/casual\.js/g) || []).length !== 1) report.bad.push(`${file}:casual-runtime`);
   if (/(?:career|club|auth|stats-v26)\.(?:css|js|html)/i.test(source)) report.bad.push(`${file}:removed-runtime-reference`);
 
@@ -75,7 +75,7 @@ for (const page of ["tute.html", "brisca.html", "cinquillo.html", "pocha.html", 
 }
 
 const worker = readFileSync(join(root, "sw.js"), "utf8");
-if (!worker.includes('const VERSION = "26.1.0"')) report.bad.push("service-worker:version");
+if (!worker.includes('const VERSION = "26.1.1"')) report.bad.push("service-worker:version");
 const assetMatch = worker.match(/const CORE_ASSETS = (\[[^;]+\]);/s);
 const assets = assetMatch ? JSON.parse(assetMatch[1]) : [];
 report.swAssets = assets.length;

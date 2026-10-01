@@ -1,4 +1,4 @@
-# Sala Cero v26.1.0
+# Sala Cero v26.1.1
 
 Sala Cero es una colección de **27 juegos casuales** para abrir y jugar sin registro. La experiencia se ha reducido a tres pasos: **abrir → elegir juego → jugar**. Está pensada para móvil, tablet, teléfono horizontal y escritorio, y queda disponible sin conexión después de la primera carga.
 
@@ -48,7 +48,7 @@ Un juego puede aparecer en varios filtros sin duplicarse en el catálogo. La por
 - Se añaden Cinquillo, Pocha, Burro, Charadas y Dibuja.
 - Las mesas locales ocultan la mano o la palabra antes de pasar el dispositivo.
 - El runtime común aporta baraja española, ajuste de manos, pantalla privada, avisos y preferencias compartidas.
-- La PWA usa la caché `26.1.0` y precarga 188 recursos locales.
+- La PWA usa la caché `26.1.1` y precarga 187 recursos locales.
 
 ## Arquitectura
 

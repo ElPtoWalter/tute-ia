@@ -18,7 +18,7 @@ body {
 }
 button, select, input { font: inherit; }
 button, a, select, input { -webkit-tap-highlight-color: transparent; }
-.hidden { display: none !important; }
+.hidden, [hidden] { display: none !important; }
 
 .br-noise {
   position: fixed;
