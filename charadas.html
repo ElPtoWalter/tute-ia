@@ -5,11 +5,11 @@
 <meta name="description" content="Charadas para móvil con categorías, partidas de 30, 60 o 90 segundos y controles táctiles.">
 <title>Charadas — Sala Cero</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icons/favicon-64.png">
-<link rel="stylesheet" href="game-core.css?v=26.1.3"><link rel="stylesheet" href="charadas.css?v=26.1.3">
-<script src="casual.js?v=26.1.3"></script>
+<link rel="stylesheet" href="game-core.css?v=27.0.0"><link rel="stylesheet" href="charadas.css?v=27.0.0">
+<script src="casual.js?v=27.0.0"></script>
 </head>
 <body class="sc-game-page" data-game="charadas" data-game-title="Charadas">
-<header class="game-top"><a class="game-brand" href="index.html"><span>🎭</span><div><strong>CHARADAS</strong><small>SALA CERO · V26.1</small></div></a><div class="game-top-actions"><button id="chRulesButton" type="button">Cómo jugar</button><a href="index.html">Juegos</a></div></header>
+<header class="game-top"><a class="game-brand" href="index.html"><span>🎭</span><div><strong>CHARADAS</strong><small>SALA CERO · V27.0</small></div></a><div class="game-top-actions"><button id="chRulesButton" type="button">Cómo jugar</button><a href="index.html">Juegos</a></div></header>
 <main class="game-shell">
   <section class="game-setup" id="chSetup" aria-labelledby="chTitle"><div class="setup-copy"><small>EL MÓVIL EN LA FRENTE</small><h1 id="chTitle">Charadas</h1><p>El grupo da pistas mientras tú intentas adivinar la palabra que aparece en pantalla. Usa los botones grandes o activa la inclinación.</p></div>
     <form class="setup-card form-grid" id="chSetupForm"><label class="field"><span>Categoría</span><select id="chCategory"><option value="general">Mezcla general</option><option value="peliculas">Películas</option><option value="personajes">Personajes</option><option value="animales">Animales</option><option value="objetos">Objetos</option><option value="deportes">Deportes</option><option value="profesiones">Profesiones</option><option value="lugares">Lugares</option></select></label><fieldset class="field"><legend>Tiempo</legend><div class="choice-row"><label><input type="radio" name="chTime" value="30"><span>30 s</span></label><label><input type="radio" name="chTime" value="60" checked><span>60 s</span></label><label><input type="radio" name="chTime" value="90"><span>90 s</span></label></div></fieldset><button class="secondary-action" id="chMotionButton" type="button">Activar inclinación (opcional)</button><small id="chMotionStatus" class="setup-note">Los botones siempre estarán disponibles.</small><button class="primary-action" type="submit">Empezar ronda</button></form>
@@ -18,6 +18,6 @@
 </main>
 <dialog class="game-dialog" id="chRules"><div class="dialog-card"><button class="dialog-close" type="button" data-close aria-label="Cerrar">×</button><span class="section-kicker">CÓMO SE JUEGA</span><h2>Charadas</h2><ol><li>Elige una categoría y un tiempo.</li><li>Coloca el móvil en la frente con la pantalla mirando al grupo.</li><li>El grupo da pistas sin decir la palabra. Pulsa «¡Acertado!» o «Pasar».</li><li>La inclinación es opcional y depende del dispositivo. Los dos botones siempre funcionan.</li></ol><div class="dialog-actions"><button class="primary-action" type="button" data-close>Entendido</button></div></div></dialog>
 <dialog class="game-dialog" id="chResult"><div class="dialog-card"><span class="section-kicker">TIEMPO</span><h2 id="chResultTitle">Ronda terminada</h2><p id="chResultCopy"></p><div class="dialog-actions"><button class="primary-action" id="chAgain" type="button">Otra ronda</button><a class="secondary-action" href="index.html">Volver a juegos</a></div></div></dialog>
-<script src="charadas.js?v=26.1.3"></script>
+<script src="charadas.js?v=27.0.0"></script>
 </body>
 </html>

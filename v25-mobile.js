@@ -79,7 +79,7 @@
     MOBILE_QUERY.addEventListener?.("change", scheduleFit);
   }
 
-  window.SalaCeroMobile = Object.freeze({ version: "26.1.3", refresh: scheduleFit });
+  window.SalaCeroMobile = Object.freeze({ version: "27.0.0", refresh: scheduleFit });
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
   else start();

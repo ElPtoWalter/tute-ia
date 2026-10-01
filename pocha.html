@@ -5,11 +5,11 @@
 <meta name="description" content="Pocha con baraja española para 3 a 6 jugadores, apuestas de bazas, IA y modo local.">
 <title>Pocha — Sala Cero</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="assets/icons/favicon-64.png">
-<link rel="stylesheet" href="game-core.css?v=26.1.3"><link rel="stylesheet" href="pocha.css?v=26.1.3">
-<script src="casual.js?v=26.1.3"></script><script src="game-core.js?v=26.1.3"></script>
+<link rel="stylesheet" href="game-core.css?v=27.0.0"><link rel="stylesheet" href="pocha.css?v=27.0.0">
+<script src="casual.js?v=27.0.0"></script><script src="game-core.js?v=27.0.0"></script>
 </head>
 <body class="sc-game-page" data-game="pocha" data-game-title="Pocha">
-<header class="game-top"><a class="game-brand" href="index.html"><span>Pº</span><div><strong>POCHA</strong><small>SALA CERO · V26.1</small></div></a><div class="game-top-actions"><button id="poRulesButton" type="button">Reglas</button><a href="index.html">Juegos</a></div></header>
+<header class="game-top"><a class="game-brand" href="index.html"><span>Pº</span><div><strong>POCHA</strong><small>SALA CERO · V27.0</small></div></a><div class="game-top-actions"><button id="poRulesButton" type="button">Reglas</button><a href="index.html">Juegos</a></div></header>
 <main class="game-shell">
   <section class="game-setup" id="poSetup" aria-labelledby="poTitle"><div class="setup-copy"><small>APUESTA · TRIUNFO · BAZAS</small><h1 id="poTitle">Pocha</h1><p>Predice cuántas bazas vas a ganar y trata de cumplirlo exactamente. Las rondas suben desde una carta hasta el máximo y vuelven a bajar.</p></div>
     <form class="setup-card form-grid" id="poSetupForm"><label class="field"><span>Modo</span><select id="poMode"><option value="solo">Contra la IA</option><option value="local">Pasa el móvil</option></select></label><label class="field"><span>Jugadores</span><select id="poPlayers"><option value="3">3 jugadores</option><option value="4" selected>4 jugadores</option><option value="5">5 jugadores</option><option value="6">6 jugadores</option></select></label><div class="form-grid two" id="poNames"></div><button class="primary-action" type="submit">Empezar partida</button><p class="setup-note">Puntuación: acierto exacto, 10 + 5 por baza; fallo, −5 por cada baza de diferencia.</p></form>
@@ -24,6 +24,6 @@
 <dialog class="game-dialog" id="poRules"><div class="dialog-card"><button class="dialog-close" type="button" data-close aria-label="Cerrar">×</button><span class="section-kicker">REGLAS DE ESTA MESA</span><h2>Pocha</h2><ol><li>Las rondas reparten 1, 2, 3… cartas hasta el máximo posible y después descienden.</li><li>Antes de jugar, cada persona dice cuántas bazas cree que ganará. La última apuesta no puede hacer que la suma sea igual al número de bazas disponibles.</li><li>El triunfo lo marca la carta que queda tras repartir. Si se reparte toda la baraja, se usa el palo rotativo de esa ronda: oros, copas, espadas y bastos.</li><li>Hay que asistir al palo de salida si se puede. El triunfo gana a los demás palos.</li><li>Acertar exactamente suma 10 + 5 puntos por baza. Fallar resta 5 puntos por cada baza de diferencia.</li><li>Gana quien tenga más puntos al terminar la última ronda.</li></ol><div class="dialog-actions"><button class="primary-action" type="button" data-close>Entendido</button></div></div></dialog>
 <dialog class="game-dialog" id="poRoundDialog"><div class="dialog-card"><span class="section-kicker">RESUMEN DE RONDA</span><h2 id="poRoundTitle">Puntuación</h2><div id="poRoundRows"></div><div class="dialog-actions"><button class="primary-action" id="poNextRound" type="button">Siguiente ronda</button></div></div></dialog>
 <dialog class="game-dialog" id="poResult"><div class="dialog-card"><span class="section-kicker">PARTIDA TERMINADA</span><h2 id="poResultTitle">Resultado</h2><div id="poResultRows"></div><div class="dialog-actions"><button class="primary-action" id="poAgain" type="button">Jugar otra</button><a class="secondary-action" href="index.html">Volver a juegos</a></div></div></dialog>
-<script src="pocha.js?v=26.1.3"></script>
+<script src="pocha.js?v=27.0.0"></script>
 </body>
 </html>

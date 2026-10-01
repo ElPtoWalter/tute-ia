@@ -1,6 +1,6 @@
-# Sala Cero v26.1.3
+# Sala Cero v27.0.0
 
-Sala Cero es una colección de **27 juegos casuales** para abrir y jugar sin registro. La experiencia se ha reducido a tres pasos: **abrir → elegir juego → jugar**. Está pensada para móvil, tablet, teléfono horizontal y escritorio, y queda disponible sin conexión después de la primera carga.
+Sala Cero es una colección de **28 juegos casuales** para abrir y jugar sin registro. Abrir → elegir juego → jugar, en móvil, tablet, horizontal y escritorio. Disponible sin conexión tras completar la primera precarga.
 
 ## Catálogo
 
@@ -17,6 +17,7 @@ Sala Cero es una colección de **27 juegos casuales** para abrir y jugar sin reg
 - Burro
 - Póker Texas Hold'em
 - Blackjack
+- Ruleta de Antón · europea, un cero, solo o mesa local 2–6, fichas virtuales
 - 7 y Media
 - Es un 10 pero…
 
@@ -39,7 +40,15 @@ Sala Cero es una colección de **27 juegos casuales** para abrir y jugar sin reg
 
 Un juego puede aparecer en varios filtros sin duplicarse en el catálogo. La portada permite filtrar por Todos, Cartas, Casino, Party, Palabras o Dados, buscar por nombre, elegir al azar y retomar juegos recientes.
 
-## Qué cambia en v26.1
+## Qué cambia en v27
+
+- Ruleta de Antón independiente de Ruleta del Caos: 37 casillas, apuestas clásicas interiores y exteriores y siete fichas, sin dinero real.
+- Motor de apuestas separado del dibujo de la rueda; giro criptográfico con rechazo del extremo módulo, saldos atómicos y liquidación única al recuperar un giro interrumpido.
+- Botones grandes y selección confirmada de combinaciones; tapete vertical en móvil y horizontal en pantallas anchas.
+- Pruebas de catálogo, partidas completas, orientación, accesibilidad y ruleta en Chromium, Firefox y WebKit; PWA offline y actualización en Chromium.
+- PWA `27.0.0`, 191 recursos, actualización explícita y preservación de preferencias anteriores.
+
+## Base v26 conservada
 
 - Se eliminan carrera, experiencia, niveles, trofeos, logros, clasificaciones y desbloqueos.
 - Se conserva solo una preferencia local de nombre, sonido y vibración, además de los juegos recientes.
@@ -48,16 +57,16 @@ Un juego puede aparecer en varios filtros sin duplicarse en el catálogo. La por
 - Se añaden Cinquillo, Pocha, Burro, Charadas y Dibuja.
 - Las mesas locales ocultan la mano o la palabra antes de pasar el dispositivo.
 - El runtime común aporta baraja española, ajuste de manos, pantalla privada, avisos y preferencias compartidas.
-- La PWA usa la caché `26.1.3` y precarga 187 recursos locales.
 
 ## Arquitectura
 
 - `index.html`, `hub.css` y `casual.js`: descubrimiento y preferencias sin dependencias de la capa histórica.
 - `game-core.js` y `game-core.css`: utilidades y patrón visual de los juegos nuevos.
+- `ruleta-core.js`: catálogo de apuestas, RNG y saldos sin DOM; `ruleta-casino.js/css/html`: mesa, rueda y controles.
 - CSS y JavaScript específicos por juego: reglas, estado y presentación aislados.
 - `pwa.js`, `sw.js` y `manifest.webmanifest`: instalación, almacenamiento local y modo offline.
 - `scripts/validate.mjs`: contrato estructural, referencias, identidad de cada juego y recursos offline.
-- `tests/catalog.spec.js`: pruebas Playwright en cinco viewports y flujos smoke.
+- `tests/catalog.spec.js`, `critical.spec.js`, `roulette.spec.js`, `offline.spec.js`: matriz de navegadores; `tests/unit/roulette.test.mjs`: reglas del motor.
 
 Las capas responsive maduras de los juegos anteriores se mantienen donde retirarlas podía alterar reglas o mesas ya estables. La portada y los juegos nuevos no dependen de ellas.
 
@@ -68,13 +77,15 @@ Requiere Node.js 20 o superior, pnpm 10 y Python 3 para el servidor estático de
 ```bash
 pnpm install --frozen-lockfile
 pnpm run test:static
+pnpm run test:unit
+pnpm exec playwright install --with-deps chromium firefox webkit
 pnpm run test:e2e
 ```
 
-`pnpm run test` ejecuta las dos capas. La misma batería se repite en GitHub Actions. Consulta `CAMBIOS-v26.md`, `QA-v26.md` e `INSTALACION.md`.
+`pnpm run test` ejecuta validación, motor y navegadores. Actions separa validación, Chromium (cinco tamaños), Firefox, WebKit y PWA. Consulta `CAMBIOS-v27.md`, `QA-v27.md` e `INSTALACION.md`; los informes v26 se conservan como histórico.
 
 ## Publicación
 
 Publica el contenido de la raíz del proyecto en GitHub Pages. `index.html`, `sw.js` y `manifest.webmanifest` deben quedar directamente en la raíz publicada.
 
-Mus y Dominó no forman parte de esta versión. Son candidatos para v27, después de consolidar accesibilidad, pruebas de partidas completas y una reducción gradual de las capas CSS heredadas.
+Mus y Dominó siguen pendientes de diseño para v28 o posterior. WebKit automatizado no equivale a una prueba física en Safari/iPhone.

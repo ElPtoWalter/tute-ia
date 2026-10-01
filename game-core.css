@@ -74,7 +74,6 @@ button { cursor: pointer; }
 .sc-card img { width: 100%; display: block; border-radius: 8px; box-shadow: 0 12px 24px rgba(0,0,0,.36); }
 
 .pass-screen { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 22px; background: rgba(2,15,11,.94); backdrop-filter: blur(18px); }
-.pass-screen[hidden] { display: none; }
 .pass-card { width: min(440px, 100%); padding: 30px; border: 1px solid var(--sc-line); border-radius: 25px; background: var(--sc-panel); text-align: center; box-shadow: 0 30px 90px rgba(0,0,0,.5); }
 .pass-card span { font-size: 44px; }
 .pass-card h2 { margin: 12px 0 8px; font: 600 38px Georgia, serif; }

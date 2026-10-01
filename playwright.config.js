@@ -10,6 +10,7 @@ const viewports = [
 
 export default defineConfig({
   testDir: "./tests",
+  testMatch: "**/*.spec.js",
   timeout: 30_000,
   expect: { timeout: 6_000 },
   fullyParallel: true,
@@ -28,7 +29,12 @@ export default defineConfig({
       ? { executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH }
       : undefined
   },
-  projects: viewports.map(project => ({ name: project.name, use: project })),
+  projects: [
+    ...viewports.map(project => ({ name: project.name, testIgnore: "**/offline.spec.js", use: { ...project, browserName: "chromium" } })),
+    { name: "firefox-smoke", testIgnore: "**/offline.spec.js", use: { browserName: "firefox", viewport: { width: 390, height: 844 }, hasTouch: true } },
+    { name: "webkit-smoke", testIgnore: "**/offline.spec.js", use: { browserName: "webkit", viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true } },
+    { name: "offline-chromium", testMatch: "**/offline.spec.js", use: { browserName: "chromium", viewport: { width: 390, height: 844 }, serviceWorkers: "allow" } }
+  ],
   webServer: {
     command: "python -m http.server 4173 --bind 127.0.0.1",
     url: "http://127.0.0.1:4173/index.html",

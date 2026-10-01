@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08271e"><meta name="description" content="Ruleta europea con Antón, fichas virtuales y apuestas clásicas. Solo o mesa local para 2–6. Sin dinero real.">
+  <title>Ruleta de Antón — Sala Cero</title>
+  <link rel="icon" href="assets/icons/favicon-64.png"><link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png"><link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="game-core.css?v=27.0.0"><link rel="stylesheet" href="pwa.css?v=27.0.0"><link rel="stylesheet" href="ruleta-casino.css?v=27.0.0">
+  <script defer src="casual.js?v=27.0.0"></script><script defer src="game-core.js?v=27.0.0"></script><script defer src="ruleta-core.js?v=27.0.0"></script><script defer src="ruleta-casino.js?v=27.0.0"></script>
+</head>
+<body class="sc-game-page roulette-page" data-game="ruleta-casino" data-game-title="Ruleta de Antón">
+<header class="roulette-top"><a class="roulette-home" href="index.html" aria-label="Volver a Sala Cero">← SALA CERO</a><span>CASINO · FICHAS VIRTUALES</span><button type="button" id="rulesOpen">Reglas</button></header>
+<main class="roulette-shell">
+  <section id="setup" class="roulette-setup">
+    <div class="setup-story"><span class="roulette-kicker">LA BANCA TIENE NOMBRE</span><h1>Ruleta<br>de Antón<span>.</span></h1><p>Antón lleva la banca.<br>Tú decides dónde poner las fichas.</p><img src="assets/poker/anton-crupier.webp" alt="Antón, el crupier de Sala Cero" width="260" height="350"><small>Un solo cero. Apuestas clásicas. Ningún euro en juego.</small></div>
+    <form id="sessionForm" class="roulette-card">
+      <span class="roulette-kicker">ABRE TU MESA</span><h2>Que ruede la bola</h2>
+      <label for="playerCount">Jugadores en este dispositivo</label><select id="playerCount"><option value="1">Solo · contra la banca</option><option value="2">2 jugadores · pasa el móvil</option><option value="3">3 jugadores · pasa el móvil</option><option value="4">4 jugadores · pasa el móvil</option><option value="5">5 jugadores · pasa el móvil</option><option value="6">6 jugadores · pasa el móvil</option></select>
+      <div id="playerNames"></div>
+      <label for="initialBalance">Fichas iniciales por persona</label><select id="initialBalance"><option>100</option><option>250</option><option selected>500</option><option>1000</option><option value="custom">Personalizar</option></select>
+      <label id="customLabel" hidden>De 1 a 100 000 fichas<input id="customBalance" type="number" min="1" max="100000" step="1" value="500" inputmode="numeric"></label>
+      <p>Los saldos se guardan solo aquí. No hay compras, depósitos ni premios reales.</p><button class="roulette-primary" id="startSession" type="submit">Entrar en la mesa →</button><button id="resumeSession" type="button" hidden>Continuar la sesión guardada</button>
+    </form>
+  </section>
+  <section id="table" hidden aria-label="Mesa de ruleta">
+    <div class="table-heading"><div><span class="roulette-kicker">ANTÓN LLEVA LA BANCA</span><h1>Ruleta de Antón</h1></div><button id="newSession" type="button">Nueva sesión</button></div>
+    <div class="roulette-ledger"><div><small>JUGADOR</small><strong id="currentName"></strong></div><div><small>SALDO DISPONIBLE</small><strong id="balance">500</strong></div><div><small>EN EL TAPETE</small><strong id="stake">0</strong></div><div><small>FICHA</small><strong id="selectedChip">5</strong></div></div>
+    <div id="players" class="roulette-players" aria-label="Turno de apuestas" hidden></div>
+    <div id="roundResult" class="roulette-result" role="status" aria-live="polite"><strong>Hagan sus apuestas.</strong><span>El cero es verde. Rojo y negro cubren 18 números cada uno.</span></div>
+    <div class="roulette-layout">
+      <aside class="roulette-side">
+        <details id="wheelDetails" class="roulette-wheel-panel"><summary>Ver la rueda europea <span>37 casillas</span></summary><div class="roulette-wheel"><svg id="wheel" viewBox="0 0 360 360" role="img" aria-label="Ruleta europea: números del cero al 36"><defs><radialGradient id="wood"><stop stop-color="#9b693b"/><stop offset=".85" stop-color="#593819"/><stop offset="1" stop-color="#c5914b"/></radialGradient><radialGradient id="center"><stop stop-color="#c8a36d"/><stop offset="1" stop-color="#39271a"/></radialGradient></defs><circle cx="180" cy="180" r="177" fill="url(#wood)" stroke="#e7c46d" stroke-width="3"/><g id="wheelRotor"></g><circle cx="180" cy="180" r="105" fill="url(#center)" stroke="#e7c46d" stroke-width="2"/><circle cx="180" cy="180" r="67" fill="#0c241c" stroke="#d9b677"/><text x="180" y="173" text-anchor="middle" fill="#e7c46d" font-family="Georgia,serif" font-size="23">ANTÓN</text><text x="180" y="193" text-anchor="middle" fill="#f5e5c8" font-size="9" letter-spacing="2">LLEVA LA BANCA</text><circle cx="180" cy="180" r="12" fill="#d9b677" transform="translate(0 46)"/><g id="ballRotor"><circle cx="180" cy="45" r="5" fill="#fff6df" stroke="#9d8a6c" stroke-width="1.5"/></g></svg></div><div class="wheel-dealer"><img src="assets/poker/anton-crupier.webp" alt="" width="58" height="78"><p id="dealerMessage">Sin prisas. La bola no recuerda el giro anterior.</p></div></details>
+        <section class="roulette-history"><h2>Últimos giros</h2><div id="history" aria-label="Últimos 20 números"></div><p>Cada giro es independiente. El historial no predice el siguiente.</p></section>
+      </aside>
+      <section class="roulette-betting" aria-label="Apuestas">
+        <div class="bet-tools"><label for="betMode">Tipo de apuesta</label><select id="betMode"><option value="straight">Pleno · un número · 35:1</option><option value="split">Caballo · dos números · 17:1</option><option value="street">Calle / trío · tres · 11:1</option><option value="corner">Cuadro · cuatro · 8:1</option><option value="six">Seisena · seis · 5:1</option></select><p id="betHint">Toca un número para colocar la ficha seleccionada.</p></div>
+        <div id="betPreview" class="bet-preview" hidden><strong id="previewTitle"></strong><div id="combinations"></div><p id="previewCopy"></p><div><button id="confirmBet" class="roulette-primary" type="button">Colocar ficha</button><button id="cancelBet" type="button">Cancelar</button></div></div>
+        <div class="roulette-felt"><div id="numberGrid" class="roulette-numbers" role="group" aria-label="Números del tapete"></div><div id="dozens" class="roulette-dozens" role="group" aria-label="Docenas"></div><div id="outside" class="roulette-outside" role="group" aria-label="Apuestas externas"></div></div>
+        <div class="chip-heading"><h2>Elige tu ficha</h2><small>Se descuenta al colocarla</small></div><div id="chips" class="roulette-chips" role="group" aria-label="Valor de la ficha"></div>
+        <div class="roulette-actions"><button id="undoBet" type="button">↶ Deshacer</button><button id="clearBets" type="button">Borrar</button><button id="repeatBets" type="button">Repetir</button><button id="doubleBets" type="button">Doblar ×2</button></div>
+        <details class="roulette-wagers"><summary>Apuestas de este turno <span id="wagerCount">0 zonas</span></summary><ul id="wagerList"></ul></details>
+      </section>
+    </div>
+    <div class="roulette-dock"><div><strong id="turnStatus">Hagan sus apuestas</strong><small id="dockBalance">Solo fichas virtuales</small></div><button class="roulette-primary" id="spin" type="button" disabled>Girar la ruleta</button></div>
+    <div class="roulette-preferences"><button type="button" id="soundToggle" aria-pressed="true">Sonido: sí</button><button type="button" id="hapticsToggle" aria-pressed="true">Vibración: sí</button><a href="index.html">Volver al catálogo →</a></div>
+  </section>
+</main>
+<dialog id="rulesDialog" class="roulette-dialog"><div><button type="button" class="dialog-close" id="rulesClose" aria-label="Cerrar reglas">×</button><span class="roulette-kicker">RULETA EUROPEA</span><h2>Las reglas de Antón</h2><p>37 casillas: un cero verde, 18 rojas y 18 negras. El resultado se obtiene al azar, sin tener en cuenta tus fichas ni los giros anteriores.</p><table><caption>Premios netos (además se devuelve la apuesta ganadora)</caption><thead><tr><th>Apuesta</th><th>Premio</th></tr></thead><tbody><tr><td>Pleno · 1 número</td><td>35:1</td></tr><tr><td>Caballo · 2 contiguos</td><td>17:1</td></tr><tr><td>Calle / trío · 3</td><td>11:1</td></tr><tr><td>Cuadro / primeros cuatro · 4</td><td>8:1</td></tr><tr><td>Seisena · 6</td><td>5:1</td></tr><tr><td>Docena / columna · 12</td><td>2:1</td></tr><tr><td>Rojo / negro / par / impar / 1–18 / 19–36</td><td>1:1</td></tr></tbody></table><p>Ejemplo: 5 fichas a un pleno ganador devuelven 180 (175 de premio + las 5 apostadas). Si sale cero, pierden todas las apuestas externas. Sin <i>la partage</i> ni <i>en prison</i>.</p><p>Para apuestas de varios números, elige el tipo, toca un número y confirma una combinación resaltada. Las fichas se acumulan. Deshacer revierte la última acción; Repetir recupera la distribución anterior; Doblar necesita saldo para todas las apuestas.</p><p>En mesa local cada persona apuesta y confirma su turno. Todos comparten el mismo giro y mantienen saldos independientes. Pasa el móvil antes de revelar el turno siguiente.</p><p>Solo entretenimiento: fichas virtuales, sin compras ni dinero real.</p><button id="rulesDone" type="button" class="roulette-primary">Entendido</button></div></dialog>
+<dialog id="resetDialog" class="roulette-dialog"><form method="dialog"><h2>¿Abrir una mesa nueva?</h2><p>Se borrarán el saldo y el historial de esta sesión. Tus preferencias de sonido y vibración se conservan.</p><button value="cancel" type="submit">Cancelar</button><button id="resetConfirm" value="reset" type="submit" class="roulette-primary">Nueva sesión</button></form></dialog>
+<div id="passScreen" class="pass-screen" hidden role="dialog" aria-modal="true" aria-label="Pasar el dispositivo"><div><span class="roulette-kicker">PASA EL MÓVIL</span><h2 data-pass-title></h2><p data-pass-copy></p><button data-pass-reveal type="button" class="roulette-primary">Ver mi turno</button></div></div>
+<p id="rouletteNotice" class="roulette-notice" role="status" aria-live="polite" hidden></p>
+<script src="pwa.js?v=27.0.0"></script>
+</body></html>

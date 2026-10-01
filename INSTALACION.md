@@ -1,4 +1,4 @@
-# Sala Cero v26.1.3 — Instalación y publicación
+# Sala Cero v27.0.0 — Instalación y publicación
 
 ## GitHub Pages
 
@@ -8,12 +8,12 @@ La web no necesita API, base de datos ni proceso de compilación. Las preferenci
 
 ## Actualización desde una versión anterior
 
-1. Publica todos los archivos de v26.1.3, incluidas las carpetas `assets`, `scripts` y `tests`.
-2. Abre la web con conexión y realiza una recarga completa.
-3. Espera a que el control `APP` indique que la versión offline está preparada.
-4. Cierra pestañas antiguas de Sala Cero y vuelve a abrir la aplicación instalada.
+1. Revisa la PR con todos los jobs de `QA Sala Cero` en verde antes de llevarla a `main`.
+2. Publica los archivos de v27.0.0 en la raíz mediante GitHub Pages, incluidas las carpetas `assets`.
+3. Abre con conexión. Si aparece «Nueva versión disponible», termina el turno y pulsa «Actualizar».
+4. Espera a que `APP` muestre «Lista» y comprueba la versión `27.0.0`. Después prueba a abrir la Ruleta de Antón sin conexión.
 
-El service worker `26.1.3` elimina las cachés de versiones anteriores y prepara 187 recursos esenciales. El nombre antiguo puede migrarse como preferencia; la carrera y sus estadísticas no se importan.
+El service worker `27.0.0` prepara 191 recursos y elimina las cachés `tute-ia-*` anteriores al activarse. La primera instalación no recarga el juego. Las actualizaciones posteriores esperan al usuario. El trabajador v26 publicado ya usaba activación automática: la transición desde aquel código no puede modificar retroactivamente su comportamiento. Se conserva el almacenamiento local, incluido el nombre, las preferencias y el saldo de ruleta.
 
 ## Instalación en el dispositivo
 
@@ -34,4 +34,12 @@ El workflow `QA Sala Cero` repite estas pruebas en GitHub. No publiques una revi
 
 ## Recuperación
 
-Si un dispositivo conserva una interfaz anterior después de la publicación, abre el panel `APP`, borra los datos locales de Sala Cero y recarga con conexión. Esta acción elimina preferencias y partidas guardadas de ese dispositivo.
+Si sigue mostrando una versión antigua, cierra las pestañas de Sala Cero y abre con conexión; revisa `APP` y aplica «Actualizar». No borres tus partidas como primer paso. Exporta una copia antes de una limpieza voluntaria de datos. El navegador puede desalojar cachés por falta de espacio: no se garantiza almacenamiento offline permanente.
+
+## Comprobación física pendiente
+
+- iPhone/Safari: instalación, safe areas, giro portrait–landscape–portrait, sonidos tras pulsar, tapete sin cortes y reanudación tras bloquear la pantalla.
+- Android/Chrome: instalación, vibración opcional, apuestas y giro offline, actualización desde la aplicación instalada.
+- iPad/Safari: rueda, teclado externo, selección de combinaciones, Dibuja con lápiz y persistencia al rotar.
+
+La matriz de Playwright comprueba WebKit y Firefox en Linux. No certifica esos dispositivos ni Safari físico.

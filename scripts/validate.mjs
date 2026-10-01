@@ -10,7 +10,7 @@ const gamePages = [
   "cinquillo.html", "pocha.html", "burro.html", "poker.html", "blackjack.html", "siete-media.html",
   "es-un-10.html", "impostor.html", "chao-pescao.html", "mentiroso-dados.html", "la-bomba.html",
   "quien-mas-probable.html", "mentiroso-cartas.html", "presidente.html", "piramide.html", "tabu.html",
-  "password.html", "ruleta-caos.html", "juicio-anton.html", "charadas.html", "pictionary.html"
+  "password.html", "ruleta-caos.html", "juicio-anton.html", "charadas.html", "pictionary.html", "ruleta-casino.html"
 ];
 const removedRuntime = ["career.html", "career.js", "career.css", "club.js", "club.css", "auth.js", "auth.css", "stats-v26.js"];
 const report = { html: htmlFiles.length, games: gamePages.length, refs: 0, swAssets: 0, missing: [], swMissing: [], duplicates: [], bad: [], syntax: [] };
@@ -24,7 +24,7 @@ function localTarget(reference) {
 for (const file of htmlFiles) {
   const source = readFileSync(join(root, file), "utf8");
   if (!/name=["']viewport["']/.test(source)) report.bad.push(`${file}:viewport`);
-  if (!source.includes("26.1.3")) report.bad.push(`${file}:version`);
+  if (!source.includes("27.0.0")) report.bad.push(`${file}:version`);
   if ((source.match(/casual\.js/g) || []).length !== 1) report.bad.push(`${file}:casual-runtime`);
   if (/(?:career|club|auth|stats-v26)\.(?:css|js|html)/i.test(source)) report.bad.push(`${file}:removed-runtime-reference`);
 
@@ -51,8 +51,8 @@ for (const page of gamePages) {
 const home = readFileSync(join(root, "index.html"), "utf8");
 const cards = [...home.matchAll(/data-game-card="([^"]+)"/g)].map(match => match[1]);
 const cardLinks = [...home.matchAll(/<a class="game-card[^"]*" href="([^"]+)" data-game-card="([^"]+)"/g)].map(match => ({ href: match[1], id: match[2] }));
-if (cards.length !== 27 || new Set(cards).size !== 27) report.bad.push("index:catalog-unique-count");
-if (cardLinks.length !== 27 || new Set(cardLinks.map(item => item.href)).size !== 27) report.bad.push("index:catalog-links");
+if (cards.length !== 28 || new Set(cards).size !== 28) report.bad.push("index:catalog-unique-count");
+if (cardLinks.length !== 28 || new Set(cardLinks.map(item => item.href)).size !== 28) report.bad.push("index:catalog-links");
 for (const page of gamePages) if (!cardLinks.some(item => item.href === page)) report.bad.push(`index:missing-card:${page}`);
 for (const { href, id } of cardLinks) {
   const source = readFileSync(join(root, href), "utf8");
@@ -69,13 +69,13 @@ for (const file of htmlFiles) {
 for (const file of removedRuntime) if (existsSync(join(root, file))) report.bad.push(`removed-file-still-present:${file}`);
 
 const manifest = JSON.parse(readFileSync(join(root, "manifest.webmanifest"), "utf8"));
-if (!manifest.name.includes("27 juegos")) report.bad.push("manifest:game-count");
+if (!manifest.name.includes("28 juegos")) report.bad.push("manifest:game-count");
 for (const page of ["tute.html", "brisca.html", "cinquillo.html", "pocha.html", "charadas.html", "pictionary.html"]) {
   if (!manifest.shortcuts?.some(shortcut => shortcut.url.replace(/^\.\//, "") === page)) report.bad.push(`manifest:shortcut:${page}`);
 }
 
 const worker = readFileSync(join(root, "sw.js"), "utf8");
-if (!worker.includes('const VERSION = "26.1.3"')) report.bad.push("service-worker:version");
+if (!worker.includes('const VERSION = "27.0.0"')) report.bad.push("service-worker:version");
 const assetMatch = worker.match(/const CORE_ASSETS = (\[[^;]+\]);/s);
 const assets = assetMatch ? JSON.parse(assetMatch[1]) : [];
 report.swAssets = assets.length;
@@ -83,7 +83,7 @@ report.swMissing = assets.map(asset => asset.replace(/^\.\//, "")).filter(asset 
 for (const required of [
   "./index.html", "./casual.js", "./game-core.css", "./game-core.js",
   "./brisca.html", "./cinquillo.html", "./cinquillo.js", "./pocha.html", "./pocha.js",
-  "./burro.html", "./charadas.html", "./pictionary.html"
+  "./burro.html", "./charadas.html", "./pictionary.html", "./ruleta-casino.html", "./ruleta-casino.js", "./ruleta-casino.css", "./ruleta-core.js"
 ]) if (!assets.includes(required)) report.bad.push(`service-worker:${required}`);
 for (const removed of removedRuntime.map(file => `./${file}`)) if (assets.includes(removed)) report.bad.push(`service-worker:removed:${removed}`);
 
@@ -108,7 +108,7 @@ console.log(JSON.stringify({
   bad: report.bad.length
 }, null, 2));
 
-if (report.html !== 32 || report.games !== 27 || report.missing.length || report.swMissing.length || report.duplicates.length || report.syntax.length || report.bad.length) {
+if (report.html !== 33 || report.games !== 28 || report.missing.length || report.swMissing.length || report.duplicates.length || report.syntax.length || report.bad.length) {
   console.error(report);
   process.exit(1);
 }
