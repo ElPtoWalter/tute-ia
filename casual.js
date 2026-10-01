@@ -204,7 +204,7 @@
   }
 
   window.SalaCeroPrefs = Object.freeze({
-    version: "26.1.1",
+    version: "26.1.2",
     get: read,
     getName: () => read().name,
     save: savePreferences,

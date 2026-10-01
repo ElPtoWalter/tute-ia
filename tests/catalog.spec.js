@@ -67,6 +67,8 @@ async function expectHandVisible(page, selector) {
     expect(rect.height).toBeGreaterThan(30);
     expect(rect.left).toBeGreaterThanOrEqual(-4);
     expect(rect.right).toBeLessThanOrEqual((await page.evaluate(() => innerWidth)) + 4);
+    expect(rect.top).toBeGreaterThanOrEqual(-4);
+    expect(rect.bottom).toBeLessThanOrEqual((await page.evaluate(() => innerHeight)) + 4);
   }
 }
 
@@ -198,7 +200,7 @@ test.describe("PWA offline", () => {
     test.setTimeout(120_000);
     await page.goto("/index.html");
     await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)), { timeout: 45_000 }).toBe(true);
-    await expect.poll(() => page.evaluate(async () => (await (await caches.open("tute-ia-shell-26.1.1")).keys()).length), { timeout: 45_000 }).toBe(187);
+    await expect.poll(() => page.evaluate(async () => (await (await caches.open("tute-ia-shell-26.1.2")).keys()).length), { timeout: 45_000 }).toBe(187);
     await context.setOffline(true);
     await openWithoutRuntimeErrors(page, "index.html");
     await expect(page.locator("[data-game-card]")).toHaveCount(27);
@@ -211,4 +213,23 @@ test.describe("PWA offline", () => {
     await page.locator("#cqSetupForm").evaluate(form => form.requestSubmit());
     await expectHandVisible(page, "#cqHand .sc-card");
   });
+});
+
+test("Dibuja mantiene lienzo y herramientas completos en cada viewport", async ({ page }) => {
+  await openWithoutRuntimeErrors(page, "pictionary.html");
+  await page.locator("#piSetupForm").evaluate(form => form.requestSubmit());
+  await page.locator("#piReveal").click();
+  await page.locator("#piReveal").click();
+  await expect(page.locator("#piWordLabel")).toHaveText("Oculta");
+  const controls = await page.locator("#piCanvas,#piGame button,#piWidth").evaluateAll(items => items.map(item => {
+    const rect = item.getBoundingClientRect();
+    return { id: item.id, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+  }));
+  const viewport = page.viewportSize();
+  for (const control of controls) {
+    expect(control.left, control.id).toBeGreaterThanOrEqual(0);
+    expect(control.right, control.id).toBeLessThanOrEqual(viewport.width);
+    expect(control.top, control.id).toBeGreaterThanOrEqual(0);
+    expect(control.bottom, control.id).toBeLessThanOrEqual(viewport.height);
+  }
 });

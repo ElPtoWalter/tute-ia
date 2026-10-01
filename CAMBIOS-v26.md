@@ -1,4 +1,4 @@
-# Sala Cero v26.1.1 — Reforma integral
+# Sala Cero v26.1.2 — Reforma integral
 
 ## Nueva experiencia
 
@@ -15,6 +15,12 @@
 - Dibuja vuelve a ocultar la palabra cuando el dibujante cierra la entrega privada.
 - Los recursos versionados recuperan el shell de su misma versión cuando no hay conexión.
 - Se añade una prueba real de navegación offline por los 27 juegos.
+
+### Revisión visual 26.1.2
+
+- Todas las herramientas de Dibuja permanecen visibles en móvil, sin carrusel horizontal.
+- El lienzo y las acciones se ajustan a la altura útil en vertical y horizontal.
+- La suite comprueba también el encaje vertical de las manos y el lienzo activo en los cinco tamaños.
 
 ## Retirada del sistema de progresión
 
@@ -71,7 +77,7 @@ Se retiraron los runtimes dedicados `career.*`, `club.*`, `auth.*` y `stats-v26.
 - Vibración opcional centralizada y degradación segura cuando `navigator.vibrate` no existe.
 - Sonido y música de los juegos anteriores se conservan.
 - Estados de foco visibles, etiquetas accesibles, avisos `aria-live` y diálogos nativos.
-- Service worker `26.1.1`, manifiesto actualizado y 187 recursos precargados.
+- Service worker `26.1.2`, manifiesto actualizado y 187 recursos precargados.
 
 ## Limpieza técnica
 
