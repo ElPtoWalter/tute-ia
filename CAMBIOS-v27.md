@@ -33,6 +33,8 @@ La partida completa de Tute detectó que CSS móvil ocultaba los dos enlaces al 
 
 El panel PWA exporta/importa también claves `salaCero*` (antes solo `tute*`), por lo que el nuevo saldo y las preferencias entran en la copia. El test comprueba que claves de otra web quedan fuera. El botón Girar permanece visible en una franja inferior, con espacio reservado para no ocultar contenido.
 
+La revisión de capturas detectó que APP flotante podía tapar una casilla al desplazar el tapete. En la ruleta queda dentro del encabezado fijo, separado de Reglas; QA verifica sus límites y la ausencia de solapamiento.
+
 Se retira `.pass-screen[hidden]` redundante: `[hidden]` ya tiene `display:none !important` en la misma hoja. Se retiran tres selectores `html[data-career-felt]` de `salon-games.css`, sin consumidores HTML/JS tras retirar Carrera en v26 (búsqueda del repositorio). El flujo privado de Burro y ruleta permanece cubierto por QA. No se crea `v27-fix.css`, ni se borran motores, capas o recursos históricos basándose solo en que parezcan antiguos.
 
 La ruleta añade una hoja propia y usa únicamente `game-core.css` y `pwa.css`; la portada sigue usando `hub.css`. La pila antigua (styles/mobile/sala-cero-v22/polish/v24/v25, según juego) se conserva para una futura retirada por módulo con comparación visual y partidas completas. No se afirma que todos sus selectores sean necesarios ni que los no usados en una sola pantalla sean eliminables.

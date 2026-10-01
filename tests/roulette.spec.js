@@ -81,6 +81,9 @@ test('tapete y fichas: 44 px, etiquetas y rueda completa',async({page},info)=>{
   await start(page);const controls=await page.locator('[data-bet],[data-chip],#spin,#clearBets,#repeatBets,#doubleBets,#undoBet,#betMode').evaluateAll(elements=>elements.map(el=>({label:el.getAttribute('aria-label')||el.textContent.trim(),width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height})));
   for(const c of controls){expect(c.label).toBeTruthy();expect(c.width,c.label).toBeGreaterThanOrEqual(43.5);expect(c.height,c.label).toBeGreaterThanOrEqual(43.5);}
   await expect(page.locator('[data-pocket]')).toHaveCount(37);await layout(page);
+  const app=await page.locator('#pwaControlButton').boundingBox(),header=await page.locator('.roulette-top').boundingBox(),rules=await page.locator('#rulesOpen').boundingBox();
+  expect(app.y).toBeGreaterThanOrEqual(header.y);expect(app.y+app.height).toBeLessThanOrEqual(header.y+header.height);
+  expect(app.x+app.width,'APP no cubre Reglas ni el tapete').toBeLessThanOrEqual(rules.x);
   if(page.viewportSize().width>600){
     const zero=await page.locator('[data-number="0"]').boundingBox(),number=await page.locator('[data-number="1"]').boundingBox();
     expect(zero.height,'el cero abarca las tres filas del tapete').toBeGreaterThanOrEqual(number.height*3);

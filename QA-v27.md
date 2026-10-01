@@ -6,7 +6,17 @@ Base `effbc4f644fb413ae879e4fae35c573a8df5a695`, árbol `29a3098093f65b155ebd519
 
 ## Matriz v27
 
-PR: [Sala Cero v27](https://github.com/ElPtoWalter/tute-ia/pull/1). Primera ejecución: [Actions 36889997098](https://github.com/ElPtoWalter/tute-ia/actions/runs/36889997098). Resultados finales pendientes; esto no es una declaración de estabilidad.
+PR: [Sala Cero v27](https://github.com/ElPtoWalter/tute-ia/pull/1). Ejecución de control completamente verde: [Actions 36909094811](https://github.com/ElPtoWalter/tute-ia/actions/runs/36909094811), commit `7e852bcca3b5e3c362845c8232d8894a9d34219a`. Cada revisión posterior repite toda la matriz; antes de publicar se exige que la última revisión de la PR esté también en verde. El workflow de main añade una comprobación independiente de GitHub Pages real.
+
+| Trabajo | Aprobadas | Fallidas | Omitidas | Flaky |
+| --- | ---: | ---: | ---: | ---: |
+| Chromium, cinco tamaños | 301 | 0 | 84 | 0 |
+| Firefox | 77 | 0 | 0 | 0 |
+| WebKit | 77 | 0 | 0 | 0 |
+| Chromium PWA/offline | 3 | 0 | 0 | 0 |
+| Node, motor de ruleta | 26 | 0 | 0 | 0 |
+
+458 pruebas web ejecutadas + 26 del motor = 484 aprobadas. Validación estática: 33 HTML, 28 juegos, 591 referencias, 191 recursos precargados, cero ausentes/duplicados/errores de sintaxis. El job `publication` se omite deliberadamente en una PR: solo comprueba la URL pública después de publicar en main; no es un test fallido ni una comprobación de producción ya realizada.
 
 | Motor | Alcance | Tamaños |
 | --- | --- | --- |
@@ -15,7 +25,7 @@ PR: [Sala Cero v27](https://github.com/ElPtoWalter/tute-ia/pull/1). Primera ejec
 | WebKit | Catálogo, ruleta y flujos críticos/profundos | 390×844; rotación en flujos específicos |
 | Chromium PWA | Precarga, 28 juegos offline, ronda de ruleta y actualización | 390×844 |
 
-Los skips en cuatro proyectos Chromium evitan repetir partidas profundas y algunos smoke; no ocultan juegos del catálogo ni apuestas de la ruleta. No hay skips en Firefox/WebKit por incompatibilidad. Lista actual: 542 casos registrados, pendiente de resultados definitivos.
+Los 84 skips en cuatro proyectos Chromium evitan repetir partidas profundas y algunos smoke; no ocultan juegos del catálogo ni apuestas de la ruleta. No hay skips en Firefox/WebKit por incompatibilidad. Lista actual: 542 casos web registrados, 458 ejecutados.
 
 ## Motor
 
@@ -28,10 +38,16 @@ Los skips en cuatro proyectos Chromium evitan repetir partidas profundas y algun
 - Cinquillo: apertura con cinco de oros, secuencias contiguas, 40 cartas conservadas, primera mano vacía; caso adicional de dos jugadores/20 cartas.
 - Pocha: 19 rondas completas (cuatro personas), apuestas legales, asistencia, bazas, cálculo exacto de puntos y resultado.
 - Blackjack: repartir, plantarse, banca y devolución calculada desde las cartas reales.
-- Póker, Generala, Chinchón y Dibuja: iniciar, acción, presentación y regreso al catálogo, además de pruebas específicas de dibujo/orientación.
+- Póker, Generala, Chinchón y Dibuja: iniciar, acción, presentación y regreso al catálogo, además de pruebas específicas de dibujo/orientación. Dibuja genera un trazo real de ratón y toque táctil en los tres motores; Chromium añade arrastre táctil nativo. No se afirma haber probado arrastres físicos en Firefox/Safari móviles.
 - Ruleta: 14 pagos/zonas deterministas, cero pierde todas las externas, insuficiencia, acumulación/deshacer/borrar/repetir/doblar, doble giro, recargar, nueva sesión, local, teclado, objetivos táctiles, rueda de 37 casillas, bola correcta, orientación y movimiento reducido.
 
 Las partidas profundas usan temporizadores acelerados y semilla fija únicamente desde el test, sin modificar reglas del runtime. No equivalen a todas las variantes, todas las combinaciones de manos o una certificación de reglamentos.
+
+## Fallos resueltos durante la ampliación
+
+La [primera ejecución](https://github.com/ElPtoWalter/tute-ia/actions/runs/36889997098) detectó manos largas de Cinquillo y subtítulo de Chinchón fuera del ancho. Las siguientes descubrieron la ausencia real de enlaces visibles al catálogo en Tute móvil. Se corrigieron en las hojas/motor existentes y se mantuvieron pruebas de regresión; no se modificaron reglamentos. La revisión visual de ruleta corrigió el cero horizontal de una sola fila y el botón APP que podía cubrir el tapete al desplazarse. La geometría de ambos queda comprobada automáticamente.
+
+Se corrigieron también condiciones de carrera del test al leer puntuaciones antes de terminar la baza o intentar seleccionar una carta mientras cambiaba el turno. La tolerancia angular 0.01° solo contempla el redondeo CSS de Firefox (<0.03 px de arco). El filtro de cancelación de red se limita al audio cancelado intencionalmente; los errores JS y 404 siguen produciendo fallo.
 
 ## PWA y accesibilidad
 
@@ -41,7 +57,7 @@ Etiquetas, teclado, foco, modales, regiones live, objetivos de 44 px, ausencia d
 
 ## Límites locales y comprobación física
 
-El lanzamiento de procesos de navegador/runner local está limitado por EPERM; Node se ejecuta directamente y la validación web se realiza en Actions. La sesión de navegador local también se ha bloqueado. Las capturas se guardan en artefactos de CI; no se inventa una revisión manual que no se haya podido realizar.
+El lanzamiento de procesos de navegador/runner local está limitado por EPERM; Node se ejecuta directamente y la validación web se realiza en Actions. La sesión de navegador local también se ha bloqueado. Se descargan e inspeccionan visualmente capturas reales de CI de la ruleta en los cinco tamaños y del regreso al menú de Tute; no se atribuyen esas capturas a dispositivos físicos.
 
 Pendiente físico: iPhone Safari y PWA (safe areas, audio tras toque, rotación y reanudar), Android Chrome (instalación, vibración/offline/actualización), iPad Safari (lápiz, teclado y orientación). WebKit Linux no certifica Safari real.
 
