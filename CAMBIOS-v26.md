@@ -1,4 +1,4 @@
-# Sala Cero v26.1.2 — Reforma integral
+# Sala Cero v26.1.3 — Reforma integral
 
 ## Nueva experiencia
 
@@ -21,6 +21,12 @@
 - Todas las herramientas de Dibuja permanecen visibles en móvil, sin carrusel horizontal.
 - El lienzo y las acciones se ajustan a la altura útil en vertical y horizontal.
 - La suite comprueba también el encaje vertical de las manos y el lienzo activo en los cinco tamaños.
+
+### Cierre de QA 26.1.3
+
+- Se retira la altura mínima de escritorio que cortaba Brisca y Dibuja en horizontal.
+- Pocha usa el máximo real de la baraja para cada número de jugadores (13, 10, 8 o 6 cartas) y documenta el triunfo cuando se reparte toda la baraja.
+- Las pruebas verifican las cuatro secuencias de rondas de Pocha.
 
 ## Retirada del sistema de progresión
 
@@ -77,7 +83,7 @@ Se retiraron los runtimes dedicados `career.*`, `club.*`, `auth.*` y `stats-v26.
 - Vibración opcional centralizada y degradación segura cuando `navigator.vibrate` no existe.
 - Sonido y música de los juegos anteriores se conservan.
 - Estados de foco visibles, etiquetas accesibles, avisos `aria-live` y diálogos nativos.
-- Service worker `26.1.2`, manifiesto actualizado y 187 recursos precargados.
+- Service worker `26.1.3`, manifiesto actualizado y 187 recursos precargados.
 
 ## Limpieza técnica
 

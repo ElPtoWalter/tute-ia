@@ -273,9 +273,9 @@ button, a, select, input { -webkit-tap-highlight-color: transparent; }
 
 @media (max-height: 520px) and (max-width: 960px) {
   :root { --br-card-width: 60px; }
-  .br-top { min-height: 48px; }
+  .br-top { min-height: 48px; padding-block: 4px; }
   .br-brand > span { width: 32px; height: 32px; }
-  .br-game { height: calc(100dvh - 48px); grid-template-columns: 130px minmax(0, 1fr) 260px; grid-template-rows: 40px minmax(0,1fr); gap: 6px; padding: 5px max(8px, env(safe-area-inset-right)) 5px max(8px, env(safe-area-inset-left)); }
+  .br-game { height: calc(100dvh - 48px); min-height: 0; grid-template-columns: 130px minmax(0, 1fr) 260px; grid-template-rows: 40px minmax(0,1fr); gap: 6px; padding: 5px max(8px, env(safe-area-inset-right)) 5px max(8px, env(safe-area-inset-left)); }
   .br-scoreboard { grid-column: 1 / -1; grid-row: 1; }
   .br-opponents { grid-column: 1; grid-row: 2; flex-direction: column; min-height: 0; }
   .br-opponent { flex: 0 1 auto; }

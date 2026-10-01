@@ -1,4 +1,4 @@
-# QA Sala Cero v26.1.2
+# QA Sala Cero v26.1.3
 
 ## Matriz responsive
 
@@ -49,7 +49,7 @@ La portada se prueba también en los cinco proyectos. La suite enumera 215 casos
 - manifiesto, accesos directos y caché offline coherentes;
 - sintaxis válida de todos los scripts clásicos.
 
-Estado de la validación estática de v26.1.2: **32 HTML, 27 juegos, 575 referencias, 187 recursos offline y 0 incidencias**.
+Estado de la validación estática de v26.1.3: **32 HTML, 27 juegos, 575 referencias, 187 recursos offline y 0 incidencias**.
 
 ## Ejecución
 

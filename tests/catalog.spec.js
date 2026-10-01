@@ -191,6 +191,14 @@ test("las reglas numéricas de Brisca y los contratos de los juegos nuevos son c
   expect(brisca).toEqual({ points: { 1:11, 3:10, 10:2, 11:3, 12:4 }, two:40, three:39 });
   await openWithoutRuntimeErrors(page, "cinquillo.html"); expect(await page.evaluate(() => typeof window.SalaCeroCinquilloDebug.isLegal)).toBe("function");
   await openWithoutRuntimeErrors(page, "pocha.html"); expect(await page.evaluate(() => typeof window.SalaCeroPochaDebug.validBids)).toBe("function");
+  for (const count of [3,4,5,6]) {
+    await page.goto("/pocha.html");
+    await page.locator("#poPlayers").selectOption(String(count));
+    await page.locator("#poSetupForm").evaluate(form => form.requestSubmit());
+    const plan = await page.evaluate(() => window.SalaCeroPochaDebug.state.roundPlan);
+    const max = Math.floor(40/count);
+    expect(plan).toEqual([...Array.from({ length:max }, (_,i) => i+1), ...Array.from({ length:max-1 }, (_,i) => max-1-i)]);
+  }
 });
 
 test.describe("PWA offline", () => {
@@ -200,7 +208,7 @@ test.describe("PWA offline", () => {
     test.setTimeout(120_000);
     await page.goto("/index.html");
     await expect.poll(() => page.evaluate(() => Boolean(navigator.serviceWorker.controller)), { timeout: 45_000 }).toBe(true);
-    await expect.poll(() => page.evaluate(async () => (await (await caches.open("tute-ia-shell-26.1.2")).keys()).length), { timeout: 45_000 }).toBe(187);
+    await expect.poll(() => page.evaluate(async () => (await (await caches.open("tute-ia-shell-26.1.3")).keys()).length), { timeout: 45_000 }).toBe(187);
     await context.setOffline(true);
     await openWithoutRuntimeErrors(page, "index.html");
     await expect(page.locator("[data-game-card]")).toHaveCount(27);

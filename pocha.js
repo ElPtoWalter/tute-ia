@@ -13,7 +13,7 @@
   function start(){
     const count=Number(ui.poPlayers.value),local=ui.poMode.value==="local";
     const players=Array.from({length:count},(_,i)=>({name:local?(document.getElementById(`poName${i}`)?.value.trim()||`Jugador ${i+1}`):(i===0?(document.getElementById("poName0")?.value.trim()||window.SalaCeroPrefs.getName()):aiNames[i-1]),ai:!local&&i>0,score:0,bid:null,tricks:0}));
-    const max=Math.min(10,Math.floor(40/count));
+    const max=Math.floor(40/count);
     Object.assign(state,{active:true,mode:local?"local":"solo",players,roundPlan:[...Array.from({length:max},(_,i)=>i+1),...Array.from({length:max-1},(_,i)=>max-1-i)],roundIndex:0});
     ui.poSetup.classList.add("hidden");ui.poGame.classList.remove("hidden");startRound();
   }
