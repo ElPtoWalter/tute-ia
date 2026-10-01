@@ -49,6 +49,8 @@ La [primera ejecución](https://github.com/ElPtoWalter/tute-ia/actions/runs/3688
 
 Se corrigieron también condiciones de carrera del test al leer puntuaciones antes de terminar la baza o intentar seleccionar una carta mientras cambiaba el turno. La tolerancia angular 0.01° solo contempla el redondeo CSS de Firefox (<0.03 px de arco). El filtro de cancelación de red se limita al audio cancelado intencionalmente; los errores JS y 404 siguen produciendo fallo.
 
+La primera repetición sobre main, [36912670593](https://github.com/ElPtoWalter/tute-ia/actions/runs/36912670593), detectó un reintento en el smoke de Chinchón/WebKit: el nodo de carta existía pero la primera muestra tenía ancho cero. El helper espera ahora una muestra visible (ancho >20, alto >30) y utiliza esa misma muestra para todos los límites. No se relajan los límites ni se cambia Chinchón. La corrección se valida mediante una PR de QA independiente antes de fusionarla.
+
 ## PWA y accesibilidad
 
 191 recursos esperados en la caché v27; desconexión real mediante contexto offline; carga de los 28 juegos y giro completo. Actualización simulada de un trabajador con namespace v26 a v27: espera al usuario, conserva la apuesta y elimina cachés antiguas. Esto comprueba el nuevo mecanismo; el antiguo trabajador v26 realmente publicado activaba automáticamente y no puede cambiarse retroactivamente.

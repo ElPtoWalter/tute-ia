@@ -57,11 +57,16 @@ async function expectResponsiveLayout(page, path) {
 }
 
 async function expectHandVisible(page, selector) {
-  await expect.poll(() => page.locator(selector).count(), { timeout: 8_000, message: `${selector} debe mostrar cartas` }).toBeGreaterThan(0);
-  const result = await page.locator(selector).evaluateAll(cards => cards.map(card => {
-    const rect = card.getBoundingClientRect();
-    return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
-  }));
+  let result;
+  // El nodo puede existir antes de que termine el cambio de pantalla/turno. Esperar
+  // geometría visible y reutilizar esa misma muestra evita leer otra fase del render.
+  await expect.poll(async () => {
+    result = await page.locator(selector).evaluateAll(cards => cards.map(card => {
+      const rect = card.getBoundingClientRect();
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom, width: rect.width, height: rect.height };
+    }));
+    return result.length > 0 && result.every(rect => rect.width > 20 && rect.height > 30);
+  }, { timeout: 8_000, message: `${selector} debe mostrar cartas con tamaño real` }).toBe(true);
   expect(result.length).toBeGreaterThan(0);
   for (const rect of result) {
     expect(rect.width).toBeGreaterThan(20);
