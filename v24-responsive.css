@@ -665,6 +665,12 @@ textarea {
     line-height: 1.55 !important;
   }
 
+  /* El subtítulo largo de Chinchón excedía el ancho en Firefox/WebKit. */
+  body[data-game="chinchon"] .sg-hero h1 em {
+    font-size: .72em;
+    overflow-wrap: anywhere;
+  }
+
   .home-kicker,
   .g-kicker,
   .sg-kicker,

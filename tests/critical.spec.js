@@ -11,15 +11,22 @@ test('Tute: mano completa hasta resultado, robo y bazas reales',async({page},inf
   primary(info);test.setTimeout(120000);await fast(page);await page.goto('/tute.html');
   await page.locator('#classicModeButton').click();await page.locator('#variantGrid [data-variant-id="house"]').click();await page.locator('#startButton').click();
   await expect(page.locator('#playerHand .playing-card')).toHaveCount(8,{timeout:15000});
-  let played=0,draws=0;
+  const played=new Set();let draws=0;
   for(let step=0;step<450;step++){
     if(await page.locator('#resultModal').isVisible())break;
-    if(await page.locator('#canteActions .pass-button').isVisible())await page.locator('#canteActions .pass-button').press('Enter');
-    else if(await page.locator('#drawButton').isVisible()){await page.locator('#drawButton').press('Enter');draws++;}
-    else if(await page.locator('#playerHand [data-playable="true"]').count()){await page.locator('#playerHand [data-playable="true"]').first().press('Enter');played++;}
+    // Lectura + tecla en el mismo turno DOM: no esperar un selector que cambia al resolver una baza.
+    const action=await page.evaluate(()=>{
+      const visible=el=>el&&el.getBoundingClientRect().width>0&&el.getBoundingClientRect().height>0;
+      const pass=document.querySelector('#canteActions .pass-button'),draw=document.getElementById('drawButton'),card=document.querySelector('#playerHand [data-playable="true"]');
+      const target=visible(pass)?pass:visible(draw)?draw:card;
+      if(!target)return null;target.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));
+      if(target===pass)target.click(); // Botón nativo: dispatchEvent no ejecuta la acción por defecto.
+      if(target===draw)target.click();
+      return target===card?{card:card.dataset.cardId}:{draw:target===draw};
+    });if(action?.card)played.add(action.card);if(action?.draw)draws++;
     await page.waitForTimeout(100);
   }
-  await expect(page.locator('#resultModal')).toBeVisible();expect(played).toBeGreaterThanOrEqual(20);expect(draws).toBeGreaterThan(0);
+  await expect(page.locator('#resultModal')).toBeVisible();expect(played.size).toBe(20);expect(draws).toBeGreaterThan(0);
   const scores=await page.locator('#resultPlayerScore,#resultAiScore').allTextContents();expect(scores.map(Number).reduce((a,b)=>a+b,0)).toBeGreaterThanOrEqual(130);
   await page.keyboard.press('Escape');await layout(page);await home(page);
 });
@@ -57,8 +64,9 @@ test('Pocha completa: apuestas válidas, asistencia, puntuación y clasificació
     const s=await page.evaluate(()=>{const d=window.SalaCeroPochaDebug;return{active:d.state.active,human:!d.state.players[d.state.current].ai,revealed:d.state.revealed,phase:d.state.phase,trick:d.state.trick.length,bids:d.validBids(),legal:d.legalIndexes(),players:d.state.players,roundCards:d.state.roundCards};});
     if(!s.active)break;
     if(await page.locator('#poRoundDialog').isVisible()){
-      expect(s.players.reduce((a,p)=>a+p.tricks,0)).toBe(s.roundCards);
-      s.players.forEach((p,n)=>{const expected=p.bid===p.tricks?10+5*p.tricks:-5*Math.abs(p.bid-p.tricks);expect(p.score-scores[n]).toBe(expected);});scores=s.players.map(p=>p.score);rounds++;
+      const settled=await page.evaluate(()=>({players:window.SalaCeroPochaDebug.state.players,roundCards:window.SalaCeroPochaDebug.state.roundCards}));
+      expect(settled.players.reduce((a,p)=>a+p.tricks,0)).toBe(settled.roundCards);
+      settled.players.forEach((p,n)=>{const expected=p.bid===p.tricks?10+5*p.tricks:-5*Math.abs(p.bid-p.tricks);expect(p.score-scores[n]).toBe(expected);});scores=settled.players.map(p=>p.score);rounds++;
       await page.locator('#poNextRound').click();
     }else if(s.human&&s.revealed){
       if(s.phase==='bid')await page.locator(`#poBidOptions [data-bid="${s.bids[0]}"]`).press('Enter');

@@ -51,7 +51,8 @@
     if (!cards.length) return;
     const available = Math.max(180, container.clientWidth - 12);
     const width = Math.max(42, Math.min(82, available / Math.min(cards.length, 5)));
-    const step = cards.length > 1 ? Math.max(18, Math.min(width, (available - width) / (cards.length - 1))) : width;
+    // Con 20 cartas el mínimo fijo de 18 px excedía el ancho del móvil.
+    const step = cards.length > 1 ? Math.min(width, (available - width) / (cards.length - 1)) : width;
     container.style.setProperty("--card-width", `${width}px`);
     container.style.setProperty("--card-overlap", `${step - width}px`);
   }

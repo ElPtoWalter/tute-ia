@@ -1,5 +1,13 @@
 import {test,expect} from './fixtures.js';
 import fs from 'node:fs';
+test('copia PWA incluye saldo y preferencias Sala Cero sin incluir datos ajenos',async({page})=>{
+  await page.goto('/ruleta-casino.html');await page.locator('#startSession').click();await page.locator('[data-bet="red"]').click();
+  await page.evaluate(()=>localStorage.setItem('otraWebPrueba','no exportar'));
+  await page.locator('#pwaControlButton').click();const download=page.waitForEvent('download');await page.locator('#pwaExportAction').click();
+  const file=await download;const payload=JSON.parse(fs.readFileSync(await file.path(),'utf8'));
+  expect(JSON.parse(payload.preferences.salaCeroRuletaV27).players[0].bets).toEqual({red:5});
+  expect(payload.preferences.salaCeroCasualV261).toBeTruthy();expect(payload.preferences.otraWebPrueba).toBeUndefined();
+});
 test('28 juegos offline, todos los recursos de ruleta y una ronda',async({page,context})=>{
   test.setTimeout(120000);await page.goto('/index.html');
   await expect.poll(()=>page.evaluate(()=>Boolean(navigator.serviceWorker.controller)),{timeout:45000}).toBe(true);

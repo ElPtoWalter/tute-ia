@@ -14,7 +14,7 @@ async function openWithoutRuntimeErrors(page, path) {
   const onConsole = message => { if (message.type() === "error") errors.push(`console: ${message.text()}`); };
   const onFailed = request => {
     const reason = request.failure()?.errorText || "unknown";
-    if (reason.includes("ERR_ABORTED") && request.resourceType() === "media") return;
+    if (/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason) && request.resourceType() === "media") return;
     errors.push(`requestfailed: ${request.url()} · ${reason}`);
   };
   const onResponse = response => {
@@ -50,6 +50,7 @@ async function expectResponsiveLayout(page, path) {
     const brokenImages = [...document.images].filter(image => image.complete && image.naturalWidth === 0).map(image => image.getAttribute("src"));
     return { overflow, badControls, brokenImages };
   });
+  if (result.overflow > 4) console.log('LAYOUT DIAGNOSTIC', path, await page.evaluate(() => [...document.querySelectorAll('body *')].flatMap(el => { const r=el.getBoundingClientRect(),s=getComputedStyle(el); return s.display!=='none' && r.width>0 && (r.right>innerWidth+4 || r.left < -4) ? [{tag:el.tagName,id:el.id,class:el.className,left:r.left,right:r.right,width:r.width}] : []; }).slice(0,30)));
   expect(result.overflow, `${path} has horizontal document overflow`).toBeLessThanOrEqual(4);
   expect(result.badControls, `${path} has visible controls outside the viewport`).toEqual([]);
   expect(result.brokenImages, `${path} has broken images`).toEqual([]);

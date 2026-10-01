@@ -4,6 +4,7 @@
   const VERSION = "27.0.0";
   const DB_NAME = "tute-ia-offline";
   const STORE = "saves";
+  const isAppKey = key => key.startsWith("tute") || key.startsWith("salaCero");
   const FULL_AUDIO = "./assets/audio/casino-jazz-background.mp3";
   const LITE_AUDIO = "./assets/audio/casino-jazz-lite.mp3";
   let deferredInstallPrompt = null;
@@ -264,7 +265,7 @@
     try {
       const saves = await window.TuteDB.list();
       const preferences = {};
-      Object.keys(localStorage).filter(key => key.startsWith("tute")).forEach(key => { preferences[key] = localStorage.getItem(key); });
+      Object.keys(localStorage).filter(isAppKey).forEach(key => { preferences[key] = localStorage.getItem(key); });
       const payload = { format: "tute-ia-backup", version: VERSION, exportedAt: new Date().toISOString(), saves, preferences };
       const blob = new Blob([JSON.stringify(payload, backupReplacer, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
@@ -293,7 +294,7 @@
         await window.TuteDB.save(record.key, record.value, record.meta || {});
       }
       Object.entries(payload.preferences || {}).forEach(([key, value]) => {
-        if (key.startsWith("tute") && typeof value === "string") localStorage.setItem(key, value);
+        if (isAppKey(key) && typeof value === "string") localStorage.setItem(key, value);
       });
       toast("Copia importada correctamente.");
       setTimeout(() => location.reload(), 800);
@@ -304,7 +305,7 @@
     const confirmed = window.confirm("Se borrarán las partidas guardadas y los ajustes de Sala Cero en este dispositivo. ¿Continuar?");
     if (!confirmed) return;
     await window.TuteDB.clear().catch(() => {});
-    Object.keys(localStorage).filter(key => key.startsWith("tute")).forEach(key => localStorage.removeItem(key));
+    Object.keys(localStorage).filter(isAppKey).forEach(key => localStorage.removeItem(key));
     toast("Datos locales borrados.");
     setTimeout(() => location.reload(), 700);
   }

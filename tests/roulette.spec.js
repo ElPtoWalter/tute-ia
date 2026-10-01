@@ -27,7 +27,8 @@ for(const [id,n,returned] of [['red',1,10],['black',2,10],['straight:36',36,180]
       const wheel=degrees(document.getElementById('wheelRotor')),ball=degrees(document.getElementById('ballRotor'));
       const index=window.SalaCeroRouletteCore.order.indexOf(Number(document.getElementById('wheel').dataset.winner));
       return Math.abs((((ball-wheel-index*360/37)%360)+540)%360-180);
-    });expect(difference).toBeLessThan(.001);await layout(page);
+    // Firefox serializa el ángulo CSS con menos decimales; 0.01° < 0.03 px de arco.
+    });expect(difference).toBeLessThan(.01);await layout(page);
   });
 }
 test('cero: todas las apuestas externas pierden',async({page})=>{
