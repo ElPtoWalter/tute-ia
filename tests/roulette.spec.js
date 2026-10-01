@@ -58,6 +58,9 @@ test('historial, recarga de apuestas y recuperación de giro una sola vez',async
   await start(page,[1],5000);await wager(page,'red');await page.reload();await page.locator('#resumeSession').click();await expect(page.locator('#stake')).toHaveText('5');
   await page.locator('#spin').click();await page.reload();await page.locator('#resumeSession').click();
   await expect(page.locator('#balance')).toHaveText('505');await expect(page.locator('#history span')).toHaveCount(1);
+  await expect(page.locator('#wheel')).toHaveAttribute('data-winner','1');
+  const restoredAngle=await page.locator('#ballRotor').evaluate(el=>Number(/rotate\(([-\d.]+)deg\)/.exec(el.style.transform)[1]));
+  expect(Math.abs(restoredAngle-23*360/37),'la bola recuperada coincide con el último resultado').toBeLessThan(.01);
   await page.reload();await page.locator('#resumeSession').click();await expect(page.locator('#balance')).toHaveText('505');
 });
 test('nueva sesión, reglas, teclado y preferencias accesibles',async({page})=>{

@@ -22,6 +22,10 @@
   }
   function start() {
     $("setup").hidden=true;$("table").hidden=false;document.body.classList.add("game-in-progress");
+    // Al reanudar, la bola también representa el resultado ya liquidado, sin volver a girar.
+    wheelAngle=0;ballAngle=session.lastRound?R.order.indexOf(session.lastRound.number)*360/37:0;
+    $("wheelRotor").style.transform="rotate(0deg)";$("ballRotor").style.transform=`rotate(${ballAngle}deg)`;
+    if(session.lastRound)$("wheel").dataset.winner=String(session.lastRound.number);else delete $("wheel").dataset.winner;
     $("wheelDetails").open=innerWidth>950;preview=null;persist();render();
     $("spin").focus({preventScroll:true});
   }

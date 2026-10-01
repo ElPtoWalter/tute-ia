@@ -104,5 +104,20 @@ test('Dibuja: Pointer Events, dibujo conservado al rotar y deshacer',async({page
   const ink=()=>page.locator('#piCanvas').evaluate(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;let n=0;for(let i=0;i<d.length;i+=4)if(d[i]<150)n++;return n;});
   expect(await ink()).toBeGreaterThan(100);
   for(const v of [{width:844,height:390},{width:390,height:844}]){await page.setViewportSize(v);await page.waitForTimeout(200);expect(await ink()).toBeGreaterThan(100);await layout(page);}
-  await page.locator('#piUndo').click();await expect.poll(ink).toBe(0);await page.locator('#piCorrect').click();await expect(page.locator('#piScore')).toHaveText('1');await page.keyboard.press('Escape');await home(page);
+  await page.locator('#piUndo').click();await expect.poll(ink).toBe(0);
+  await page.locator('#piCanvas').evaluate(c=>{window.__qaPointerTypes=[];c.addEventListener('pointerdown',e=>window.__qaPointerTypes.push(e.pointerType));});
+  const touchRect=await page.locator('#piCanvas').boundingBox();
+  await page.touchscreen.tap(touchRect.x+touchRect.width*.3,touchRect.y+touchRect.height*.3);
+  expect(await page.evaluate(()=>window.__qaPointerTypes)).toContain('touch');
+  expect(await page.evaluate(()=>window.SalaCeroPictionaryDebug.state.drawing)).toBe(false);
+  if(info.project.use.browserName==='chromium'){
+    // Chromium permite un arrastre táctil nativo; Firefox/WebKit prueban toque y trazo con ratón.
+    const cdp=await page.context().newCDPSession(page);
+    const point=t=>({x:touchRect.x+touchRect.width*(.2+t*.5),y:touchRect.y+touchRect.height*(.2+t*.3),id:1});
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[point(0)]});
+    for(let i=1;i<=10;i++)await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[point(i/10)]});
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await cdp.detach();
+    expect(await ink()).toBeGreaterThan(100);await page.locator('#piUndo').click();await expect.poll(ink).toBe(0);
+  }
+  await page.locator('#piCorrect').click();await expect(page.locator('#piScore')).toHaveText('1');await page.keyboard.press('Escape');await home(page);
 });

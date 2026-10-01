@@ -184,6 +184,7 @@ test("Brisca conserva las tres cartas al cambiar de orientación", async ({ page
   onlyPrimaryMobile(testInfo); await page.setViewportSize({ width: 390, height: 844 }); await openWithoutRuntimeErrors(page, "brisca.html");
   await page.locator("#brSetupForm").evaluate(form => form.requestSubmit()); await expectHandVisible(page, "#brHand .br-card");
   await page.setViewportSize({ width: 844, height: 390 }); await page.waitForTimeout(180); await expectHandVisible(page, "#brHand .br-card"); await expectResponsiveLayout(page, "brisca:landscape");
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(180); await expectHandVisible(page, "#brHand .br-card"); await expectResponsiveLayout(page, "brisca:portrait-restored");
 });
 
 test("las reglas numéricas de Brisca y los contratos de los juegos nuevos son correctos", async ({ page }, testInfo) => {

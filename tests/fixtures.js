@@ -20,6 +20,7 @@ export async function home(page){
     if(await page.locator('#resultModal').isVisible())await page.locator('#resultExitButton').click();
     else await page.locator('#brandButton').click();
     await expect(page.locator('#homeScreen')).toBeVisible();
+    await page.screenshot({path:`test-results/tute-menu-${page.viewportSize().width}.png`,fullPage:true});
   }
   await page.locator('a[href="index.html"]:visible').first().click();
   await expect(page.locator('[data-game-card]')).toHaveCount(28);

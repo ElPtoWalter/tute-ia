@@ -14,6 +14,7 @@ Base publicada: `effbc4f644fb413ae879e4fae35c573a8df5a695` (v26.1.3). Nueva vers
 - Estados BETTING/SPINNING/RESULT; ningún cambio de apuestas mientras gira. Resultado fijado antes de animar; bola y rueda terminan en la misma casilla.
 - `crypto.getRandomValues`, muestreo por rechazo; fallback de Math.random si no hay criptografía. Sin ajuste al saldo ni al historial.
 - Persistencia local validada. Giro interrumpido se liquida una sola vez al recuperar; datos corruptos no bloquean la apertura de una mesa nueva.
+- Al reanudar, la posición de la bola representa el último resultado liquidado sin repetir el giro ni el premio. El cero ocupa las tres filas en el tapete horizontal.
 - Sonido y vibración opcionales respetan preferencias compartidas. Animación con transformaciones, finalización al ocultar pestaña y movimiento reducido.
 
 ## Presentación y accesibilidad
@@ -28,11 +29,15 @@ Catálogo de 28, filtro Casino, búsqueda, juego al azar y recientes mediante el
 
 QA demostró que el mínimo de separación de 18 px desbordaba manos de 20 cartas de Cinquillo: el paso ahora se calcula a partir del ancho disponible, sin alterar las cartas ni sus reglas. El subtítulo largo de Chinchón se adapta en la hoja responsive existente para corregir los 29 px de desbordamiento en Firefox/WebKit.
 
+La partida completa de Tute detectó que CSS móvil ocultaba los dos enlaces al catálogo, incluso tras volver a su menú. Se retira el ocultamiento de las acciones del menú y se conserva un enlace visible, con objetivo de 44 px y ajuste de línea, en la hoja existente `mobile-final.css`.
+
 El panel PWA exporta/importa también claves `salaCero*` (antes solo `tute*`), por lo que el nuevo saldo y las preferencias entran en la copia. El test comprueba que claves de otra web quedan fuera. El botón Girar permanece visible en una franja inferior, con espacio reservado para no ocultar contenido.
 
 Se retira `.pass-screen[hidden]` redundante: `[hidden]` ya tiene `display:none !important` en la misma hoja. Se retiran tres selectores `html[data-career-felt]` de `salon-games.css`, sin consumidores HTML/JS tras retirar Carrera en v26 (búsqueda del repositorio). El flujo privado de Burro y ruleta permanece cubierto por QA. No se crea `v27-fix.css`, ni se borran motores, capas o recursos históricos basándose solo en que parezcan antiguos.
 
 La ruleta añade una hoja propia y usa únicamente `game-core.css` y `pwa.css`; la portada sigue usando `hub.css`. La pila antigua (styles/mobile/sala-cero-v22/polish/v24/v25, según juego) se conserva para una futura retirada por módulo con comparación visual y partidas completas. No se afirma que todos sus selectores sean necesarios ni que los no usados en una sola pantalla sean eliminables.
+
+`node scripts/css-inventory.mjs` genera el inventario de hojas por página. Detecta `chao-pescao.css` y `sala-cero-v22.css` sin enlaces HTML directos; se conservan porque ese inventario por sí solo no certifica ausencia de dependencias dinámicas ni uso histórico.
 
 ## Verificación y límites
 

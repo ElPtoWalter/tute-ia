@@ -97,7 +97,10 @@ img{max-width:100%}
   .home-features{grid-template-columns:1fr 1fr!important}.home-features span{font-size:8px!important;min-height:35px!important;display:grid!important;place-items:center!important}
   .club-dashboard{grid-template-columns:1fr 1fr!important}.club-stat,.club-now-playing{min-height:94px!important;padding:12px!important}.club-stat span,.club-now-playing span{font-size:7px!important}.club-stat strong{font-size:23px!important}.club-stat small,.club-now-playing strong{font-size:8px!important}
   .home-deck-showcase{min-height:190px!important;transform:scale(.75)!important;margin:-18px 0!important}
-  .mode-section{padding-top:9px!important}.mode-heading{align-items:flex-start!important;gap:8px!important}.mode-heading h2{font-size:28px!important}.tute-heading-actions{display:none!important}
+  .mode-section{padding-top:9px!important}.mode-heading{align-items:flex-start!important;gap:8px!important}.mode-heading h2{font-size:28px!important}
+  body[data-game="tute"] .mode-heading{flex-wrap:wrap!important}
+  body[data-game="tute"] .tute-heading-actions{display:flex!important;width:100%}
+  body[data-game="tute"] .tute-heading-actions .soft-action-link{min-height:44px;font-size:12px!important}
   .mode-card{min-height:145px!important;padding:15px!important}.mode-card-copy strong{font-size:23px!important}.mode-card-copy span{font-size:10px!important;line-height:1.5!important}.mode-meta b,.mode-meta i{font-size:8px!important}.mode-icon{width:42px!important;height:42px!important}
   .offline-ready-card,.resume-card{padding:14px!important}.offline-ready-card strong,.resume-card-copy strong{font-size:18px!important}.offline-ready-card small,.resume-card-copy small{font-size:9px!important}
 
