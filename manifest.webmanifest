@@ -1,8 +1,8 @@
 {
   "id": "./index.html?source=pwa",
-  "name": "Sala Cero — 27 juegos offline",
+  "name": "Sala Cero — 28 juegos offline",
   "short_name": "Sala Cero",
-  "description": "27 juegos de cartas, casino, party, palabras y dados para móvil, tablet y ordenador.",
+  "description": "28 juegos de cartas, casino, party, palabras y dados para móvil, tablet y ordenador.",
   "start_url": "./index.html?source=pwa",
   "scope": "./",
   "display": "standalone",

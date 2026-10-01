@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "26.1.3";
+  const VERSION = "27.0.0";
   const DB_NAME = "tute-ia-offline";
   const STORE = "saves";
   const FULL_AUDIO = "./assets/audio/casino-jazz-background.mp3";
@@ -360,6 +360,12 @@
 
   async function registerServiceWorker() {
     if (!("serviceWorker" in navigator)) return;
+    let hadController = Boolean(navigator.serviceWorker.controller);
+    let reloading = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (hadController && !reloading) { reloading = true; location.reload(); }
+      else { hadController = true; refreshPanelState(); }
+    });
     try {
       swRegistration = await navigator.serviceWorker.register("./sw.js", { scope: "./" });
       if (swRegistration.waiting) showUpdate(swRegistration);
@@ -369,7 +375,6 @@
           if (worker.state === "installed" && navigator.serviceWorker.controller) showUpdate(swRegistration);
         });
       });
-      navigator.serviceWorker.addEventListener("controllerchange", () => location.reload());
       refreshPanelState();
     } catch (_) {
       document.getElementById("pwaOfflineState")?.replaceChildren(document.createTextNode("No disponible"));
