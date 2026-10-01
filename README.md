@@ -42,7 +42,7 @@ Un juego puede aparecer en varios filtros sin duplicarse en el catálogo. La por
 
 ## Qué cambia en v27
 
-- Ruleta de Antón independiente de Ruleta del Caos: 37 casillas, 12 tipos clásicos de apuesta y siete fichas, sin dinero real.
+- Ruleta de Antón independiente de Ruleta del Caos: 37 casillas, apuestas clásicas interiores y exteriores y siete fichas, sin dinero real.
 - Motor de apuestas separado del dibujo de la rueda; giro criptográfico con rechazo del extremo módulo, saldos atómicos y liquidación única al recuperar un giro interrumpido.
 - Botones grandes y selección confirmada de combinaciones; tapete vertical en móvil y horizontal en pantallas anchas.
 - Pruebas de catálogo, partidas completas, orientación, accesibilidad y ruleta en Chromium, Firefox y WebKit; PWA offline y actualización en Chromium.

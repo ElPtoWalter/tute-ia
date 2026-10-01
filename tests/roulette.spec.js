@@ -78,7 +78,13 @@ test('tapete y fichas: 44 px, etiquetas y rueda completa',async({page},info)=>{
   await start(page);const controls=await page.locator('[data-bet],[data-chip],#spin,#clearBets,#repeatBets,#doubleBets,#undoBet,#betMode').evaluateAll(elements=>elements.map(el=>({label:el.getAttribute('aria-label')||el.textContent.trim(),width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height})));
   for(const c of controls){expect(c.label).toBeTruthy();expect(c.width,c.label).toBeGreaterThanOrEqual(43.5);expect(c.height,c.label).toBeGreaterThanOrEqual(43.5);}
   await expect(page.locator('[data-pocket]')).toHaveCount(37);await layout(page);
+  if(page.viewportSize().width>600){
+    const zero=await page.locator('[data-number="0"]').boundingBox(),number=await page.locator('[data-number="1"]').boundingBox();
+    expect(zero.height,'el cero abarca las tres filas del tapete').toBeGreaterThanOrEqual(number.height*3);
+  }
   await page.screenshot({path:`test-results/ruleta-${info.project.name}.png`,fullPage:true});
+  await page.locator('#chips').scrollIntoViewIfNeeded();
+  await page.screenshot({path:`test-results/ruleta-controles-${info.project.name}.png`,fullPage:false});
 });
 test('orientación ida y vuelta conserva apuestas; movimiento reducido liquida',async({page})=>{
   await page.emulateMedia({reducedMotion:'reduce'});await start(page,[36]);await wager(page,'straight:36');

@@ -15,11 +15,11 @@ PR: [Sala Cero v27](https://github.com/ElPtoWalter/tute-ia/pull/1). Primera ejec
 | WebKit | Catálogo, ruleta y flujos críticos/profundos | 390×844; rotación en flujos específicos |
 | Chromium PWA | Precarga, 28 juegos offline, ronda de ruleta y actualización | 390×844 |
 
-Los skips en cuatro proyectos Chromium evitan repetir partidas profundas y algunos smoke; no ocultan juegos del catálogo ni apuestas de la ruleta. No hay skips en Firefox/WebKit por incompatibilidad. Lista actual: 534 casos registrados, pendiente de resultados definitivos.
+Los skips en cuatro proyectos Chromium evitan repetir partidas profundas y algunos smoke; no ocultan juegos del catálogo ni apuestas de la ruleta. No hay skips en Firefox/WebKit por incompatibilidad. Lista actual: 542 casos registrados, pendiente de resultados definitivos.
 
 ## Motor
 
-25 pruebas Node correctas localmente. Pagos netos + devolución, todas las geometrías, cero y externas, saldos atómicos, bloqueo, historial, reanudación, 2–6 jugadores y rechazo del extremo módulo. Muestra de 74000 resultados criptográficos: controla rango, presencia de 0/36 y sesgo grosero; no demuestra azar perfecto. El resultado fijo para UI solo se lee en 127.0.0.1 con navigator.webdriver; no existe selector de resultado en producción.
+26 pruebas Node correctas localmente. Pagos netos + devolución, todas las geometrías, cero y externas, saldos atómicos, bloqueo, historial, reanudación, 2–6 jugadores, rechazo del extremo módulo y fallback sin Web Crypto. Muestra de 74000 resultados criptográficos: controla rango, presencia de 0/36 y sesgo grosero; no demuestra azar perfecto. El resultado fijo para UI solo se lee en 127.0.0.1 con navigator.webdriver; una prueba verifica que se ignora fuera de ese host. No existe selector de resultado en producción.
 
 ## Flujos y contratos
 

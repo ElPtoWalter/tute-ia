@@ -16,7 +16,11 @@ export async function layout(page){
   expect(overflow,'sin desbordamiento horizontal del documento').toBeLessThanOrEqual(4);
 }
 export async function home(page){
-  if (!await page.locator('a[href="index.html"]:visible').count() && await page.locator('#brandButton').isVisible()) await page.locator('#brandButton').click();
+  if(await page.locator('body').getAttribute('data-game')==='tute'){
+    if(await page.locator('#resultModal').isVisible())await page.locator('#resultExitButton').click();
+    else await page.locator('#brandButton').click();
+    await expect(page.locator('#homeScreen')).toBeVisible();
+  }
   await page.locator('a[href="index.html"]:visible').first().click();
   await expect(page.locator('[data-game-card]')).toHaveCount(28);
 }

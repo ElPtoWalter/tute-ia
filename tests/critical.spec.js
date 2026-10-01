@@ -28,7 +28,7 @@ test('Tute: mano completa hasta resultado, robo y bazas reales',async({page},inf
   }
   await expect(page.locator('#resultModal')).toBeVisible();expect(played.size).toBe(20);expect(draws).toBeGreaterThan(0);
   const scores=await page.locator('#resultPlayerScore,#resultAiScore').allTextContents();expect(scores.map(Number).reduce((a,b)=>a+b,0)).toBeGreaterThanOrEqual(130);
-  await page.keyboard.press('Escape');await layout(page);await home(page);
+  await layout(page);await home(page);
 });
 test('Brisca: 40 cartas, 20 bazas y exactamente 120 puntos',async({page},info)=>{
   primary(info);test.setTimeout(60000);await fast(page);await page.goto('/brisca.html');await page.locator('#brDifficulty').selectOption('hard');await page.locator('#brSetupForm').evaluate(form=>form.requestSubmit());
