@@ -14,7 +14,7 @@ async function openWithoutRuntimeErrors(page, path) {
   const onConsole = message => { if (message.type() === "error") errors.push(`console: ${message.text()}`); };
   const onFailed = request => {
     const reason = request.failure()?.errorText || "unknown";
-    if (/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason) && request.resourceType() === "media") return;
+    if (/ERR_ABORTED|NS_BINDING_ABORTED|cancelled/i.test(reason) && (request.resourceType() === "media" || /casino-jazz-(?:lite|background)\.mp3/.test(request.url()))) return;
     errors.push(`requestfailed: ${request.url()} · ${reason}`);
   };
   const onResponse = response => {

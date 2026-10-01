@@ -90,4 +90,13 @@ test('catálogo: filtro casino, búsqueda, reciente y retorno',async({page})=>{
   await page.locator('#gameSearch').fill('Antón');await expect(page.locator('[data-game-card="ruleta-casino"]')).toBeVisible();
   await page.locator('[data-game-card="ruleta-casino"]').click();await home(page);
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('salaCeroCasualV261')).recent.some(g=>g.id==='ruleta-casino'))).toBe(true);
+  await page.locator('[data-random-game]').first().click();await expect(page.locator('body')).not.toHaveAttribute('data-game','inicio');await home(page);
+});
+test('el resultado inyectado se ignora fuera del host de automatización',async({page})=>{
+  await page.addInitScript(()=>{
+    window.__SC_ROULETTE_TEST__={results:[0],duration:10};
+    crypto.getRandomValues=buffer=>{buffer[0]=36;return buffer;};
+  });
+  await page.goto('http://localhost:4173/ruleta-casino.html');await page.locator('#startSession').click();await page.locator('[data-bet="straight:36"]').click();await spin(page);
+  await expect(page.locator('#wheel')).toHaveAttribute('data-winner','36');await expect(page.locator('#balance')).toHaveText('675');
 });

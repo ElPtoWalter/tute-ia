@@ -16,6 +16,7 @@ export async function layout(page){
   expect(overflow,'sin desbordamiento horizontal del documento').toBeLessThanOrEqual(4);
 }
 export async function home(page){
-  await page.locator('a[href="index.html"]').first().click();
+  if (!await page.locator('a[href="index.html"]:visible').count() && await page.locator('#brandButton').isVisible()) await page.locator('#brandButton').click();
+  await page.locator('a[href="index.html"]:visible').first().click();
   await expect(page.locator('[data-game-card]')).toHaveCount(28);
 }

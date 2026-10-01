@@ -31,6 +31,13 @@ test('muestra criptográfica de 74000 giros: rango, extremos y distribución sin
   assert(counts.every(n=>n>1500 && n<2500));
   const chi=counts.reduce((a,n)=>a+(n-2000)**2/2000,0); assert(chi<120,`chi²=${chi}`);
 });
+test('fallback sin criptografía conserva el rango y no altera el saldo',()=>{
+  const descriptor=Object.getOwnPropertyDescriptor(globalThis,'crypto'),original=Math.random;
+  try{
+    Object.defineProperty(globalThis,'crypto',{configurable:true,get(){throw new Error('no disponible');}});
+    Math.random=()=>0;assert.equal(R.randomNumber(),0);Math.random=()=>36/4294967296;assert.equal(R.randomNumber(),36);
+  }finally{Object.defineProperty(globalThis,'crypto',descriptor);Math.random=original;}
+});
 test('saldo insuficiente, repetir y doblar son atómicos',()=>{
   const s=session(0,100);s.place('red',100);const before=s.serialize();
   assert.throws(()=>s.place('red',1));assert.throws(()=>s.double());assert.deepEqual(s.serialize(),before);
